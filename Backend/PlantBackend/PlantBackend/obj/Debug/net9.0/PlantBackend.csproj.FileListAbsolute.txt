@@ -74,3 +74,4 @@ C:\Users\krist\Documents\Faks TVZ\10. semestar\Diplomski rad\plantApp\Backend\Pl
 C:\Users\krist\Documents\Faks TVZ\10. semestar\Diplomski rad\plantApp\Backend\PlantBackend\PlantBackend\obj\Debug\net9.0\PlantBackend.pdb
 C:\Users\krist\Documents\Faks TVZ\10. semestar\Diplomski rad\plantApp\Backend\PlantBackend\PlantBackend\obj\Debug\net9.0\PlantBackend.genruntimeconfig.cache
 C:\Users\krist\Documents\Faks TVZ\10. semestar\Diplomski rad\plantApp\Backend\PlantBackend\PlantBackend\obj\Debug\net9.0\ref\PlantBackend.dll
+C:\Users\krist\Documents\Faks TVZ\10. semestar\Diplomski rad\PlantApp\Backend\PlantBackend\PlantBackend\obj\Debug\net9.0\PlantBackend.sourcelink.json

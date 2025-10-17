@@ -1,5 +1,4 @@
 using Plant.Domain.Services;
-using PlantBackend;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,18 +1,18 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\",
+  "WorkspaceRootPath": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1279AE11-18B5-47DF-A7CC-0C31CD882F79}|PlantBackend\\PlantBackend.csproj|c:\\users\\krist\\documents\\faks tvz\\10. semestar\\diplomski rad\\plantapp\\backend\\plantbackend\\plantbackend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1279AE11-18B5-47DF-A7CC-0C31CD882F79}|PlantBackend\\PlantBackend.csproj|solutionrelative:plantbackend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{41601D04-28A3-4754-B260-C8E7B5557F37}|Plant.Domain\\Plant.Domain.csproj|c:\\users\\krist\\documents\\faks tvz\\10. semestar\\diplomski rad\\plantapp\\backend\\plantbackend\\plant.domain\\plant.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{41601D04-28A3-4754-B260-C8E7B5557F37}|Plant.Domain\\Plant.Domain.csproj|solutionrelative:plant.domain\\plant.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{41601D04-28A3-4754-B260-C8E7B5557F37}|Plant.Domain\\Plant.Domain.csproj|c:\\users\\krist\\documents\\faks tvz\\10. semestar\\diplomski rad\\plantapp\\backend\\plantbackend\\plant.domain\\services\\plantdatafetcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{41601D04-28A3-4754-B260-C8E7B5557F37}|Plant.Domain\\Plant.Domain.csproj|solutionrelative:plant.domain\\services\\plantdatafetcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{41601D04-28A3-4754-B260-C8E7B5557F37}|Plant.Domain\\Plant.Domain.csproj|c:\\users\\krist\\documents\\faks tvz\\10. semestar\\diplomski rad\\plantapp\\backend\\plantbackend\\plant.domain\\plant.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{41601D04-28A3-4754-B260-C8E7B5557F37}|Plant.Domain\\Plant.Domain.csproj|solutionrelative:plant.domain\\plant.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{1279AE11-18B5-47DF-A7CC-0C31CD882F79}|PlantBackend\\PlantBackend.csproj|c:\\users\\krist\\documents\\faks tvz\\10. semestar\\diplomski rad\\plantapp\\backend\\plantbackend\\plantbackend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1279AE11-18B5-47DF-A7CC-0C31CD882F79}|PlantBackend\\PlantBackend.csproj|solutionrelative:plantbackend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{41601D04-28A3-4754-B260-C8E7B5557F37}|Plant.Domain\\Plant.Domain.csproj|c:\\users\\krist\\documents\\faks tvz\\10. semestar\\diplomski rad\\plantapp\\backend\\plantbackend\\plant.domain\\utils\\csvhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -41,17 +41,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\PlantBackend\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\PlantBackend\\Program.cs",
               "RelativeDocumentMoniker": "PlantBackend\\Program.cs",
-              "ToolTip": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\PlantBackend\\Program.cs",
+              "ToolTip": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\PlantBackend\\Program.cs",
               "RelativeToolTip": "PlantBackend\\Program.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAABYAAAAYAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-16T22:32:12.792Z",
               "EditorCaption": ""
@@ -60,9 +60,9 @@
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "CsvHelper.cs",
-              "DocumentMoniker": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\Plant.Domain\\Utils\\CsvHelper.cs",
+              "DocumentMoniker": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\Plant.Domain\\Utils\\CsvHelper.cs",
               "RelativeDocumentMoniker": "Plant.Domain\\Utils\\CsvHelper.cs",
-              "ToolTip": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\Plant.Domain\\Utils\\CsvHelper.cs",
+              "ToolTip": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\Plant.Domain\\Utils\\CsvHelper.cs",
               "RelativeToolTip": "Plant.Domain\\Utils\\CsvHelper.cs",
               "ViewState": "AgIAABwAAAAAAAAAAAAQwCwAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -72,9 +72,9 @@
               "$type": "Document",
               "DocumentIndex": 4,
               "Title": "PlantResponseDto.cs",
-              "DocumentMoniker": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\Plant.Domain\\Dtos\\PlantResponseDto.cs",
+              "DocumentMoniker": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\Plant.Domain\\Dtos\\PlantResponseDto.cs",
               "RelativeDocumentMoniker": "Plant.Domain\\Dtos\\PlantResponseDto.cs",
-              "ToolTip": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\Plant.Domain\\Dtos\\PlantResponseDto.cs",
+              "ToolTip": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\Plant.Domain\\Dtos\\PlantResponseDto.cs",
               "RelativeToolTip": "Plant.Domain\\Dtos\\PlantResponseDto.cs",
               "ViewState": "AgIAABoAAAAAAAAAAAA9wCEAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -84,11 +84,11 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "PlantDataFetcher.cs",
-              "DocumentMoniker": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\Plant.Domain\\Services\\PlantDataFetcher.cs",
+              "DocumentMoniker": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\Plant.Domain\\Services\\PlantDataFetcher.cs",
               "RelativeDocumentMoniker": "Plant.Domain\\Services\\PlantDataFetcher.cs",
-              "ToolTip": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\Plant.Domain\\Services\\PlantDataFetcher.cs",
-              "RelativeToolTip": "Plant.Domain\\Services\\PlantDataFetcher.cs",
-              "ViewState": "AgIAAN0AAAAAAAAAAAAiwOcAAABLAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\Plant.Domain\\Services\\PlantDataFetcher.cs*",
+              "RelativeToolTip": "Plant.Domain\\Services\\PlantDataFetcher.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-16T22:02:34.467Z",
               "EditorCaption": ""
@@ -97,9 +97,9 @@
               "$type": "Document",
               "DocumentIndex": 5,
               "Title": "DataApiResponse.cs",
-              "DocumentMoniker": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\Plant.Domain\\Dtos\\DataApiResponse.cs",
+              "DocumentMoniker": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\Plant.Domain\\Dtos\\DataApiResponse.cs",
               "RelativeDocumentMoniker": "Plant.Domain\\Dtos\\DataApiResponse.cs",
-              "ToolTip": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\Plant.Domain\\Dtos\\DataApiResponse.cs",
+              "ToolTip": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\Plant.Domain\\Dtos\\DataApiResponse.cs",
               "RelativeToolTip": "Plant.Domain\\Dtos\\DataApiResponse.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -107,23 +107,24 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Plant.Domain.csproj",
-              "DocumentMoniker": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\Plant.Domain\\Plant.Domain.csproj",
+              "DocumentMoniker": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\Plant.Domain\\Plant.Domain.csproj",
               "RelativeDocumentMoniker": "Plant.Domain\\Plant.Domain.csproj",
-              "ToolTip": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\Plant.Domain\\Plant.Domain.csproj",
-              "RelativeToolTip": "Plant.Domain\\Plant.Domain.csproj",
+              "ToolTip": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\Plant.Domain\\Plant.Domain.csproj*",
+              "RelativeToolTip": "Plant.Domain\\Plant.Domain.csproj*",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-10-16T22:13:54.757Z"
+              "WhenOpened": "2025-10-16T22:13:54.757Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
               "Title": "WeatherForecastController.cs",
-              "DocumentMoniker": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\PlantBackend\\Controllers\\WeatherForecastController.cs",
+              "DocumentMoniker": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\PlantBackend\\Controllers\\WeatherForecastController.cs",
               "RelativeDocumentMoniker": "PlantBackend\\Controllers\\WeatherForecastController.cs",
-              "ToolTip": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\plantApp\\Backend\\PlantBackend\\PlantBackend\\Controllers\\WeatherForecastController.cs",
+              "ToolTip": "C:\\Users\\krist\\Documents\\Faks TVZ\\10. semestar\\Diplomski rad\\PlantApp\\Backend\\PlantBackend\\PlantBackend\\Controllers\\WeatherForecastController.cs",
               "RelativeToolTip": "PlantBackend\\Controllers\\WeatherForecastController.cs",
               "ViewState": "AgIAABMAAAAAAAAAAAAQwB8AAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
