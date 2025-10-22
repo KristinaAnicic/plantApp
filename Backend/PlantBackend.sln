@@ -5,9 +5,9 @@ VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantBackend", "PlantBackend\PlantBackend.csproj", "{1279AE11-18B5-47DF-A7CC-0C31CD882F79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plant.Data", "Plant.Data\Plant.Data.csproj", "{3F8220B0-61EB-4C90-8CD3-7A6A0A16BCF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantApp.Data", "PlantApp.Data\PlantApp.Data.csproj", "{3F8220B0-61EB-4C90-8CD3-7A6A0A16BCF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plant.Domain", "Plant.Domain\Plant.Domain.csproj", "{41601D04-28A3-4754-B260-C8E7B5557F37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantApp.Domain", "PlantApp.Domain\PlantApp.Domain.csproj", "{41601D04-28A3-4754-B260-C8E7B5557F37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
