@@ -14,5 +14,4 @@ public class User : BaseEntity
     public DateOnly DateOfBirth { get; set; }
 
     public ICollection<Place>? Places { get; set; }
-    public ICollection<Blog>? Blogs { get; set; }
 }
