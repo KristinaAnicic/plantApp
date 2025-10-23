@@ -30,5 +30,60 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Sunlight> Sunlights { get; set; }
     public DbSet<TimeToFullHeight> TimeToFullHeight { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<PlantExchange> PlantExchanges { get; set; }
+    public DbSet<ExchangeStatus> ExchangeStatuses { get; set; }
+    public DbSet<ExchangeType> ExchangeTypes { get; set; }
+    public DbSet<UserRating> UserRatings { get; set; }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.RatingsGiven)
+            .WithOne(r => r.Rater)
+            .HasForeignKey(r => r.RaterId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.RatingsReceived)
+            .WithOne(r => r.Rated)
+            .HasForeignKey(r => r.RatedId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        foreach (var entity in modelBuilder.Model.GetEntityTypes())
+        {
+            entity.SetTableName(ToSnakeCase(entity.GetTableName()!));
+
+            foreach (var property in entity.GetProperties())
+            {
+                // Set column names to snake_case
+                property.SetColumnName(ToSnakeCase(property.GetColumnName()!));
+            }
+        }
+
+        base.OnModelCreating(modelBuilder);
+    }
+
+    private static string ToSnakeCase(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+            return input;
+
+        var builder = new System.Text.StringBuilder();
+        builder.Append(char.ToLowerInvariant(input[0]));
+
+        for (int i = 1; i < input.Length; ++i)
+        {
+            var c = input[i];
+            if (char.IsUpper(c))
+            {
+                builder.Append('_');
+                builder.Append(char.ToLowerInvariant(c));
+            }
+            else
+            {
+                builder.Append(c);
+            }
+        }
+        return builder.ToString();
+    }
 }

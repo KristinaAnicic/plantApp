@@ -14,4 +14,7 @@ public class User : BaseEntity
     public DateOnly DateOfBirth { get; set; }
 
     public ICollection<Place>? Places { get; set; }
+    public ICollection<PlantExchange>? PlantExchanges { get; set; }
+    public ICollection<UserRating>? RatingsGiven { get; set; }
+    public ICollection<UserRating>? RatingsReceived { get; set; }
 }
