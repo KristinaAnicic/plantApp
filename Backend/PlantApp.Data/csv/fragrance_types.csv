@@ -1,18 +1,15 @@
 1,Foliage
-2,Deciduous
-3,Semi evergreen
-4,Evergreen
-5,Foliage, Fruit
-6,Foliage, Stem
-7,Flower, Foliage
-8,Flower
-9,Fruit
-10,Flower, Foliage, Fruit
-11,Flower, Fruit
-12,Bark, Flower, Foliage
-13,Bark, Flower
-14,Flower, Foliage, Stem
-15,Bark, Foliage, Fruit
-16,Flower, Stem
-17,Bark
-18,Bark, Foliage
+2,Foliage, Fruit
+3,Foliage, Stem
+4,Flower, Foliage
+5,Flower
+6,Fruit
+7,Flower, Foliage, Fruit
+8,Flower, Fruit
+9,Bark, Flower, Foliage
+10,Bark, Flower
+11,Flower, Foliage, Stem
+12,Bark, Foliage, Fruit
+13,Flower, Stem
+14,Bark
+15,Bark, Foliage
