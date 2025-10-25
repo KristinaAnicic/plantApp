@@ -10,7 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<City> Cities { get; set; }
     public DbSet<Country> Countries { get; set; }
     public DbSet<Exposure> Exposures { get; set; }
-    public DbSet<Fragnance> Fragnances { get; set; }
+    public DbSet<Fragrance> Fragrances { get; set; }
     public DbSet<GrowthLog> GrowthLogs { get; set; }
     public DbSet<Habit> Habits { get; set; }
     public DbSet<HardinessLevel> HardinessLevels { get; set; }

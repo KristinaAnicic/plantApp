@@ -90,7 +90,7 @@ namespace PlantApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "fragnances",
+                name: "fragrances",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -102,7 +102,7 @@ namespace PlantApp.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_fragnances", x => x.id);
+                    table.PrimaryKey("PK_fragrances", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -376,14 +376,14 @@ namespace PlantApp.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     botanical_name = table.Column<string>(type: "text", nullable: false),
                     common_name = table.Column<string>(type: "text", nullable: false),
-                    synonim_parent_plant_id = table.Column<int>(type: "integer", nullable: true),
-                    fragnance_id = table.Column<int>(type: "integer", nullable: false),
-                    hardiness_level_id = table.Column<int>(type: "integer", nullable: false),
-                    is_agm = table.Column<bool>(type: "boolean", nullable: false),
-                    is_genus = table.Column<bool>(type: "boolean", nullable: false),
-                    is_plants_for_pollinators = table.Column<bool>(type: "boolean", nullable: false),
-                    is_low_maintenance = table.Column<bool>(type: "boolean", nullable: false),
-                    is_drought_resistance = table.Column<bool>(type: "boolean", nullable: false),
+                    synonym_parent_plant_id = table.Column<int>(type: "integer", nullable: true),
+                    fragrance_id = table.Column<int>(type: "integer", nullable: true),
+                    hardiness_level_id = table.Column<int>(type: "integer", nullable: true),
+                    is_specie = table.Column<bool>(type: "boolean", nullable: true),
+                    is_genus = table.Column<bool>(type: "boolean", nullable: true),
+                    is_plant_for_pollinators = table.Column<bool>(type: "boolean", nullable: true),
+                    is_low_maintenance = table.Column<bool>(type: "boolean", nullable: true),
+                    is_drought_resistance = table.Column<bool>(type: "boolean", nullable: true),
                     spread_type_id = table.Column<int>(type: "integer", nullable: true),
                     height_type_id = table.Column<int>(type: "integer", nullable: true),
                     time_to_full_height_id = table.Column<int>(type: "integer", nullable: false),
@@ -392,8 +392,8 @@ namespace PlantApp.Data.Migrations
                     pest_resistance = table.Column<string>(type: "text", nullable: true),
                     disease_resistance = table.Column<string>(type: "text", nullable: true),
                     pruning = table.Column<string>(type: "text", nullable: true),
-                    propagnation = table.Column<string>(type: "text", nullable: true),
-                    family_id = table.Column<int>(type: "integer", nullable: false),
+                    propagation = table.Column<string>(type: "text", nullable: true),
+                    family_id = table.Column<int>(type: "integer", nullable: true),
                     entity_description = table.Column<string>(type: "text", nullable: true),
                     genus_description = table.Column<string>(type: "text", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -404,17 +404,15 @@ namespace PlantApp.Data.Migrations
                 {
                     table.PrimaryKey("PK_plants", x => x.id);
                     table.ForeignKey(
-                        name: "FK_plants_fragnances_fragnance_id",
-                        column: x => x.fragnance_id,
-                        principalTable: "fragnances",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_plants_fragrances_fragrance_id",
+                        column: x => x.fragrance_id,
+                        principalTable: "fragrances",
+                        principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_plants_hardiness_levels_hardiness_level_id",
                         column: x => x.hardiness_level_id,
                         principalTable: "hardiness_levels",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_plants_height_types_height_type_id",
                         column: x => x.height_type_id,
@@ -424,8 +422,12 @@ namespace PlantApp.Data.Migrations
                         name: "FK_plants_plant_families_family_id",
                         column: x => x.family_id,
                         principalTable: "plant_families",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_plants_plants_synonym_parent_plant_id",
+                        column: x => x.synonym_parent_plant_id,
+                        principalTable: "plants",
+                        principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_plants_spreads_spread_type_id",
                         column: x => x.spread_type_id,
@@ -1047,9 +1049,9 @@ namespace PlantApp.Data.Migrations
                 column: "family_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_plants_fragnance_id",
+                name: "IX_plants_fragrance_id",
                 table: "plants",
-                column: "fragnance_id");
+                column: "fragrance_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_plants_hardiness_level_id",
@@ -1065,6 +1067,11 @@ namespace PlantApp.Data.Migrations
                 name: "IX_plants_spread_type_id",
                 table: "plants",
                 column: "spread_type_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_plants_synonym_parent_plant_id",
+                table: "plants",
+                column: "synonym_parent_plant_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_plants_time_to_full_height_id",
@@ -1199,7 +1206,7 @@ namespace PlantApp.Data.Migrations
                 name: "users");
 
             migrationBuilder.DropTable(
-                name: "fragnances");
+                name: "fragrances");
 
             migrationBuilder.DropTable(
                 name: "hardiness_levels");

@@ -1,6 +1,6 @@
 ﻿namespace PlantApp.Data.Models;
 
-public class Fragnance : BaseEntity
+public class Fragrance : BaseEntity
 {
     public required string Name { get; set; }
 

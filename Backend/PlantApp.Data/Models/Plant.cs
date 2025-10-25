@@ -9,20 +9,22 @@ public class Plant : BaseEntity
     public required string BotanicalName { get; set; }
     public required string CommonName { get; set; }
     //public bool isSynonim {  get; set; }
-    public int? SynonimParentPlantId { get; set; }
+    [ForeignKey(nameof(SynonymParentPlantId))]
+    public Plant? SynonymParentPlant {  get; set; }
+    public int? SynonymParentPlantId { get; set; }
 
-    [ForeignKey(nameof(FragnanceId))]
-    public Fragnance? Fragnance { get; set; }
-    public int FragnanceId { get; set; }
+    [ForeignKey(nameof(FragranceId))]
+    public Fragrance? Fragrance { get; set; }
+    public int? FragranceId { get; set; }
 
     [ForeignKey(nameof(HardinessLevelId))]
     public HardinessLevel? HardinessLevel { get; set; }
-    public int HardinessLevelId { get; set; }
-    public bool IsAgm {  get; set; }
-    public bool IsGenus { get; set; }
-    public bool IsPlantsForPollinators { get; set; }
-    public bool IsLowMaintenance { get; set; }
-    public bool IsDroughtResistance { get; set; }
+    public int? HardinessLevelId { get; set; }
+    public bool? IsSpecie {  get; set; }
+    public bool? IsGenus { get; set; }
+    public bool? IsPlantForPollinators { get; set; }
+    public bool? IsLowMaintenance { get; set; }
+    public bool? IsDroughtResistance { get; set; }
 
     [ForeignKey(nameof(SpreadTypeId))]
     public SpreadType? SpreadType { get; set; }
@@ -40,21 +42,21 @@ public class Plant : BaseEntity
     public string? PestResistance { get; set; }
     public string? DiseaseResistance { get; set; }
     public string? Pruning {  get; set; }
-    public string? Propagnation { get; set; }
+    public string? Propagation { get; set; }
 
     [ForeignKey(nameof(FamilyId))]
     public PlantFamily? Family { get; set; }
-    public int FamilyId { get; set; }
+    public int? FamilyId { get; set; }
     public string? EntityDescription { get; set; }
     public string? GenusDescription { get; set; }
 
-    public ICollection<SoilType>? SoilTypes { get; set; }
-    public ICollection<Image>? Images { get; set; }
-    public ICollection<Sunlight>? Sunlights { get; set; }
-    public ICollection<Aspect>? Aspects { get; set; }
-    public ICollection<Moisture>? Moistures { get; set; }
-    public ICollection<Ph>? Phs { get; set; }
-    public ICollection<Exposure>? Exposures { get; set; }
-    public ICollection<Habit>? Habits { get; set; }
-    public ICollection<Planted>? PlantedList { get; set; }
+    public ICollection<SoilType> SoilTypes { get; set; } = new List<SoilType>();
+    public ICollection<Image> Images { get; set; } = new List<Image>();
+    public ICollection<Sunlight> Sunlights { get; set; } = new List<Sunlight>();
+    public ICollection<Aspect> Aspects { get; set; } = new List<Aspect>();
+    public ICollection<Moisture> Moistures { get; set; } = new List<Moisture>();
+    public ICollection<Ph> Phs { get; set; } = new List<Ph>();
+    public ICollection<Exposure> Exposures { get; set; } = new List<Exposure>();
+    public ICollection<Habit> Habits { get; set; } = new List<Habit>();
+    public ICollection<Planted> PlantedList { get; set; } = new List<Planted>();
 }

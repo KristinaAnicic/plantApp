@@ -12,8 +12,8 @@ using PlantApp.Data;
 namespace PlantApp.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251023204948_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251025214815_SeedInitialData")]
+    partial class SeedInitialData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -329,7 +329,7 @@ namespace PlantApp.Data.Migrations
                     b.ToTable("exposures");
                 });
 
-            modelBuilder.Entity("PlantApp.Data.Models.Fragnance", b =>
+            modelBuilder.Entity("PlantApp.Data.Models.Fragrance", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -357,7 +357,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("fragnances");
+                    b.ToTable("fragrances");
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.GrowthLog", b =>
@@ -702,19 +702,19 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("entity_description");
 
-                    b.Property<int>("FamilyId")
+                    b.Property<int?>("FamilyId")
                         .HasColumnType("integer")
                         .HasColumnName("family_id");
 
-                    b.Property<int>("FragnanceId")
+                    b.Property<int?>("FragranceId")
                         .HasColumnType("integer")
-                        .HasColumnName("fragnance_id");
+                        .HasColumnName("fragrance_id");
 
                     b.Property<string>("GenusDescription")
                         .HasColumnType("text")
                         .HasColumnName("genus_description");
 
-                    b.Property<int>("HardinessLevelId")
+                    b.Property<int?>("HardinessLevelId")
                         .HasColumnType("integer")
                         .HasColumnName("hardiness_level_id");
 
@@ -722,33 +722,33 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("height_type_id");
 
-                    b.Property<bool>("IsAgm")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_agm");
-
-                    b.Property<bool>("IsDroughtResistance")
+                    b.Property<bool?>("IsDroughtResistance")
                         .HasColumnType("boolean")
                         .HasColumnName("is_drought_resistance");
 
-                    b.Property<bool>("IsGenus")
+                    b.Property<bool?>("IsGenus")
                         .HasColumnType("boolean")
                         .HasColumnName("is_genus");
 
-                    b.Property<bool>("IsLowMaintenance")
+                    b.Property<bool?>("IsLowMaintenance")
                         .HasColumnType("boolean")
                         .HasColumnName("is_low_maintenance");
 
-                    b.Property<bool>("IsPlantsForPollinators")
+                    b.Property<bool?>("IsPlantForPollinators")
                         .HasColumnType("boolean")
-                        .HasColumnName("is_plants_for_pollinators");
+                        .HasColumnName("is_plant_for_pollinators");
+
+                    b.Property<bool?>("IsSpecie")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_specie");
 
                     b.Property<string>("PestResistance")
                         .HasColumnType("text")
                         .HasColumnName("pest_resistance");
 
-                    b.Property<string>("Propagnation")
+                    b.Property<string>("Propagation")
                         .HasColumnType("text")
-                        .HasColumnName("propagnation");
+                        .HasColumnName("propagation");
 
                     b.Property<string>("Pruning")
                         .HasColumnType("text")
@@ -758,9 +758,9 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("spread_type_id");
 
-                    b.Property<int?>("SynonimParentPlantId")
+                    b.Property<int?>("SynonymParentPlantId")
                         .HasColumnType("integer")
-                        .HasColumnName("synonim_parent_plant_id");
+                        .HasColumnName("synonym_parent_plant_id");
 
                     b.Property<int>("TimeToFullHeightId")
                         .HasColumnType("integer")
@@ -778,13 +778,15 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("FamilyId");
 
-                    b.HasIndex("FragnanceId");
+                    b.HasIndex("FragranceId");
 
                     b.HasIndex("HardinessLevelId");
 
                     b.HasIndex("HeightTypeId");
 
                     b.HasIndex("SpreadTypeId");
+
+                    b.HasIndex("SynonymParentPlantId");
 
                     b.HasIndex("TimeToFullHeightId");
 
@@ -1562,21 +1564,15 @@ namespace PlantApp.Data.Migrations
                 {
                     b.HasOne("PlantApp.Data.Models.PlantFamily", "Family")
                         .WithMany("Plants")
-                        .HasForeignKey("FamilyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FamilyId");
 
-                    b.HasOne("PlantApp.Data.Models.Fragnance", "Fragnance")
+                    b.HasOne("PlantApp.Data.Models.Fragrance", "Fragrance")
                         .WithMany("Plants")
-                        .HasForeignKey("FragnanceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FragranceId");
 
                     b.HasOne("PlantApp.Data.Models.HardinessLevel", "HardinessLevel")
                         .WithMany("Plants")
-                        .HasForeignKey("HardinessLevelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HardinessLevelId");
 
                     b.HasOne("PlantApp.Data.Models.HeightType", "HeightType")
                         .WithMany("Plants")
@@ -1586,6 +1582,10 @@ namespace PlantApp.Data.Migrations
                         .WithMany("Plants")
                         .HasForeignKey("SpreadTypeId");
 
+                    b.HasOne("PlantApp.Data.Models.Plant", "SynonymParentPlant")
+                        .WithMany()
+                        .HasForeignKey("SynonymParentPlantId");
+
                     b.HasOne("PlantApp.Data.Models.TimeToFullHeight", "TimeToFullHeight")
                         .WithMany("Plants")
                         .HasForeignKey("TimeToFullHeightId")
@@ -1594,13 +1594,15 @@ namespace PlantApp.Data.Migrations
 
                     b.Navigation("Family");
 
-                    b.Navigation("Fragnance");
+                    b.Navigation("Fragrance");
 
                     b.Navigation("HardinessLevel");
 
                     b.Navigation("HeightType");
 
                     b.Navigation("SpreadType");
+
+                    b.Navigation("SynonymParentPlant");
 
                     b.Navigation("TimeToFullHeight");
                 });
@@ -1780,7 +1782,7 @@ namespace PlantApp.Data.Migrations
                     b.Navigation("PlantExchanges");
                 });
 
-            modelBuilder.Entity("PlantApp.Data.Models.Fragnance", b =>
+            modelBuilder.Entity("PlantApp.Data.Models.Fragrance", b =>
                 {
                     b.Navigation("Plants");
                 });
