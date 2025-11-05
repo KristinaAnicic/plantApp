@@ -1,6 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using PlantApp.Data;
+using PlantApp.Domain.Interfaces.Data;
+using PlantApp.Domain.Interfaces.Repository;
+using PlantApp.Domain.Repositories;
 using PlantApp.Domain.Services;
+using PlantApp.Domain.Services.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +19,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IPlantRepository, PlantRepository>();
+
+builder.Services.AddScoped<IPlantService, PlantService>();
 builder.Services.AddScoped<SeedDataService>();
+
 
 var app = builder.Build();
 
@@ -29,16 +38,12 @@ if (app.Environment.IsDevelopment())
 //await PlantDataFetcher.FetchAllDataAsync();
 //await PlantDataFetcher.CheckIds(45);
 
-using (var scope = app.Services.CreateScope())
+/*using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var dbContext = services.GetRequiredService<AppDbContext>();
-
-    await dbContext.Database.MigrateAsync();
-
     var seeder = services.GetRequiredService<SeedDataService>();
     await seeder.SeedData();
-}
+}*/
 
 app.UseHttpsRedirection();
 
