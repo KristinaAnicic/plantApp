@@ -25,6 +25,11 @@ public class Repository<T> : IRepository<T> where T : class
             query = query.OrderBy(orderBy);
         }
 
+        var deletedProperty = typeof(T).GetProperty("DeletedAt");
+        if (deletedProperty != null) {
+            query = query.Where(q => EF.Property<DateTime?>(q, "DeletedAt") == null);
+        }
+
         return await query.ToListAsync();
     }
 
@@ -64,11 +69,11 @@ public class Repository<T> : IRepository<T> where T : class
         await context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(T entity)
+    public async Task DeleteAsync(T entity, bool softDelete = true)
     {
         var deleteProperty = context.Entry(entity).Metadata.FindProperty("DeletedAt");
 
-        if (deleteProperty != null)
+        if (deleteProperty != null && softDelete)
         {
             dbSet.Attach(entity);
             context.Entry(entity).State = EntityState.Modified;
