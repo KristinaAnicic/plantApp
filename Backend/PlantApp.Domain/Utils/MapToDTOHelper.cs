@@ -1,6 +1,11 @@
-﻿using PlantApp.Data.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos;
 using PlantApp.Domain.Dtos.Plant;
+using PlantApp.Domain.Dtos.Planted;
+using PlantApp.Domain.Dtos.PlantExchange;
+using PlantApp.Domain.Dtos.PlantPlace;
+using PlantApp.Domain.Dtos.User;
 
 namespace PlantApp.Domain.Utils;
 
@@ -33,10 +38,10 @@ public static class MapToDTOHelper
             IsGenus = plant.IsGenus,
             IsPlantForPollinators = plant.IsPlantForPollinators,
             IsLowMaintenance = plant.IsLowMaintenance,
-            IsDroughtResistance = plant.IsDroughtResistance,
-            SpreadType = plant.SpreadType?.Type ?? "Unknown",
-            HeightType = plant.HeightType?.Type ?? "Unknown",
-            TimeToFullHeight = plant.TimeToFullHeight?.Time ?? "Unknown",
+            IsDroughtResistant = plant.IsDroughtResistant,
+            SpreadType = plant.SpreadType?.Name ?? "Unknown",
+            HeightType = plant.HeightType?.Name ?? "Unknown",
+            TimeToFullHeight = plant.TimeToFullHeight?.Name ?? "Unknown",
             Toxicity = plant.Toxicity,
             Cultivation = plant.Cultivation,
             PestResistance = plant.PestResistance,
@@ -53,6 +58,7 @@ public static class MapToDTOHelper
             Phs = string.Join(", ", plant.Phs.Select(p =>p.Name)) ?? "Unknown",
             Exposures = string.Join(", ", plant.Exposures.Select(e =>e.Name)) ?? "Unknown",
             Habits = plant.Habits.Select(e =>e.Name).ToList(),
+            Seasons = plant.Seasons.Select(e =>e.Name).ToList()
         };
     }
 
@@ -61,8 +67,101 @@ public static class MapToDTOHelper
         return new ImageDto
         {
             Id = img.Id,
-            Url = $"https://apps.rhs.org.uk/plantselectorimages/detail/{img.Name}",
+            Url = img.Name,
             Copyright = img.Copyright,
+        };
+    }
+    public static PlaceDto MapPlaceToPlaceDto(this Place place)
+    {
+        return new PlaceDto
+        {
+            Id =place.Id,
+            Name = place.Name,
+            Address = $"{place.Address} ({place.City}, {place.Country?.Name})",
+        };
+    }
+
+    public static PlaceGetDto MapPlaceToPlaceGetDto(this Place place)
+    {
+        return new PlaceGetDto
+        {
+            Id = place.Id,
+            Name = place.Name,
+            Address = place.Address,
+            City = $"{place.City}, {place.Country?.Name}",
+            Note = place.Note,
+            Planted = place.PlantedList?.Select(p => p.MapPlantedToPlantedDto()).ToList()
+        };
+    }
+
+    public static UserGetDto MapUserToUserGetDto(this User user)
+    {
+        return new UserGetDto
+        {
+            Id = user.Id,
+            Email = user.Email,
+            DisplayName = user.DisplayName,
+            Role = user.Role?.Name ?? "Unknown",
+            Gender = user.Gender,
+            DateOfBirth = user.DateOfBirth,
+            Places = user.Places?.Select(p  => p.MapPlaceToPlaceGetDto()).ToList(),
+            PlantExchanges = user.PlantExchanges?.Select(pe => pe.MapPlantExchangeToPlantExchangeDto()).ToList(),
+            Rating = user.RatingsReceived?.Average(r => r.Rating),
+            NumOfRatings = user.RatingsReceived?.Count()
+        };
+    }
+
+    public static PlantedDto MapPlantedToPlantedDto(this Planted planted)
+    {
+        return new PlantedDto
+        {
+            Plant = planted.Plant?.MapPlantToPlantDto(),
+            DatePlanted = planted.DatePlanted,
+            Source = planted.Source,
+            Notes = planted.Notes,
+            IsOutside = planted.IsOutside,
+            PlantStatus = planted.PlantStatus
+        };
+    }
+
+    public static PlantExchangeDto MapPlantExchangeToPlantExchangeDto(this PlantExchange exchange)
+    {
+        return new PlantExchangeDto
+        {
+            Id = exchange.Id,
+            Title = exchange.Title,
+            ExchangeType = exchange.ExchangeType,
+            Place = $"{exchange.City}, {exchange.Country?.Name}",
+            Image = exchange.MainImage,
+            Price = exchange.Price
+        };
+    }
+
+   /* public static UserRatingDto MapUserRatingToUserRatingDto(this UserRating userRating)
+    {
+        return UserRatingDto{
+
+        }
+    }*/
+
+    public static ReferenceDto MapReferenceToDto<T>(this T reference)
+    {
+        int id = EF.Property<int>(reference, "Id");
+        string? name = null;
+
+        if (typeof(T) == typeof(HardinessLevel))
+        {
+            name = EF.Property<string>(reference, "Level");
+        }
+        else
+        {
+            name = EF.Property<string>(reference, "Name");
+        }
+
+        return new ReferenceDto
+        {
+            Id = id,
+            Name = name
         };
     }
 }
