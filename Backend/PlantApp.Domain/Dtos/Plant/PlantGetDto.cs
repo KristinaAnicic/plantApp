@@ -8,7 +8,7 @@ public class PlantGetDto : PlantDto
     public bool? IsGenus { get; set; }
     public bool? IsPlantForPollinators { get; set; }
     public bool? IsLowMaintenance { get; set; }
-    public bool? IsDroughtResistance { get; set; }
+    public bool? IsDroughtResistant { get; set; }
     public string? SpreadType { get; set; }
     public string? HeightType { get; set; }
     public string? TimeToFullHeight { get; set; }
@@ -28,4 +28,5 @@ public class PlantGetDto : PlantDto
     public string? Phs { get; set; }
     public string? Exposures { get; set; }
     public List<string>? Habits { get; set; }
+    public List<string>? Seasons { get; set; }
 }
