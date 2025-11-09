@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlantApp.Data;
+using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Interfaces.Repository;
 using System.Linq.Expressions;
 
@@ -90,6 +91,21 @@ public class Repository<T> : IRepository<T> where T : class
     public async Task<bool> ExistsAsync(Expression<Func<T, bool>> exists)
     {
         return await dbSet.AnyAsync(exists);
+    }
+
+    public async Task<bool> IdExistsAsync(int id)
+    {
+        return await dbSet.AnyAsync(e => EF.Property<int>(e, "Id") == id);
+    }
+
+    public async Task<List<T>> GetByIdsAsync(List<int> ids)
+    {
+        if (ids == null || ids.Count == 0) return new List<T>();
+
+        return await dbSet
+            .Where(e =>
+                ids.Contains(EF.Property<int>(e, "Id")))
+            .ToListAsync();
     }
 
     public async Task<int> CountAsync(Expression<Func<T, bool>> count)
