@@ -3,12 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlantApp.Data.Models;
 
-public class PlantFamily
+public class SpreadType
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public required string Name { get; set; }
-
-    public ICollection<Plant>? Plants { get; set; } = [];
+    public required decimal MinSpread { get; set; }
+    public decimal? MaxSpread { get; set; }
+    public string Unit { get; set; } = "m";
+    public ICollection<Plant>? Plants { get; set; }
 }

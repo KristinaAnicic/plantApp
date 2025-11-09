@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlantApp.Data.Models;
+using PlantApp.Data.Models.Categories;
 
 namespace PlantApp.Data;
 
@@ -23,15 +24,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<PlantFamily> PlantFamilies { get; set; }
     public DbSet<PlantStatus> PlantStatuses { get; set; }
     public DbSet<Reminder> Reminders { get; set; }
-    public DbSet<ReminderType> RemindersType { get; set; }
+    public DbSet<ReminderType> ReminderTypes { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<SoilType> Soils { get; set; }
     public DbSet<SpreadType> Spreads { get; set; }
     public DbSet<Sunlight> Sunlights { get; set; }
+    public DbSet<Season> Seasons { get; set; }
     public DbSet<TimeToFullHeight> TimeToFullHeight { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<PlantExchange> PlantExchanges { get; set; }
-    public DbSet<ExchangeStatus> ExchangeStatuses { get; set; }
+    public DbSet<ReasonOfDeath> ReasonsOfDeath { get; set; }
     public DbSet<ExchangeType> ExchangeTypes { get; set; }
     public DbSet<UserRating> UserRatings { get; set; }
 

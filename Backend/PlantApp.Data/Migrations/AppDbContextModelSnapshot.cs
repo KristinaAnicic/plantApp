@@ -167,26 +167,33 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
+                    b.HasKey("Id");
+
+                    b.ToTable("aspects");
+                });
+
+            modelBuilder.Entity("PlantApp.Data.Models.Categories.Season", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
                     b.HasKey("Id");
 
-                    b.ToTable("aspects");
+                    b.ToTable("seasons");
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.City", b =>
@@ -233,37 +240,6 @@ namespace PlantApp.Data.Migrations
                     b.ToTable("countries");
                 });
 
-            modelBuilder.Entity("PlantApp.Data.Models.ExchangeStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("type");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("exchange_statuses");
-                });
-
             modelBuilder.Entity("PlantApp.Data.Models.ExchangeType", b =>
                 {
                     b.Property<int>("Id")
@@ -273,22 +249,10 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<string>("Type")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("type");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
+                        .HasColumnName("name");
 
                     b.HasKey("Id");
 
@@ -304,22 +268,10 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
@@ -335,22 +287,10 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
@@ -408,22 +348,10 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
@@ -439,14 +367,6 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text")
@@ -456,10 +376,6 @@ namespace PlantApp.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("level");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
@@ -475,14 +391,6 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<decimal?>("MaxHeight")
                         .HasColumnType("numeric")
                         .HasColumnName("max_height");
@@ -491,19 +399,15 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("min_height");
 
-                    b.Property<string>("Type")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("type");
+                        .HasColumnName("name");
 
                     b.Property<string>("Unit")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("unit");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
@@ -560,22 +464,10 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
@@ -591,22 +483,10 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
@@ -626,9 +506,17 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("address");
 
-                    b.Property<int>("CityId")
+                    b.Property<string>("City")
+                        .HasColumnType("text")
+                        .HasColumnName("city");
+
+                    b.Property<int?>("CityId")
                         .HasColumnType("integer")
                         .HasColumnName("city_id");
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("integer")
+                        .HasColumnName("country_id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -643,6 +531,10 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -654,6 +546,8 @@ namespace PlantApp.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
+
+                    b.HasIndex("CountryId");
 
                     b.HasIndex("UserId");
 
@@ -719,9 +613,9 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("height_type_id");
 
-                    b.Property<bool?>("IsDroughtResistance")
+                    b.Property<bool?>("IsDroughtResistant")
                         .HasColumnType("boolean")
-                        .HasColumnName("is_drought_resistance");
+                        .HasColumnName("is_drought_resistant");
 
                     b.Property<bool?>("IsGenus")
                         .HasColumnType("boolean")
@@ -799,14 +693,24 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CityId")
-                        .HasColumnType("integer")
-                        .HasColumnName("city_id");
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("city");
+
+                    b.Property<string>("Contact")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("contact");
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("content");
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("integer")
+                        .HasColumnName("country_id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -820,13 +724,18 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("exchange_for");
 
-                    b.Property<int>("ExchangeStatusId")
-                        .HasColumnType("integer")
-                        .HasColumnName("exchange_status_id");
-
                     b.Property<int>("ExchangeTypeId")
                         .HasColumnType("integer")
                         .HasColumnName("exchange_type_id");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("MainImage")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("main_image");
 
                     b.Property<string>("PlantStatus")
                         .IsRequired()
@@ -836,6 +745,10 @@ namespace PlantApp.Data.Migrations
                     b.Property<int?>("PlantedId")
                         .HasColumnType("integer")
                         .HasColumnName("planted_id");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("numeric")
+                        .HasColumnName("price");
 
                     b.Property<string>("Shipping")
                         .IsRequired()
@@ -857,9 +770,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CityId");
-
-                    b.HasIndex("ExchangeStatusId");
+                    b.HasIndex("CountryId");
 
                     b.HasIndex("ExchangeTypeId");
 
@@ -879,22 +790,10 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
@@ -910,22 +809,10 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
@@ -953,6 +840,10 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
 
+                    b.Property<bool>("IsOutside")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_outside");
+
                     b.Property<string>("Notes")
                         .HasColumnType("text")
                         .HasColumnName("notes");
@@ -969,6 +860,10 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("plant_status_id");
 
+                    b.Property<int?>("ReasonOfDeathId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reason_of_death_id");
+
                     b.Property<string>("Source")
                         .HasColumnType("text")
                         .HasColumnName("source");
@@ -981,9 +876,32 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("PlaceId");
 
+                    b.HasIndex("PlantId");
+
                     b.HasIndex("PlantStatusId");
 
+                    b.HasIndex("ReasonOfDeathId");
+
                     b.ToTable("planteds");
+                });
+
+            modelBuilder.Entity("PlantApp.Data.Models.ReasonOfDeath", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("reasons_of_death");
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Reminder", b =>
@@ -1046,26 +964,14 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<string>("Type")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("type");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
+                        .HasColumnName("name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("reminders_type");
+                    b.ToTable("reminder_types");
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Role", b =>
@@ -1077,22 +983,10 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
@@ -1108,22 +1002,10 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
@@ -1139,14 +1021,6 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<decimal?>("MaxSpread")
                         .HasColumnType("numeric")
                         .HasColumnName("max_spread");
@@ -1155,19 +1029,15 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("min_spread");
 
-                    b.Property<string>("Type")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("type");
+                        .HasColumnName("name");
 
                     b.Property<string>("Unit")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("unit");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
@@ -1183,22 +1053,10 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
@@ -1214,14 +1072,6 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<int?>("MaxTime")
                         .HasColumnType("integer")
                         .HasColumnName("max_time");
@@ -1230,14 +1080,10 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("min_time");
 
-                    b.Property<string>("Time")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("time");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
+                        .HasColumnName("name");
 
                     b.HasKey("Id");
 
@@ -1253,6 +1099,10 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Contact")
+                        .HasColumnType("text")
+                        .HasColumnName("contact");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -1264,6 +1114,11 @@ namespace PlantApp.Data.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("display_name");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -1345,6 +1200,23 @@ namespace PlantApp.Data.Migrations
                     b.HasIndex("RaterId");
 
                     b.ToTable("user_ratings");
+                });
+
+            modelBuilder.Entity("PlantSeason", b =>
+                {
+                    b.Property<int>("PlantsId")
+                        .HasColumnType("integer")
+                        .HasColumnName("plants_id");
+
+                    b.Property<int>("SeasonsId")
+                        .HasColumnType("integer")
+                        .HasColumnName("seasons_id");
+
+                    b.HasKey("PlantsId", "SeasonsId");
+
+                    b.HasIndex("SeasonsId");
+
+                    b.ToTable("plant_season");
                 });
 
             modelBuilder.Entity("PlantSoilType", b =>
@@ -1540,9 +1412,13 @@ namespace PlantApp.Data.Migrations
 
             modelBuilder.Entity("PlantApp.Data.Models.Place", b =>
                 {
-                    b.HasOne("PlantApp.Data.Models.City", "City")
+                    b.HasOne("PlantApp.Data.Models.City", null)
                         .WithMany("Places")
-                        .HasForeignKey("CityId")
+                        .HasForeignKey("CityId");
+
+                    b.HasOne("PlantApp.Data.Models.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1552,7 +1428,7 @@ namespace PlantApp.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("City");
+                    b.Navigation("Country");
 
                     b.Navigation("User");
                 });
@@ -1606,15 +1482,9 @@ namespace PlantApp.Data.Migrations
 
             modelBuilder.Entity("PlantApp.Data.Models.PlantExchange", b =>
                 {
-                    b.HasOne("PlantApp.Data.Models.City", "City")
+                    b.HasOne("PlantApp.Data.Models.Country", "Country")
                         .WithMany()
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PlantApp.Data.Models.ExchangeStatus", "ExchangeStatus")
-                        .WithMany("PlantExchanges")
-                        .HasForeignKey("ExchangeStatusId")
+                        .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1634,9 +1504,7 @@ namespace PlantApp.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("City");
-
-                    b.Navigation("ExchangeStatus");
+                    b.Navigation("Country");
 
                     b.Navigation("ExchangeType");
 
@@ -1648,14 +1516,14 @@ namespace PlantApp.Data.Migrations
             modelBuilder.Entity("PlantApp.Data.Models.Planted", b =>
                 {
                     b.HasOne("PlantApp.Data.Models.Place", "Place")
-                        .WithMany()
+                        .WithMany("PlantedList")
                         .HasForeignKey("PlaceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PlantApp.Data.Models.Plant", "Plant")
                         .WithMany("PlantedList")
-                        .HasForeignKey("PlaceId")
+                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1664,6 +1532,10 @@ namespace PlantApp.Data.Migrations
                         .HasForeignKey("PlantStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("PlantApp.Data.Models.ReasonOfDeath", null)
+                        .WithMany("Plants")
+                        .HasForeignKey("ReasonOfDeathId");
 
                     b.Navigation("Place");
 
@@ -1729,6 +1601,21 @@ namespace PlantApp.Data.Migrations
                     b.Navigation("Rater");
                 });
 
+            modelBuilder.Entity("PlantSeason", b =>
+                {
+                    b.HasOne("PlantApp.Data.Models.Plant", null)
+                        .WithMany()
+                        .HasForeignKey("PlantsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PlantApp.Data.Models.Categories.Season", null)
+                        .WithMany()
+                        .HasForeignKey("SeasonsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PlantSoilType", b =>
                 {
                     b.HasOne("PlantApp.Data.Models.Plant", null)
@@ -1769,11 +1656,6 @@ namespace PlantApp.Data.Migrations
                     b.Navigation("Cities");
                 });
 
-            modelBuilder.Entity("PlantApp.Data.Models.ExchangeStatus", b =>
-                {
-                    b.Navigation("PlantExchanges");
-                });
-
             modelBuilder.Entity("PlantApp.Data.Models.ExchangeType", b =>
                 {
                     b.Navigation("PlantExchanges");
@@ -1792,6 +1674,11 @@ namespace PlantApp.Data.Migrations
             modelBuilder.Entity("PlantApp.Data.Models.HeightType", b =>
                 {
                     b.Navigation("Plants");
+                });
+
+            modelBuilder.Entity("PlantApp.Data.Models.Place", b =>
+                {
+                    b.Navigation("PlantedList");
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Plant", b =>
@@ -1823,6 +1710,11 @@ namespace PlantApp.Data.Migrations
                     b.Navigation("Images");
 
                     b.Navigation("Reminders");
+                });
+
+            modelBuilder.Entity("PlantApp.Data.Models.ReasonOfDeath", b =>
+                {
+                    b.Navigation("Plants");
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.ReminderType", b =>

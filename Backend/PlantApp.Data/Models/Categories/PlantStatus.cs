@@ -3,11 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlantApp.Data.Models;
 
-public class WeatherType
+public class PlantStatus
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
-    public required string weatherType { get; set; }
-    public ICollection<WeatherData>? WeatherDatas { get; set; }
+    public required string Name { get; set; }
+    public ICollection<Planted>? PlantedList { get; set; }
+    public ICollection<GrowthLog>? GrowthLogList { get; set; }
 }

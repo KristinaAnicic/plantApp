@@ -18,10 +18,7 @@ namespace PlantApp.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,31 +39,12 @@ namespace PlantApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "exchange_statuses",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    type = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_exchange_statuses", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "exchange_types",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    type = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -79,10 +57,7 @@ namespace PlantApp.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,10 +70,7 @@ namespace PlantApp.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -111,10 +83,7 @@ namespace PlantApp.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -128,10 +97,7 @@ namespace PlantApp.Data.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     level = table.Column<string>(type: "text", nullable: false),
-                    description = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    description = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -144,13 +110,10 @@ namespace PlantApp.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    type = table.Column<string>(type: "text", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
                     min_height = table.Column<decimal>(type: "numeric", nullable: false),
                     max_height = table.Column<decimal>(type: "numeric", nullable: true),
-                    unit = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    unit = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -163,10 +126,7 @@ namespace PlantApp.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -179,10 +139,7 @@ namespace PlantApp.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -195,10 +152,7 @@ namespace PlantApp.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -211,10 +165,7 @@ namespace PlantApp.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -222,19 +173,29 @@ namespace PlantApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "reminders_type",
+                name: "reasons_of_death",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    type = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_reminders_type", x => x.id);
+                    table.PrimaryKey("PK_reasons_of_death", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "reminder_types",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_reminder_types", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -243,14 +204,24 @@ namespace PlantApp.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_roles", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "seasons",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_seasons", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -259,10 +230,7 @@ namespace PlantApp.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -275,13 +243,10 @@ namespace PlantApp.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    type = table.Column<string>(type: "text", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
                     min_spread = table.Column<decimal>(type: "numeric", nullable: false),
                     max_spread = table.Column<decimal>(type: "numeric", nullable: true),
-                    unit = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    unit = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -294,10 +259,7 @@ namespace PlantApp.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -310,12 +272,9 @@ namespace PlantApp.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    time = table.Column<string>(type: "text", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
                     min_time = table.Column<int>(type: "integer", nullable: false),
-                    max_time = table.Column<int>(type: "integer", nullable: true),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    max_time = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -350,6 +309,8 @@ namespace PlantApp.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     email = table.Column<string>(type: "text", nullable: false),
                     password = table.Column<string>(type: "text", nullable: false),
+                    display_name = table.Column<string>(type: "text", nullable: false),
+                    contact = table.Column<string>(type: "text", nullable: true),
                     role_id = table.Column<int>(type: "integer", nullable: false),
                     gender = table.Column<char>(type: "character(1)", nullable: false),
                     date_of_birth = table.Column<DateOnly>(type: "date", nullable: false),
@@ -383,7 +344,7 @@ namespace PlantApp.Data.Migrations
                     is_genus = table.Column<bool>(type: "boolean", nullable: true),
                     is_plant_for_pollinators = table.Column<bool>(type: "boolean", nullable: true),
                     is_low_maintenance = table.Column<bool>(type: "boolean", nullable: true),
-                    is_drought_resistance = table.Column<bool>(type: "boolean", nullable: true),
+                    is_drought_resistant = table.Column<bool>(type: "boolean", nullable: true),
                     spread_type_id = table.Column<int>(type: "integer", nullable: true),
                     height_type_id = table.Column<int>(type: "integer", nullable: true),
                     time_to_full_height_id = table.Column<int>(type: "integer", nullable: false),
@@ -449,8 +410,11 @@ namespace PlantApp.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "text", nullable: false),
                     address = table.Column<string>(type: "text", nullable: true),
+                    city = table.Column<string>(type: "text", nullable: true),
+                    note = table.Column<string>(type: "text", nullable: true),
                     user_id = table.Column<int>(type: "integer", nullable: false),
-                    city_id = table.Column<int>(type: "integer", nullable: false),
+                    country_id = table.Column<int>(type: "integer", nullable: false),
+                    city_id = table.Column<int>(type: "integer", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -462,6 +426,11 @@ namespace PlantApp.Data.Migrations
                         name: "FK_places_cities_city_id",
                         column: x => x.city_id,
                         principalTable: "cities",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_places_countries_country_id",
+                        column: x => x.country_id,
+                        principalTable: "countries",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -593,6 +562,30 @@ namespace PlantApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "plant_season",
+                columns: table => new
+                {
+                    plants_id = table.Column<int>(type: "integer", nullable: false),
+                    seasons_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_plant_season", x => new { x.plants_id, x.seasons_id });
+                    table.ForeignKey(
+                        name: "FK_plant_season_plants_plants_id",
+                        column: x => x.plants_id,
+                        principalTable: "plants",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_plant_season_seasons_seasons_id",
+                        column: x => x.seasons_id,
+                        principalTable: "seasons",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "plant_soil_type",
                 columns: table => new
                 {
@@ -651,7 +644,9 @@ namespace PlantApp.Data.Migrations
                     date_planted = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     source = table.Column<string>(type: "text", nullable: true),
                     notes = table.Column<string>(type: "text", nullable: true),
+                    is_outside = table.Column<bool>(type: "boolean", nullable: false),
                     plant_status_id = table.Column<int>(type: "integer", nullable: false),
+                    reason_of_death_id = table.Column<int>(type: "integer", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -672,11 +667,16 @@ namespace PlantApp.Data.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_planteds_plants_place_id",
-                        column: x => x.place_id,
+                        name: "FK_planteds_plants_plant_id",
+                        column: x => x.plant_id,
                         principalTable: "plants",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_planteds_reasons_of_death_reason_of_death_id",
+                        column: x => x.reason_of_death_id,
+                        principalTable: "reasons_of_death",
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -743,11 +743,15 @@ namespace PlantApp.Data.Migrations
                     title = table.Column<string>(type: "text", nullable: false),
                     content = table.Column<string>(type: "text", nullable: false),
                     plant_status = table.Column<string>(type: "text", nullable: false),
+                    contact = table.Column<string>(type: "text", nullable: false),
+                    main_image = table.Column<string>(type: "text", nullable: false),
+                    is_active = table.Column<bool>(type: "boolean", nullable: false),
                     exchange_type_id = table.Column<int>(type: "integer", nullable: false),
-                    city_id = table.Column<int>(type: "integer", nullable: false),
+                    city = table.Column<string>(type: "text", nullable: false),
+                    country_id = table.Column<int>(type: "integer", nullable: false),
                     exchange_for = table.Column<string>(type: "text", nullable: true),
+                    price = table.Column<decimal>(type: "numeric", nullable: true),
                     shipping = table.Column<string>(type: "text", nullable: false),
-                    exchange_status_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -756,15 +760,9 @@ namespace PlantApp.Data.Migrations
                 {
                     table.PrimaryKey("PK_plant_exchanges", x => x.id);
                     table.ForeignKey(
-                        name: "FK_plant_exchanges_cities_city_id",
-                        column: x => x.city_id,
-                        principalTable: "cities",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_plant_exchanges_exchange_statuses_exchange_status_id",
-                        column: x => x.exchange_status_id,
-                        principalTable: "exchange_statuses",
+                        name: "FK_plant_exchanges_countries_country_id",
+                        column: x => x.country_id,
+                        principalTable: "countries",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -811,9 +809,9 @@ namespace PlantApp.Data.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_reminders_reminders_type_reminder_type_id",
+                        name: "FK_reminders_reminder_types_reminder_type_id",
                         column: x => x.reminder_type_id,
-                        principalTable: "reminders_type",
+                        principalTable: "reminder_types",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -994,19 +992,19 @@ namespace PlantApp.Data.Migrations
                 column: "city_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_places_country_id",
+                table: "places",
+                column: "country_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_places_user_id",
                 table: "places",
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_plant_exchanges_city_id",
+                name: "IX_plant_exchanges_country_id",
                 table: "plant_exchanges",
-                column: "city_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_plant_exchanges_exchange_status_id",
-                table: "plant_exchanges",
-                column: "exchange_status_id");
+                column: "country_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_plant_exchanges_exchange_type_id",
@@ -1024,6 +1022,11 @@ namespace PlantApp.Data.Migrations
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_plant_season_seasons_id",
+                table: "plant_season",
+                column: "seasons_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_plant_soil_type_soil_types_id",
                 table: "plant_soil_type",
                 column: "soil_types_id");
@@ -1039,9 +1042,19 @@ namespace PlantApp.Data.Migrations
                 column: "place_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_planteds_plant_id",
+                table: "planteds",
+                column: "plant_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_planteds_plant_status_id",
                 table: "planteds",
                 column: "plant_status_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_planteds_reason_of_death_id",
+                table: "planteds",
+                column: "reason_of_death_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_plants_family_id",
@@ -1137,6 +1150,9 @@ namespace PlantApp.Data.Migrations
                 name: "ph_plant");
 
             migrationBuilder.DropTable(
+                name: "plant_season");
+
+            migrationBuilder.DropTable(
                 name: "plant_soil_type");
 
             migrationBuilder.DropTable(
@@ -1170,19 +1186,19 @@ namespace PlantApp.Data.Migrations
                 name: "phs");
 
             migrationBuilder.DropTable(
+                name: "seasons");
+
+            migrationBuilder.DropTable(
                 name: "soils");
 
             migrationBuilder.DropTable(
                 name: "sunlights");
 
             migrationBuilder.DropTable(
-                name: "reminders_type");
+                name: "reminder_types");
 
             migrationBuilder.DropTable(
                 name: "plant_exchanges");
-
-            migrationBuilder.DropTable(
-                name: "exchange_statuses");
 
             migrationBuilder.DropTable(
                 name: "exchange_types");
@@ -1198,6 +1214,9 @@ namespace PlantApp.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "plants");
+
+            migrationBuilder.DropTable(
+                name: "reasons_of_death");
 
             migrationBuilder.DropTable(
                 name: "cities");

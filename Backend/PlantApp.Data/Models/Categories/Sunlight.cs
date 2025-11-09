@@ -3,12 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlantApp.Data.Models;
 
-public class PlantFamily
+public class Sunlight
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public required string Name { get; set; }
-
-    public ICollection<Plant>? Plants { get; set; } = [];
+    public ICollection<Plant>? Plants { get; set; }
 }

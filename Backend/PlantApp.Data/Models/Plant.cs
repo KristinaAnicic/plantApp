@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PlantApp.Data.Models.Categories;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlantApp.Data.Models;
@@ -24,7 +25,7 @@ public class Plant : BaseEntity
     public bool? IsGenus { get; set; }
     public bool? IsPlantForPollinators { get; set; }
     public bool? IsLowMaintenance { get; set; }
-    public bool? IsDroughtResistance { get; set; }
+    public bool? IsDroughtResistant { get; set; }
 
     [ForeignKey(nameof(SpreadTypeId))]
     public SpreadType? SpreadType { get; set; }
@@ -58,5 +59,6 @@ public class Plant : BaseEntity
     public ICollection<Ph> Phs { get; set; } = new List<Ph>();
     public ICollection<Exposure> Exposures { get; set; } = new List<Exposure>();
     public ICollection<Habit> Habits { get; set; } = new List<Habit>();
+    public ICollection<Season> Seasons { get; set; } = new List<Season>();
     public ICollection<Planted> PlantedList { get; set; } = new List<Planted>();
 }

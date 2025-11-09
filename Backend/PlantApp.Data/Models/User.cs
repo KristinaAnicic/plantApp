@@ -6,6 +6,8 @@ public class User : BaseEntity
 {
     public required string Email { get; set; }
     public required string Password { get; set; }
+    public required string DisplayName { get; set; }
+    public string? Contact { get; set; }
 
     [ForeignKey(nameof(RoleId))]
     public Role? Role { get; set; }
