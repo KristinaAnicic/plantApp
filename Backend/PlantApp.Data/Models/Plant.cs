@@ -52,6 +52,7 @@ public class Plant : BaseEntity
     public string? GenusDescription { get; set; }
 
     public ICollection<SoilType> SoilTypes { get; set; } = new List<SoilType>();
+    public ICollection<Plant> Synonyms { get; set; } = new List<Plant>();
     public ICollection<Image> Images { get; set; } = new List<Image>();
     public ICollection<Sunlight> Sunlights { get; set; } = new List<Sunlight>();
     public ICollection<Aspect> Aspects { get; set; } = new List<Aspect>();
