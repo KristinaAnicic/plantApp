@@ -2,6 +2,7 @@
 using Microsoft.VisualBasic.FileIO;
 using PlantApp.Data;
 using PlantApp.Data.Models;
+using PlantApp.Data.Models.Categories;
 
 namespace PlantApp.Domain.Services;
 
@@ -9,6 +10,7 @@ public class SeedDataService
 {
     public static readonly string mainPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "PlantApp.Data");
     public static readonly string csvPath = Path.Combine(mainPath, "csv");
+    public static List<PlantSynonym> plantSynonymList = new List<PlantSynonym>();
     protected readonly AppDbContext context;
     public SeedDataService(AppDbContext context)
     {
@@ -38,7 +40,11 @@ public class SeedDataService
 
             if (!existingNames.Contains(image.Name))
             {
-                context.Images.Add(new Image { Name = image.Name, Copyright = image.Copyright });
+                context.Images.Add(
+                    new Image { 
+                        Name = image.Name, 
+                        Copyright = image.Copyright 
+                    });
                 existingNames.Add(image.Name);
             }
         }
@@ -46,23 +52,255 @@ public class SeedDataService
         await context.SaveChangesAsync();
     }
 
-    public async Task<List<M2MIds>> GetM2MIds(string filepath)
+    public async Task SeedCsvData(string tableName, string csvFile)
     {
-        List<M2MIds> idList = new List<M2MIds>();
-
-        var lines = await File.ReadAllLinesAsync(filepath);
+        var filePath = Path.Combine(csvPath, csvFile);
+        var lines = await File.ReadAllLinesAsync(filePath);
 
         foreach (var line in lines)
         {
             var parts = line.Split(',', 2);
             if (parts.Length != 2) continue;
 
-            int plantId = int.Parse(parts[0]);
-            int m2mId = int.Parse(parts[1]);
-            idList.Add(new M2MIds{ PlantId = plantId, M2mId = m2mId });
+            if (!int.TryParse(parts[0], out int id)) continue;
+            string name = parts[1].Trim();
+            if (string.IsNullOrEmpty(name)) continue;
+
+            await context.Database.ExecuteSqlRawAsync(
+                $"INSERT INTO {tableName} (id, name) OVERRIDING SYSTEM VALUE VALUES ({{0}}, {{1}}) ON CONFLICT (id) DO NOTHING",
+                id, name);
         }
-        return idList;
     }
+
+    public async Task SeedPlantData()
+    {
+        var plantFilePath = Path.Combine(csvPath, "plant_data.csv");
+        var plantAspectFilePath = Path.Combine(csvPath, "plant_aspect.csv");
+        var plantExposureFilePath = Path.Combine(csvPath, "plant_exposure.csv");
+        var plantHabitFilePath = Path.Combine(csvPath, "plant_habit.csv");
+        var plantSeasonFilePath = Path.Combine(csvPath, "plant_seasonOfInterest.csv");
+        var plantImageFilePath = Path.Combine(csvPath, "plant_image.csv");
+        var plantMoistureFilePath = Path.Combine(csvPath, "plant_moisture.csv");
+        var plantPhFilePath = Path.Combine(csvPath, "plant_ph.csv");
+        var plantSoilTypeFilePath = Path.Combine(csvPath, "plant_soilType.csv");
+        var plantSunlightFilePath = Path.Combine(csvPath, "plant_sunlight.csv");
+
+        var aspectMap = BuildMap(plantAspectFilePath);
+        var exposureMap = BuildMap(plantExposureFilePath);
+        var habitMap = BuildMap(plantHabitFilePath);
+        var seasonMap = BuildMap(plantSeasonFilePath);
+        var moistureMap = BuildMap(plantMoistureFilePath);
+        var phMap = BuildMap(plantPhFilePath);
+        var soilTypeMap = BuildMap(plantSoilTypeFilePath);
+        var sunlightMap = BuildMap(plantSunlightFilePath);
+        var imageMap = await GetPlantImagesMap(plantImageFilePath);
+
+        var imagesDict = await context.Images.ToDictionaryAsync(i => i.Name);
+        var batch = new List<Batch>();
+        int batchSize = 1000;
+
+        using (TextFieldParser parser = new TextFieldParser(plantFilePath))
+        {
+            parser.TextFieldType = FieldType.Delimited;
+            parser.SetDelimiters(",");
+
+            while(!parser.EndOfData)
+            {
+                var fields = parser.ReadFields();
+                if (fields == null || fields.Length == 0) continue;
+
+                int originalPlantId = int.Parse(fields[0]);
+                bool? isSynonym = ParseNullableBool(fields[1]);
+                int? synonymParentId = ParseNullableInt(fields[2]);
+                string? botanicalName = fields[3];
+                bool? notedForFragnance = ParseNullableBool(fields[4]);
+                int? fragranceId = ParseNullableInt(fields[5]);
+                string? commonName = fields[6];
+                int? hardinessLevelId = ParseNullableInt(fields[7]);
+                bool? isGenus = ParseNullableBool(fields[8]);
+                bool? isSpecie = ParseNullableBool(fields[9]);
+                bool? isPlantForPollinators = ParseNullableBool(fields[10]) ;
+                bool? isLowMaintenance = ParseNullableBool(fields[11]);
+                bool? IsDroughtResistant = ParseNullableBool(fields[12]);
+                int? spreadTypeId = ParseNullableInt(fields[13]);
+                int? heightTypeId = ParseNullableInt(fields[14]);
+                int timeToFullHeightId = int.Parse(fields[15]);
+                int? foliageId = ParseNullableInt(fields[16]);
+                string? toxicity = fields[17];
+                string? cultivation = fields[18];
+                string? pestResistance = fields[19];
+                string? diseaseResistance = fields[20];
+                string? pruning = fields[21];
+                string? propagation = fields[22];
+                int? familyId = ParseNullableInt(fields[23]);
+                string? entityDescription = fields[24];
+                string? genusDescription = fields[25];
+
+                Plant plant = new Plant
+                {
+                    BotanicalName = botanicalName,
+                    CommonName = commonName,
+                    SynonymParentPlantId = null,
+                    FragranceId = fragranceId,
+                    HardinessLevelId = hardinessLevelId,
+                    IsSpecie = isSpecie,
+                    IsGenus = isGenus,
+                    IsPlantForPollinators = isPlantForPollinators,
+                    IsDroughtResistant = IsDroughtResistant,
+                    IsLowMaintenance = isLowMaintenance,
+                    SpreadTypeId = spreadTypeId,
+                    HeightTypeId = heightTypeId,
+                    TimeToFullHeightId = timeToFullHeightId,
+                    Toxicity = toxicity,
+                    Cultivation = cultivation,
+                    PestResistance = pestResistance,
+                    DiseaseResistance = diseaseResistance,
+                    Pruning = pruning,
+                    Propagation = propagation,
+                    FamilyId = familyId,
+                    EntityDescription = entityDescription,
+                    GenusDescription = genusDescription
+                };
+
+                if (imageMap.TryGetValue(originalPlantId, out var plantImages))
+                {
+                    foreach (var image in plantImages)
+                    {
+                        if (!string.IsNullOrEmpty(image.Name) && imagesDict.TryGetValue(image.Name, out var existingImage))
+                            plant.Images.Add(existingImage);
+                    }
+                }
+
+                batch.Add(new Batch
+                {
+                    OldId = originalPlantId,
+                    SynonymParentId = synonymParentId,
+                    Plant = plant,
+                    AspectIds = GetLookupIdsBySpecificPlantId(aspectMap, originalPlantId),
+                    SoilTypeIds = GetLookupIdsBySpecificPlantId(soilTypeMap, originalPlantId),
+                    SunlightIds = GetLookupIdsBySpecificPlantId(sunlightMap, originalPlantId),
+                    MoistureIds = GetLookupIdsBySpecificPlantId(moistureMap, originalPlantId),
+                    PhIds = GetLookupIdsBySpecificPlantId(phMap, originalPlantId),
+                    ExposureIds = GetLookupIdsBySpecificPlantId(exposureMap, originalPlantId),
+                    HabitIds = GetLookupIdsBySpecificPlantId(habitMap, originalPlantId),
+                    SeasonIds = GetLookupIdsBySpecificPlantId(seasonMap, originalPlantId)
+                });
+
+                if (batch.Count >= batchSize)
+                {            
+                    await InsertBatch(batch);                    
+                }
+            }
+
+            if (batch.Any())
+            { 
+                await InsertBatch(batch);
+            }
+
+            await AddSynonymParentIds(plantSynonymList);
+        }
+    }
+
+    private async Task InsertBatch(List<Batch> batchList)
+    {
+        var allAspectIds = batchList.SelectMany(b => b.AspectIds).Distinct().ToList();
+        var allSoilTypeIds = batchList.SelectMany(b => b.SoilTypeIds).Distinct().ToList();
+        var allSunlightIds = batchList.SelectMany(b => b.SunlightIds).Distinct().ToList();
+        var allMoistureIds = batchList.SelectMany(b => b.MoistureIds).Distinct().ToList();
+        var allPhIds = batchList.SelectMany(b => b.PhIds).Distinct().ToList();
+        var allExposureIds = batchList.SelectMany(b => b.ExposureIds).Distinct().ToList();
+        var allHabitIds = batchList.SelectMany(b => b.HabitIds).Distinct().ToList();
+        var allSeasonIds = batchList.SelectMany(b => b.SeasonIds).Distinct().ToList();
+
+        var aspectsDict = await context.Aspects.Where(e => allAspectIds.Contains(e.Id)).ToDictionaryAsync(e => e.Id);
+        var soilTypesDict = await context.Soils.Where(e => allSoilTypeIds.Contains(e.Id)).ToDictionaryAsync(e => e.Id);
+        var sunlightsDict = await context.Sunlights.Where(e => allSunlightIds.Contains(e.Id)).ToDictionaryAsync(e => e.Id);
+        var moisturesDict = await context.Moistures.Where(e => allMoistureIds.Contains(e.Id)).ToDictionaryAsync(e => e.Id);
+        var phsDict = await context.Phs.Where(e => allPhIds.Contains(e.Id)).ToDictionaryAsync(e => e.Id);
+        var exposuresDict = await context.Exposures.Where(e => allExposureIds.Contains(e.Id)).ToDictionaryAsync(e => e.Id);
+        var habitsDict = await context.Habits.Where(e => allHabitIds.Contains(e.Id)).ToDictionaryAsync(e => e.Id);
+        var seasonsDict = await context.Seasons.Where(e => allSeasonIds.Contains(e.Id)).ToDictionaryAsync(e => e.Id);
+
+        foreach (var b in batchList)
+        {
+            AddRelationsFromCache(b.Plant.Aspects, b.AspectIds, aspectsDict);
+            AddRelationsFromCache(b.Plant.SoilTypes, b.SoilTypeIds, soilTypesDict);
+            AddRelationsFromCache(b.Plant.Sunlights, b.SunlightIds, sunlightsDict);
+            AddRelationsFromCache(b.Plant.Moistures, b.MoistureIds, moisturesDict);
+            AddRelationsFromCache(b.Plant.Phs, b.PhIds, phsDict);
+            AddRelationsFromCache(b.Plant.Exposures, b.ExposureIds, exposuresDict);
+            AddRelationsFromCache(b.Plant.Habits, b.HabitIds, habitsDict);
+            AddRelationsFromCache(b.Plant.Seasons, b.SeasonIds, seasonsDict);
+        }
+
+        await context.Plants.AddRangeAsync(batchList.Select(x => x.Plant));
+        await context.SaveChangesAsync();
+
+        foreach (var b in batchList)
+        {
+            plantSynonymList.Add(new PlantSynonym
+            {
+                OriginalPlantId = b.OldId,
+                NewPlantId = b.Plant.Id,
+                OldSynonymParentId = b.SynonymParentId
+            });
+        }
+
+        batchList.Clear();
+    }
+
+    private async Task AddSynonymParentIds(List<PlantSynonym> plantSynonymList)
+    {
+        if (plantSynonymList.Any())
+        {
+            var oldToNewId = plantSynonymList.ToDictionary(x => x.OriginalPlantId, x => x.NewPlantId);
+            var plantDict = await context.Plants.ToDictionaryAsync(p => p.Id);
+            List<Plant> updateList = new List<Plant>();
+
+            foreach (var syn in plantSynonymList)
+            {
+                if (syn.OldSynonymParentId.HasValue && syn.OldSynonymParentId != 0)
+                {
+
+                    if (oldToNewId.TryGetValue(syn.OldSynonymParentId.Value, out var newSynonymParentId))
+                    {
+                        var plant = plantDict[syn.NewPlantId];
+                        plant.SynonymParentPlantId = newSynonymParentId;
+                        updateList.Add(plant);
+                    }
+                }
+            }
+            context.Plants.UpdateRange(updateList);
+            await context.SaveChangesAsync();
+        }
+    }
+
+    private Dictionary<int, List<int>> BuildMap(string filepath)
+    {
+        List<LookupRecord> idList = new List<LookupRecord>();
+
+        foreach (var line in File.ReadLines(filepath))
+        {
+            var parts = line.Split(',', 2);
+            if (parts.Length != 2) continue;
+
+            int plantId = int.Parse(parts[0].Trim());
+            int lookupId = int.Parse(parts[1].Trim());
+            idList.Add(new LookupRecord { PlantId = plantId, LookupId = lookupId });
+        }
+
+        return idList.GroupBy(r => r.PlantId)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(r => r.LookupId).ToList());
+    }
+
+    private List<int> GetLookupIdsBySpecificPlantId(Dictionary<int, List<int>> map, int plantId)
+    {
+        return map.TryGetValue(plantId, out var lookupIds) ? lookupIds : new List<int>();
+    }
+
+
 
     public async Task<List<PlantImage>> GetPlantImages(string filepath)
     {
@@ -80,178 +318,27 @@ public class SeedDataService
             string copyright = parts[2];
 
             if (!string.IsNullOrWhiteSpace(image))
-               imageList.Add(new PlantImage { PlantId = plantId, Name = image, Copyright = copyright });
+                imageList.Add(new PlantImage { 
+                    PlantId = plantId, 
+                    Name = $"https://apps.rhs.org.uk/plantselectorimages/detail/{image}", 
+                    Copyright = copyright 
+                });
         }
         return imageList;
     }
 
-    public async Task SeedPlantData()
+    public async Task<Dictionary<int, List<PlantImage>>> GetPlantImagesMap(string filepath)
     {
-        var plantFilePath = Path.Combine(csvPath, "plant_data.csv");
-        var plantAspectFilePath = Path.Combine(csvPath, "plant_aspect.csv");
-        var plantExposureFilePath = Path.Combine(csvPath, "plant_exposure.csv");
-        var plantHabitFilePath = Path.Combine(csvPath, "plant_habit.csv");
-        var plantImageFilePath = Path.Combine(csvPath, "plant_image.csv");
-        var plantMoistureFilePath = Path.Combine(csvPath, "plant_moisture.csv");
-        var plantPhFilePath = Path.Combine(csvPath, "plant_ph.csv");
-        var plantSoilTypeFilePath = Path.Combine(csvPath, "plant_soilType.csv");
-        var plantSunlightFilePath = Path.Combine(csvPath, "plant_sunlight.csv");
-
-        var aspectList = await GetM2MIds(plantAspectFilePath);
-        var exposureList = await GetM2MIds(plantExposureFilePath);
-        var habitList = await GetM2MIds(plantHabitFilePath);
-        var moistureList = await GetM2MIds(plantMoistureFilePath);
-        var phList = await GetM2MIds(plantPhFilePath);
-        var soilTypeList = await GetM2MIds(plantSoilTypeFilePath);
-        var sunlightList = await GetM2MIds(plantSunlightFilePath);
-        var imageList = await GetPlantImages(plantImageFilePath);
-
-        var aspectsDict = await context.Aspects.ToDictionaryAsync(a => a.Id);
-        var soilTypesDict = await context.Soils.ToDictionaryAsync(s => s.Id);
-        var sunlightsDict = await context.Sunlights.ToDictionaryAsync(s => s.Id);
-        var moisturesDict = await context.Moistures.ToDictionaryAsync(m => m.Id);
-        var phsDict = await context.Phs.ToDictionaryAsync(p => p.Id);
-        var exposuresDict = await context.Exposures.ToDictionaryAsync(e => e.Id);
-        var habitsDict = await context.Habits.ToDictionaryAsync(h => h.Id);
-        var imagesDict = await context.Images.ToDictionaryAsync(i => i.Name);
-
-        var batch = new List<(int OldId, int? SynonymParentId, Plant Plant)>();
-        int batchSize = 1000;
-
-        //var idMapping = new Dictionary<int, int>();
-        List<PlantSynonym> plantSynonymList = new List<PlantSynonym>();
-
-        using (TextFieldParser parser = new TextFieldParser(plantFilePath))
-        {
-            parser.TextFieldType = FieldType.Delimited;
-            parser.SetDelimiters(",");
-
-            while(!parser.EndOfData)
-            {
-                var fields = parser.ReadFields();
-                if (fields == null || fields.Length == 0) continue;
-
-                int originalPlantId = int.Parse(fields[0]);
-                bool? isSynonym = bool.TryParse(fields[1], out var s) ? s : null;
-                int? synonymParentId = int.TryParse(fields[2], out var sId) ? (sId == 0 ? null : sId) : null;
-                string? botanicalName = fields[3];
-                bool? notedForFragnance = bool.TryParse(fields[4], out var nf) ? nf : null;
-                int? fragranceId = int.TryParse(fields[5], out var fId) ? (fId == 0 ? null : fId) : null;
-                string? commonName = fields[6];
-                int? hardinessLevelId = int.TryParse(fields[7], out var hId) ? (hId == 0 ? null : hId) : null;
-                bool? isGenus = bool.TryParse(fields[8], out var g) ? g : null;
-                bool? isSpecie = bool.TryParse(fields[9], out var isp) ? isp : null;
-                bool? isPlantForPollinators = bool.TryParse(fields[10], out var pp) ? pp : null ;
-                bool? isLowMaintenance = bool.TryParse(fields[11], out var lm) ? lm : null;
-                bool? isDroughtResistance = bool.TryParse(fields[12], out var dr) ? dr : null;
-                int? spreadTypeId = int.TryParse(fields[13], out var spId) ? (spId == 0 ? null : spId) : null;
-                int? heightTypeId = int.TryParse(fields[14], out var h) ? (h == 0 ? null : h) : null;
-                int timeToFullHeightId = int.Parse(fields[15]);
-                int? foliageId = int.TryParse(fields[16], out var foId) ? (foId == 0 ? null : foId) : null;
-                string? toxicity = fields[17];
-                string? cultivation = fields[18];
-                string? pestResistance = fields[19];
-                string? diseaseResistance = fields[20];
-                string? pruning = fields[21];
-                string? propagation = fields[22];
-                int? familyId = int.TryParse(fields[23], out var fam) ? (fam == 0 ? null : fam) : null;
-                string? entityDescription = fields[24];
-                string? genusDescription = fields[25];
-
-                var plant = new Plant
-                {
-                    BotanicalName = botanicalName,
-                    CommonName = commonName,
-                    SynonymParentPlantId = null,
-                    FragranceId = fragranceId,
-                    HardinessLevelId = hardinessLevelId,
-                    IsSpecie = isSpecie,
-                    IsGenus = isGenus,
-                    IsPlantForPollinators = isPlantForPollinators,
-                    IsDroughtResistance = isDroughtResistance,
-                    IsLowMaintenance = isLowMaintenance,
-                    SpreadTypeId = spreadTypeId,
-                    HeightTypeId = heightTypeId,
-                    TimeToFullHeightId = timeToFullHeightId,
-                    Toxicity = toxicity,
-                    Cultivation = cultivation,
-                    PestResistance = pestResistance,
-                    DiseaseResistance = diseaseResistance,
-                    Pruning = pruning,
-                    Propagation = propagation,
-                    FamilyId = familyId,
-                    EntityDescription = entityDescription,
-                    GenusDescription = genusDescription
-                };
-
-                List<int> aspectIds = aspectList.Where(a => a.PlantId == originalPlantId) .Select(a => a.M2mId) .ToList();
-                List<int> soilTypeIds = soilTypeList.Where(a => a.PlantId == originalPlantId) .Select(a => a.M2mId) .ToList();
-                List<int> sunlightIds = sunlightList.Where(a => a.PlantId == originalPlantId) .Select(a => a.M2mId) .ToList();
-                List<int> moistureIds = moistureList.Where(a => a.PlantId == originalPlantId) .Select(a => a.M2mId) .ToList();
-                List<int> phIds = phList.Where(a => a.PlantId == originalPlantId) .Select(a => a.M2mId) .ToList();
-                List<int> exposureIds = exposureList.Where(a => a.PlantId == originalPlantId) .Select(a => a.M2mId) .ToList();
-                List<int> habitIds = habitList.Where(a => a.PlantId == originalPlantId) .Select(a => a.M2mId) .ToList();
-                //List<Image> plantImageList = imageList.Where(a => a.PlantId == originalPlantId && a.Name != null).Select(a => new Image { Name = a.Name!, Copyright = a.Copyright}).ToList();
-
-                AddRelationsFromCache(plant.Aspects, aspectIds, aspectsDict);
-                AddRelationsFromCache(plant.SoilTypes, soilTypeIds, soilTypesDict);
-                AddRelationsFromCache(plant.Sunlights, sunlightIds, sunlightsDict);
-                AddRelationsFromCache(plant.Moistures, moistureIds, moisturesDict);
-                AddRelationsFromCache(plant.Phs, phIds, phsDict);
-                AddRelationsFromCache(plant.Exposures, exposureIds, exposuresDict);
-                AddRelationsFromCache(plant.Habits, habitIds, habitsDict);
-
-
-                foreach (var image in imageList.Where(a => a.PlantId == originalPlantId && !string.IsNullOrEmpty(a.Name)))
-                {
-                    if (string.IsNullOrEmpty(image.Name)) continue;
-                    if (imagesDict.TryGetValue(image.Name!, out var existingImage))
-                    {
-                        plant.Images.Add(existingImage);
-                    }
-                }
-
-                //context.Plants.Add(plant);
-                batch.Add((originalPlantId, synonymParentId, plant));
-
-                if (batch.Count >= batchSize)
-                {
-                    context.Plants.AddRange(batch.Select(x => x.Plant));
-                    await context.SaveChangesAsync();
-
-                    foreach (var (oldId, synParentId, p) in batch)
-                    {
-                        plantSynonymList.Add(new PlantSynonym { OriginalPlantId = oldId, PlantId = p.Id, SynonymParentId = synParentId });
-                    }
-
-
-                    batch.Clear();
-                }
-            }
-
-            if (batch.Any())
-            {
-                context.Plants.AddRange(batch.Select(x => x.Plant));
-                await context.SaveChangesAsync();
-
-                foreach (var (oldId, synParentId, p) in batch)
-                {
-                    plantSynonymList.Add(new PlantSynonym { OriginalPlantId = oldId, PlantId = p.Id, SynonymParentId = synParentId });
-                }
-            }
-
-            using (var writer = new StreamWriter(Path.Combine(csvPath, "plant_id_mapping.csv")))
-            {
-                writer.WriteLine("OldId,NewId,SynId");
-                foreach (var p in plantSynonymList)
-                {
-                    writer.WriteLine($"{p.OriginalPlantId},{p.PlantId},{p.SynonymParentId}");
-                }
-            }
-        }
+        List<PlantImage> imageList = await GetPlantImages(filepath);
+        return imageList
+                .GroupBy(img => img.PlantId)
+                .ToDictionary(
+                    g => g.Key, 
+                    g => g.ToList()
+                );
     }
 
-    private void AddRelationsFromCache<TEntity>(ICollection<TEntity> targetCollection,List<int> ids,Dictionary<int, TEntity> cache)
+    private void AddRelationsFromCache<TEntity>(ICollection<TEntity> targetCollection,List<int> ids, Dictionary<int, TEntity> cache)
     {
         foreach (var id in ids)
         {
@@ -262,31 +349,22 @@ public class SeedDataService
         }
     }
 
-
-    public async Task SeedCsvData(string tableName, string csvFile)
-    {
-        var filePath = Path.Combine(csvPath, csvFile);
-        var lines = await File.ReadAllLinesAsync(filePath);
-
-        foreach (var line in lines)
-        {
-            var parts = line.Split(',', 2);
-            if (parts.Length != 2) continue;
-
-            if (!int.TryParse(parts[0], out int id)) continue;
-            string name = parts[1].Trim();
-            if (string.IsNullOrEmpty(name)) continue;
-
-            await context.Database.ExecuteSqlRawAsync(
-                $"INSERT INTO {tableName} (id, name, created_at) OVERRIDING SYSTEM VALUE VALUES ({{0}}, {{1}}, {{2}}) ON CONFLICT (id) DO NOTHING",
-                id, name, DateTime.UtcNow);
-        }
+    private int? ParseNullableInt(string value) { 
+        if (int.TryParse(value, out var val) && val > 0)
+            return val;
+        return null;
     }
+
+    private bool? ParseNullableBool(string value)
+    {
+        return bool.TryParse(value, out var val) ? val : null;
+    }
+    
 }
-public class M2MIds
+public class LookupRecord
 {
     public int PlantId { get; set; }
-    public int M2mId { get; set; }
+    public int LookupId { get; set; }
 }
 
 public class PlantImage
@@ -299,8 +377,24 @@ public class PlantImage
 public class PlantSynonym
 {
     public int OriginalPlantId { get; set; }
-    public int PlantId { get; set; }
+    public int NewPlantId { get; set; }
+    public int? OldSynonymParentId { get; set; }
+}
+
+public class Batch
+{
+    public int OldId { get; set; }
     public int? SynonymParentId { get; set; }
+    public required Plant Plant { get; set; }
+
+    public List<int> AspectIds { get; set; } = new();
+    public List<int> SoilTypeIds { get; set; } = new();
+    public List<int> SunlightIds { get; set; } = new();
+    public List<int> MoistureIds { get; set; } = new();
+    public List<int> PhIds { get; set; } = new();
+    public List<int> ExposureIds { get; set; } = new();
+    public List<int> HabitIds { get; set; } = new();
+    public List<int> SeasonIds { get; set; } = new();
 }
 
 
