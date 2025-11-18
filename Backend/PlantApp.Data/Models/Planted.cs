@@ -14,8 +14,9 @@ public class Planted : BaseEntity
 
     public required DateTime DatePlanted { get; set; }
     public string? Source {  get; set; }
-    public string? Notes { get; set; }
+    public string? Note { get; set; }
     public bool IsOutside { get; set; } = false;
+    public string? Image { get; set; }
 
     [ForeignKey(nameof(PlantStatusId))]
     public PlantStatus? PlantStatus { get; set; }

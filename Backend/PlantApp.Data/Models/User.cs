@@ -19,4 +19,5 @@ public class User : BaseEntity
     public ICollection<PlantExchange>? PlantExchanges { get; set; }
     public ICollection<UserRating>? RatingsGiven { get; set; }
     public ICollection<UserRating>? RatingsReceived { get; set; }
+    public ICollection<Image>? UploadedImages { get; set; }
 }
