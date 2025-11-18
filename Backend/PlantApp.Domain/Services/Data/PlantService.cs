@@ -122,7 +122,7 @@ public class PlantService(
             plantDto.TimeToFullHeightId = existingPlant.TimeToFullHeightId;
         }
 
-        existingPlant = plantDto.MapUpsertPlantDtoToPlant(existingPlant);
+        plantDto.MapUpsertPlantDtoToPlant(existingPlant);
 
         existingPlant.SoilTypes = await soilRepository.GetByIdsAsync(plantDto.SoilTypes);
         existingPlant.Images = await imageRepository.GetByIdsAsync(plantDto.Images);

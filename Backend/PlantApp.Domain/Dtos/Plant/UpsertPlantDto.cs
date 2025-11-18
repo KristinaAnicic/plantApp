@@ -1,4 +1,5 @@
 ﻿using PlantApp.Data.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlantApp.Domain.Dtos.Plant;
@@ -6,7 +7,9 @@ namespace PlantApp.Domain.Dtos.Plant;
 public class UpsertPlantDto
 {
     public int? Id { get; set; } = null;
+    [Required]
     public required string BotanicalName { get; set; }
+    [Required]
     public required string CommonName { get; set; }
     public int? SynonymParentPlantId { get; set; }
     public int? FragranceId { get; set; }
