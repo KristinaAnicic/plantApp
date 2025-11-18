@@ -5,61 +5,40 @@ namespace PlantApp.Domain.Utils;
 
 public static class MapFromDTOHelper
 {
-    public static Plant MapUpsertPlantDtoToPlant(this UpsertPlantDto dto)
+    public static void MapValuesUpsertPlantDtoToPlant(UpsertPlantDto dto, Plant plant)
     {
-        return new Plant
-        {
-            BotanicalName = dto.BotanicalName,
-            CommonName = dto.CommonName,
-            SynonymParentPlantId = dto.SynonymParentPlantId,
-            FragranceId = dto.FragranceId,
-            HardinessLevelId = dto.HardinessLevelId,
-            IsSpecie = dto.IsSpecie,
-            IsGenus = dto.IsGenus,
-            IsPlantForPollinators = dto.IsPlantForPollinators,
-            IsLowMaintenance = dto.IsLowMaintenance,
-            IsDroughtResistant = dto.IsDroughtResistant,
-            SpreadTypeId = dto.SpreadTypeId,
-            HeightTypeId = dto.HeightTypeId,
-            TimeToFullHeightId = dto.TimeToFullHeightId,
-            Toxicity = dto.Toxicity,
-            Cultivation = dto.Cultivation,
-            PestResistance = dto.PestResistance,
-            DiseaseResistance = dto.DiseaseResistance,
-            Pruning = dto.Pruning,
-            Propagation = dto.Propagation,
-            FamilyId = dto.FamilyId,
-            EntityDescription = dto.EntityDescription,
-            GenusDescription = dto.GenusDescription
-        };
+        plant.BotanicalName = dto.BotanicalName;
+        plant.CommonName = dto.CommonName;
+        plant.SynonymParentPlantId = dto.SynonymParentPlantId;
+        plant.FragranceId = dto.FragranceId;
+        plant.HardinessLevelId = dto.HardinessLevelId;
+        plant.IsSpecie = dto.IsSpecie;
+        plant.IsGenus = dto.IsGenus;
+        plant.IsPlantForPollinators = dto.IsPlantForPollinators;
+        plant.IsLowMaintenance = dto.IsLowMaintenance;
+        plant.IsDroughtResistant = dto.IsDroughtResistant;
+        plant.SpreadTypeId = dto.SpreadTypeId;
+        plant.HeightTypeId = dto.HeightTypeId;
+        plant.TimeToFullHeightId = dto.TimeToFullHeightId;
+        plant.Toxicity = dto.Toxicity;
+        plant.Cultivation = dto.Cultivation;
+        plant.PestResistance = dto.PestResistance;
+        plant.DiseaseResistance = dto.DiseaseResistance;
+        plant.Pruning = dto.Pruning;
+        plant.Propagation = dto.Propagation;
+        plant.FamilyId = dto.FamilyId;
+        plant.EntityDescription = dto.EntityDescription;
+        plant.GenusDescription = dto.GenusDescription;
     }
 
-    public static Plant MapUpsertPlantDtoToPlant(this UpsertPlantDto dto, Plant existingPlant)
+    public static Plant MapUpsertPlantDtoToPlant(this UpsertPlantDto dto, Plant? plant = null)
     {
-        existingPlant.BotanicalName = dto.BotanicalName;
-        existingPlant.CommonName = dto.CommonName;
-        existingPlant.SynonymParentPlantId = dto.SynonymParentPlantId;
-        existingPlant.FragranceId = dto.FragranceId;
-        existingPlant.HardinessLevelId = dto.HardinessLevelId;
-        existingPlant.IsSpecie = dto.IsSpecie;
-        existingPlant.IsGenus = dto.IsGenus;
-        existingPlant.IsPlantForPollinators = dto.IsPlantForPollinators;
-        existingPlant.IsLowMaintenance = dto.IsLowMaintenance;
-        existingPlant.IsDroughtResistant = dto.IsDroughtResistant;
-        existingPlant.SpreadTypeId = dto.SpreadTypeId;
-        existingPlant.HeightTypeId = dto.HeightTypeId;
-        existingPlant.TimeToFullHeightId = dto.TimeToFullHeightId;
-        existingPlant.Toxicity = dto.Toxicity;
-        existingPlant.Cultivation = dto.Cultivation;
-        existingPlant.PestResistance = dto.PestResistance;
-        existingPlant.DiseaseResistance = dto.DiseaseResistance;
-        existingPlant.Pruning = dto.Pruning;
-        existingPlant.Propagation = dto.Propagation;
-        existingPlant.FamilyId = dto.FamilyId;
-        existingPlant.EntityDescription = dto.EntityDescription;
-        existingPlant.GenusDescription = dto.GenusDescription;
+        if (plant == null)
+            plant = new Plant { BotanicalName = dto.BotanicalName, CommonName = dto.CommonName };
 
-        return existingPlant;
+        MapValuesUpsertPlantDtoToPlant(dto, plant);
+        return plant;
+    }
     }
 
 }
