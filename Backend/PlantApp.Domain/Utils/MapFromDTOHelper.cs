@@ -1,5 +1,6 @@
 ﻿using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos.Plant;
+using PlantApp.Domain.Dtos.User;
 
 namespace PlantApp.Domain.Utils;
 
@@ -38,6 +39,30 @@ public static class MapFromDTOHelper
 
         MapValuesUpsertPlantDtoToPlant(dto, plant);
         return plant;
+    }
+
+    public static User MapUpdateUserDtoToUser(this UpdateUserDto dto, User user)
+    {
+        user.DisplayName = dto.DisplayName;
+        user.Gender = dto.Gender;
+        user.Contact = dto.Contact;
+        user.DateOfBirth = dto.DateOfBirth;
+
+        return user;
+    }
+
+    public static User MapAddUserDtoToUser(this AddUserDto dto)
+    {
+        var user = new User { Email = dto.Email, Password = dto.Password, DisplayName = dto.DisplayName };
+
+        user.Email = dto.Email;
+        user.Password = dto.Password;
+        user.DisplayName = dto.DisplayName;
+        user.Gender = dto.Gender;
+        user.Contact = dto.Contact;
+        user.DateOfBirth = dto.DateOfBirth;
+
+        return user;
     }
     }
 
