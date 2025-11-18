@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos;
+using PlantApp.Domain.Dtos.GrowthLog;
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Dtos.PlantPlace;
+using PlantApp.Domain.Dtos.Reminder;
 using PlantApp.Domain.Dtos.User;
 
 namespace PlantApp.Domain.Utils;
@@ -115,12 +117,61 @@ public static class MapToDTOHelper
     {
         return new PlantedDto
         {
+            Id = planted.Id,
+            Place = $"{planted.Place?.Address}, {planted.Place?.City}",
+            PlantName = $"{planted.Plant?.BotanicalName} ({planted.Plant?.CommonName})",
+            DatePlanted = planted.DatePlanted,
+            Image = planted.Image
+        };
+    }
+
+    public static PlantedGetDto MapPlantedToPlantedGetDto(this Planted planted)
+    {
+        return new PlantedGetDto
+        {
+            Id = planted.Id,
             Plant = planted.Plant?.MapPlantToPlantDto(),
+            Place = planted.Place?.MapPlaceToPlaceDto(),
             DatePlanted = planted.DatePlanted,
             Source = planted.Source,
-            Notes = planted.Notes,
+            Note = planted.Note,
             IsOutside = planted.IsOutside,
-            PlantStatus = planted.PlantStatus
+            PlantStatus = planted.PlantStatus?.Name ?? "Not specified",
+            NextReminders = planted.Reminders?.Select(r => r.MapReminderToReminderDto()).ToList(),
+            GrowthLogs = planted.GrowthLogs?.Select(gl => gl.MapGrowthLogToGrowthLogDto()).ToList(),
+            Images = planted.Images?.Select(im => im.MapImageToImageDto()).ToList()
+        };
+    }
+
+    /*public static GroupedPlantedDto MapPlantedToGroupedPlantedDto(this Dictionary<Place, List<Planted>> planted)
+    {
+        return new GroupedPlantedDto
+        {
+            Place = planted.K
+        };
+    }*/
+
+    public static ReminderDto MapReminderToReminderDto(this Reminder reminder)
+    {
+        return new ReminderDto
+        {
+            Id = reminder.Id,
+            PlantedId = reminder.PlantedId,
+            ReminderType = reminder.ReminderType?.Name,
+            NextDueDate = reminder.NextDueDate,
+            Notes = reminder.Note
+        };
+    }
+
+    public static GrowthLogDto MapGrowthLogToGrowthLogDto(this GrowthLog log)
+    {
+        return new GrowthLogDto
+        {
+            Id = log.Id,
+            Note = log.Note,
+            PlantStatus = log.PlantStatus?.Name,
+            CreatedAt = log.CreatedAt,
+            Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList()
         };
     }
 

@@ -21,9 +21,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IPlantRepository, PlantRepository>();
+builder.Services.AddScoped<IPlantedRepository, PlantedRepository>();
 
 builder.Services.AddScoped<IPlantService, PlantService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPlantedService, PlantedService>();
 builder.Services.AddScoped<SeedDataService>();
 
 

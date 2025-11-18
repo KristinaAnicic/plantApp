@@ -1,5 +1,6 @@
 ﻿using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos.Plant;
+using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Dtos.User;
 
 namespace PlantApp.Domain.Utils;
@@ -64,6 +65,26 @@ public static class MapFromDTOHelper
 
         return user;
     }
+
+    public static Planted MapUpsertPlantedDtoToPlanted(this UpsertPlantedDto dto, Planted? planted = null)
+    {
+        if (planted == null)
+            planted = new Planted { PlaceId = dto.PlaceId, PlantId = dto.PlantId, DatePlanted = dto.DatePlanted };
+
+        MapValuesUpsertPlantedDtoToPlanted(dto, planted);
+        return planted;
+    }
+
+    public static void MapValuesUpsertPlantedDtoToPlanted(this UpsertPlantedDto dto, Planted planted)
+    {
+        planted.PlantId = dto.PlantId;
+        planted.PlaceId = dto.PlaceId;
+        planted.DatePlanted = dto.DatePlanted;
+        planted.Source = dto.Source;
+        planted.Note = dto.Note;
+        planted.IsOutside = dto.IsOutside;
+        planted.Image = dto.Image;
+        planted.PlantStatusId = dto.PlantStatusId;
     }
 
 }
