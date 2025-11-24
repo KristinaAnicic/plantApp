@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlantApp.Data;
-using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Interfaces.Repository;
 using System.Linq.Expressions;
 
@@ -41,6 +40,16 @@ public class Repository<T> : IRepository<T> where T : class
             
        return await query.FirstOrDefaultAsync(q => EF.Property<int>(q, "Id") == id);
         
+    }
+
+    public async Task<List<T>> GetAllByKeyAsync(Expression<Func<T, bool>> predicate, bool includeNavigations = false)
+    {
+        var query = dbSet.AsQueryable();
+
+        if (includeNavigations)
+            { query = IncludeNavigations(query); }
+
+        return await query.Where(predicate).ToListAsync();
     }
 
     public async Task AddAsync(T entity)

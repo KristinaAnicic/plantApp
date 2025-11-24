@@ -26,6 +26,7 @@ builder.Services.AddScoped<IPlantedRepository, PlantedRepository>();
 builder.Services.AddScoped<IPlantService, PlantService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPlantedService, PlantedService>();
+builder.Services.AddScoped<IPlantPlaceService, PlantPlaceService>();
 builder.Services.AddScoped<SeedDataService>();
 
 
