@@ -86,6 +86,7 @@ public static class MapFromDTOHelper
         planted.IsOutside = dto.IsOutside;
         planted.Image = dto.Image;
         planted.PlantStatusId = dto.PlantStatusId;
+        planted.Name = dto.Name;
     }
 
     public static void MapValuesUpsertPlaceDtoToPlace(UpsertPlaceDto dto, Place place)

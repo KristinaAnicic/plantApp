@@ -4,6 +4,7 @@ public class PlantedDto
 {
     public int Id { get; set; }
     public required string PlantName { get; set; }
+    public string? Name { get; set; }
     public required string Place {  get; set; }
     public required DateTime DatePlanted { get; set; }
     public string? PlantStatus { get; set; }

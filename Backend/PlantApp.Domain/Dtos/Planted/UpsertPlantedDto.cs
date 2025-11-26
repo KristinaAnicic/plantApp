@@ -6,6 +6,7 @@ namespace PlantApp.Domain.Dtos.Planted;
 public class UpsertPlantedDto
 {
     public int? Id { get; set; }
+    public string? Name { get; set; }
     public int PlantId { get; set; }
     public required int PlaceId { get; set; }
     public required DateTime DatePlanted { get; set; }

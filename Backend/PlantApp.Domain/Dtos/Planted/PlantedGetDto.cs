@@ -8,6 +8,7 @@ namespace PlantApp.Domain.Dtos.Planted;
 public class PlantedGetDto
 {
     public int Id { get; set; }
+    public string? Name { get; set; }
     public PlaceDto? Place { get; set; }
     public PlantDto? Plant { get; set; }
     public required DateTime DatePlanted { get; set; }

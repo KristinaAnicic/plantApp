@@ -121,7 +121,8 @@ public static class MapToDTOHelper
             Place = $"{planted.Place?.Address}, {planted.Place?.City}",
             PlantName = $"{planted.Plant?.BotanicalName} ({planted.Plant?.CommonName})",
             DatePlanted = planted.DatePlanted,
-            Image = planted.Image
+            Image = planted.Image,
+            Name = planted.Name
         };
     }
 
@@ -139,7 +140,8 @@ public static class MapToDTOHelper
             PlantStatus = planted.PlantStatus?.Name ?? "Not specified",
             NextReminders = planted.Reminders?.Select(r => r.MapReminderToReminderDto()).ToList(),
             GrowthLogs = planted.GrowthLogs?.Select(gl => gl.MapGrowthLogToGrowthLogDto()).ToList(),
-            Images = planted.Images?.Select(im => im.MapImageToImageDto()).ToList()
+            Images = planted.Images?.Select(im => im.MapImageToImageDto()).ToList(),
+            Name = planted.Name,
         };
     }
 
