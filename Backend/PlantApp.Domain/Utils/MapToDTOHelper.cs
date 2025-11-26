@@ -8,6 +8,7 @@ using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Dtos.PlantPlace;
 using PlantApp.Domain.Dtos.Reminder;
 using PlantApp.Domain.Dtos.User;
+using System.Numerics;
 
 namespace PlantApp.Domain.Utils;
 
@@ -158,10 +159,29 @@ public static class MapToDTOHelper
         return new ReminderDto
         {
             Id = reminder.Id,
+            Plant = reminder.Planted.Name,
             PlantedId = reminder.PlantedId,
             ReminderType = reminder.ReminderType?.Name,
             NextDueDate = reminder.NextDueDate,
-            Notes = reminder.Note
+            Notes = reminder.Note,
+            IsLate = (reminder.NextDueDate - DateTime.UtcNow).TotalDays < 0
+        };
+    }
+
+    public static ReminderGetDto MapReminderToReminderGetDto(this Reminder reminder)
+    {
+        return new ReminderGetDto
+        {
+            Id = reminder.Id,
+            PlantedId = reminder.PlantedId,
+            ReminderType = reminder.ReminderType.MapReferenceToDto(),
+            NextDueDate = reminder.NextDueDate,
+            Notes = reminder.Note,
+            PlantedName = reminder.Planted.Name ?? $"{reminder.Planted.Plant?.BotanicalName} ({reminder.Planted.Plant?.CommonName})",
+            //Frequency = $"every {reminder.FrequencyNum} {reminder.FrequencyType.Name}"
+            FrequencyType = reminder.FrequencyType.MapReferenceToDto(),
+            FrequencyNum = reminder.FrequencyNum,
+            IsLate = (reminder.NextDueDate - DateTime.UtcNow).TotalDays < 0
         };
     }
 

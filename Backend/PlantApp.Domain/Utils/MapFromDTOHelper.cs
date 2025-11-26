@@ -2,6 +2,7 @@
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Dtos.PlantPlace;
+using PlantApp.Domain.Dtos.Reminder;
 using PlantApp.Domain.Dtos.User;
 
 namespace PlantApp.Domain.Utils;
@@ -105,5 +106,29 @@ public static class MapFromDTOHelper
         
         MapValuesUpsertPlaceDtoToPlace(dto, place);
         return place;
+    }
+
+    public static void MapValuesUpsertReminderDtoToReminder(this UpsertReminderDto dto, Reminder reminder)
+    {
+        reminder.PlantedId = dto.PlantedId;
+        reminder.ReminderTypeId = dto.ReminderTypeId;
+        reminder.FrequencyTypeId = dto.FrequencyTypeId;
+        reminder.FrequencyNum = dto.FrequencyNum;
+        reminder.NextDueDate = dto.NextDueDate;
+        reminder.Note = dto.Note;
+    }
+
+    public static Reminder MapUpsertReminderDtoToReminder(this UpsertReminderDto dto, Reminder? reminder = null)
+    {
+        if (reminder == null)
+            reminder = new Reminder { 
+                PlantedId = dto.PlantedId,
+                ReminderTypeId = dto.ReminderTypeId,
+                FrequencyTypeId = dto.FrequencyTypeId,
+                FrequencyNum = dto.FrequencyNum 
+            };
+
+        MapValuesUpsertReminderDtoToReminder(dto, reminder);
+        return reminder;
     }
 }

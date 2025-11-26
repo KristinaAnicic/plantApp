@@ -122,7 +122,7 @@ public class Repository<T> : IRepository<T> where T : class
         return await dbSet.CountAsync(count);
     }
 
-    private IQueryable<T> IncludeNavigations(IQueryable<T> query)
+    public IQueryable<T> IncludeNavigations(IQueryable<T> query)
     {
         var navigationProperties = context.Model.FindEntityType(typeof(T))?.GetNavigations();
 
