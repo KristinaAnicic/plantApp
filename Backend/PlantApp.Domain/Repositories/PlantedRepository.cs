@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using PlantApp.Data;
 using PlantApp.Data.Models;
 using PlantApp.Domain.Interfaces.Repository;
-using PlantApp.Domain.Services.Data;
 
 namespace PlantApp.Domain.Repositories;
 
@@ -60,9 +58,10 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
         }
         else
         {
-            query = query.OrderBy(p => p.Reminders != null && p.Reminders.Any()
-                              ? p.Reminders.Min(r => (int)Math.Round((r.NextDueDate - DateTime.UtcNow).TotalDays))
-                              : int.MaxValue)
+            query = query.OrderBy(p => p.Reminders
+                                        .Select(r => (r.NextDueDate.AddDays(r.DelayDays) - DateTime.UtcNow).TotalDays)
+                                        .DefaultIfEmpty(double.MaxValue)
+                                        .Min())
                 .ThenBy(p => p.UpdatedAt)
                 .ThenBy(p => p.CreatedAt);
         }

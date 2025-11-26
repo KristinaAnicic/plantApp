@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlantApp.Data.Models;
 
-public class Reminder : BaseEntity
+public class ReminderHistory : BaseEntity
 {
     [ForeignKey(nameof(PlantedId))]
-    public Planted? Planted {  get; set; }
-    public int PlantedId { get; set; }
+    public Planted? Planted { get; set; }
+    public int? PlantedId { get; set; }
 
     [ForeignKey(nameof(ReminderTypeId))]
     public ReminderType? ReminderType { get; set; }
@@ -16,8 +16,9 @@ public class Reminder : BaseEntity
     [ForeignKey(nameof(FrequencyTypeId))]
     public Frequency? FrequencyType { get; set; }
     public required int FrequencyTypeId { get; set; }
+
     public required int FrequencyNum { get; set; }
-    public DateTime NextDueDate { get; set; }
-    public int DelayDays {  get; set; } = 0;
-    public string? Note { get; set; }
+    public DateTime DueDate { get; set; }
+    public DateTime DateDone { get; set; }
+    public int delay { get; set; }
 }

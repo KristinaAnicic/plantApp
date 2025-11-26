@@ -12,6 +12,7 @@ public class Planted : BaseEntity
     public Plant? Plant { get; set; }
     public required int PlantId { get; set; }
 
+    public string? Name { get; set; }
     public required DateTime DatePlanted { get; set; }
     public string? Source {  get; set; }
     public string? Note { get; set; }
@@ -25,4 +26,5 @@ public class Planted : BaseEntity
     public ICollection<GrowthLog>? GrowthLogs { get; set; }
     public ICollection<Image>? Images { get; set; }
     public ICollection<Reminder>? Reminders { get; set; }
+    public ICollection<ReminderHistory>? ReminderHistory { get; set; }
 }
