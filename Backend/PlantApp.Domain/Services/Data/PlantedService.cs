@@ -31,6 +31,19 @@ public class PlantedService(
         return groupedDto;
     }
 
+    public async Task<PlantedGetDto> GetPlantedById(int id)
+    {
+        var planted = await repository.GetByIdAsync(id);
+
+        if (planted == null)
+            throw new ArgumentException("Planted not found");
+        
+        if (planted.Reminders != null && planted.Reminders.Any())
+            planted.Reminders = planted.Reminders.OrderBy(r => (r.NextDueDate.AddDays(r.DelayDays) - DateTime.UtcNow).TotalDays).ToList();
+
+        return planted.MapPlantedToPlantedGetDto();
+    }
+
     public async Task AddPlanted(UpsertPlantedDto dto)
     {
         //temporary until jwt is implemented
