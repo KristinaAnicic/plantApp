@@ -103,6 +103,7 @@ public class ReminderService(
         await repository.AddAsync(reminder);
     }
 
+    //on frontend disable changing nextDueDate or reminderHistory calculate delay by previous reminder
     public async Task UpdateReminder(int id, UpsertReminderDto dto)
     {
         if (dto.Id != id)

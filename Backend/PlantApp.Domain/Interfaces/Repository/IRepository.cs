@@ -5,7 +5,7 @@ namespace PlantApp.Domain.Interfaces.Repository;
 public interface IRepository<T> where T : class
 {
     public Task<List<T>> GetAllAsync(bool includeNavigations = false, Expression<Func<T, object>>? orderBy = null);
-    public Task<List<T>> GetAllByKeyAsync(Expression<Func<T, bool>> predicate, bool includeNavigations = false);
+    public Task<List<T>> GetAllByKeyAsync(Expression<Func<T, bool>> predicate, bool includeNavigations = false, params Expression<Func<T, object>>[]? includes);
     public Task<T?> GetByIdAsync(int id);
     public Task AddAsync(T entity);
     public Task AddMultipleAsync(IEnumerable<T> entities);

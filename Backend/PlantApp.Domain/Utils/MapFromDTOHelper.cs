@@ -1,4 +1,5 @@
 ﻿using PlantApp.Data.Models;
+using PlantApp.Domain.Dtos.GrowthLog;
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Dtos.PlantPlace;
@@ -130,5 +131,21 @@ public static class MapFromDTOHelper
 
         MapValuesUpsertReminderDtoToReminder(dto, reminder);
         return reminder;
+    }
+
+    public static void MapValuesUpsertGrowthLogDtoToGrowthLog(this UpsertGrowthLogDto dto, GrowthLog log)
+    {
+        log.PlantedId = dto.PlantedId;
+        log.Note = dto.Note;
+        log.PlantStatusId = dto.PlantStatusId;
+    }
+
+    public static GrowthLog MapUpsertGrowthLogDtoToGrowthLog(this UpsertGrowthLogDto dto, GrowthLog? log = null)
+    {
+        if (log == null)
+            log = new GrowthLog { PlantedId = dto.PlantedId };
+
+        MapValuesUpsertGrowthLogDtoToGrowthLog(dto, log);
+        return log;
     }
 }

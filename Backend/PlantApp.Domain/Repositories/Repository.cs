@@ -42,9 +42,18 @@ public class Repository<T> : IRepository<T> where T : class
         
     }
 
-    public async Task<List<T>> GetAllByKeyAsync(Expression<Func<T, bool>> predicate, bool includeNavigations = false)
+    public async Task<List<T>> GetAllByKeyAsync(Expression<Func<T, bool>> predicate, bool includeNavigations = false, params Expression<Func<T, object>>[]? includes)
     {
         var query = dbSet.AsQueryable();
+
+        if (includes != null)
+        {
+            foreach (var include in includes)
+            {
+                if (include != null)
+                    query = query.Include(include);
+            }
+        }
 
         if (includeNavigations)
             { query = IncludeNavigations(query); }
@@ -132,7 +141,7 @@ public class Repository<T> : IRepository<T> where T : class
             {
                 if (!property.DeclaringEntityType.IsOwned())
                 {
-                    query.Include(property.Name);
+                    query = query.Include(property.Name);
                 }
             }
         }

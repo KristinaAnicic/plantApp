@@ -193,7 +193,23 @@ public static class MapToDTOHelper
             Note = log.Note,
             PlantStatus = log.PlantStatus?.Name,
             CreatedAt = log.CreatedAt,
-            Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList()
+            Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList(),
+            PlantedId = log.PlantedId,
+            Plant = log.Planted.Name
+        };
+    }
+
+    public static GrowthLogGetDto MapGrowthLogToGrowthLogGetDto(this GrowthLog log)
+    {
+        return new GrowthLogGetDto
+        {
+            Id = log.Id,
+            Note = log.Note,
+            PlantStatus = log.PlantStatus.MapReferenceToDto(),
+            CreatedAt = log.CreatedAt,
+            Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList(),
+            PlantedId = log.PlantedId,
+            Plant = log.Planted.Name
         };
     }
 
