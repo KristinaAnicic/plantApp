@@ -93,6 +93,7 @@ public class GrowthLogService(
                 .ToList();
         }
 
+        await repository.UpdateAsync(log!);
     }
 
     public async Task DeleteGrowthLog(int id)

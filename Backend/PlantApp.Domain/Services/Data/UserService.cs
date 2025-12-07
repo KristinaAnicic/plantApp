@@ -43,7 +43,7 @@ public class UserService(
             throw new ArgumentNullException(nameof(dto));
 
         if (id != dto.Id)
-            throw new ArithmeticException("DTO ID does not match the provided Id parameter.");
+            throw new ArgumentException("DTO ID does not match the provided Id parameter.");
 
         var existingUser = await repository.GetByIdAsync(id);
 
@@ -52,7 +52,6 @@ public class UserService(
 
         dto.MapUpdateUserDtoToUser(existingUser);
         
-        existingUser.UpdatedAt = DateTime.Now;
         await repository.UpdateAsync(existingUser);
     }
 

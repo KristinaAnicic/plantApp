@@ -75,8 +75,12 @@ public class Repository<T> : IRepository<T> where T : class
 
     public async Task UpdateAsync(T entity)
     {
-        dbSet.Attach(entity);
-        context.Entry(entity).State = EntityState.Modified;
+        var entry = context.Entry(entity);
+        if (entry.State == EntityState.Detached)
+        {
+            dbSet.Attach(entity);
+            entry.State = EntityState.Modified;
+        }
 
         var updatedProperty = context.Entry(entity).Metadata.FindProperty("UpdatedAt");
 

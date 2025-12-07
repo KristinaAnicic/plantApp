@@ -62,8 +62,6 @@ public class PlantPlaceService(
 
         place.MapUpsertPlaceDtoToPlace(existingPlace);
 
-        existingPlace.UpdatedAt = DateTime.UtcNow;
-
         await repository.UpdateAsync(existingPlace);
     }
 

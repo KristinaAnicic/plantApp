@@ -115,9 +115,8 @@ public class ReminderService(
         await ValidateReferences(dto);
 
         dto.MapUpsertReminderDtoToReminder(reminder);
-        reminder!.UpdatedAt = DateTime.UtcNow;
 
-        await repository.UpdateAsync(reminder);
+        await repository.UpdateAsync(reminder!);
     }
 
     public async Task DeleteReminder(int id)

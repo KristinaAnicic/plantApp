@@ -134,8 +134,6 @@ public class PlantService(
         existingPlant.Habits = await habitRepository.GetByIdsAsync(plantDto.Habits);
         existingPlant.Seasons = await seasonRepository.GetByIdsAsync(plantDto.Seasons);
 
-        existingPlant.UpdatedAt = DateTime.UtcNow;
-
         await repository.UpdateAsync(existingPlant);
     }
 
