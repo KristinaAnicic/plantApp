@@ -57,7 +57,7 @@ public static class MapFromDTOHelper
 
     public static User MapAddUserDtoToUser(this AddUserDto dto)
     {
-        var user = new User { Email = dto.Email, Password = dto.Password, DisplayName = dto.DisplayName };
+        var user = new User { Email = dto.Email, Password = dto.Password, DisplayName = dto.DisplayName, Username = dto.Username };
 
         user.Email = dto.Email;
         user.Password = dto.Password;
@@ -65,6 +65,7 @@ public static class MapFromDTOHelper
         user.Gender = dto.Gender;
         user.Contact = dto.Contact;
         user.DateOfBirth = dto.DateOfBirth;
+        user.Username = dto.Username;
 
         return user;
     }

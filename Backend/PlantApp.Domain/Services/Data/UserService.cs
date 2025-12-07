@@ -1,4 +1,5 @@
-﻿using PlantApp.Data.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos.User;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
@@ -22,9 +23,13 @@ public class UserService(
 
     public async Task AddUser(AddUserDto dto)
     {
-        var existingEmail = repository.ExistsAsync(u => u.Email == dto.Email);
-        if (existingEmail != null) 
+        var existingEmail = await repository.ExistsAsync(u => EF.Functions.ILike(u.Email, dto.Email));
+        if (existingEmail) 
             throw new ArgumentException("Email already exists");
+
+        var existingUsername = await repository.ExistsAsync(u => EF.Functions.ILike(u.Username, dto.Username));
+        if (existingUsername)
+            throw new ArgumentException("Username already exists");
 
         var plant = dto.MapAddUserDtoToUser();
         plant.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(dto.Password, 13);

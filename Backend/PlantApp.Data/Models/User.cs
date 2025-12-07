@@ -6,6 +6,7 @@ public class User : BaseEntity
 {
     public required string Email { get; set; }
     public required string Password { get; set; }
+    public required string Username { get; set; }
     public required string DisplayName { get; set; }
     public string? Contact { get; set; }
 
@@ -14,6 +15,7 @@ public class User : BaseEntity
     public int RoleId { get; set; }
     public char Gender { get; set; }
     public DateOnly DateOfBirth { get; set; }
+    //public decimal Rating { get; set; }
 
     public ICollection<Place>? Places { get; set; }
     public ICollection<PlantExchange>? PlantExchanges { get; set; }

@@ -103,6 +103,7 @@ public static class MapToDTOHelper
         {
             Id = user.Id,
             Email = user.Email,
+            Username = user.Username,
             DisplayName = user.DisplayName,
             Role = user.Role?.Name ?? "Unknown",
             Gender = user.Gender,

@@ -38,5 +38,4 @@ public class PlantExchange : BaseEntity
     public required int ExchangeStatusId { get; set; }*/
 
     public ICollection<Image>? Images { get; set; }
-    public ICollection<UserRating>? UserRatings { get; set; }
 }
