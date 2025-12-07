@@ -2,9 +2,11 @@
 using PlantApp.Domain.Dtos.GrowthLog;
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.Planted;
+using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Dtos.PlantPlace;
 using PlantApp.Domain.Dtos.Reminder;
 using PlantApp.Domain.Dtos.User;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlantApp.Domain.Utils;
 
@@ -148,5 +150,45 @@ public static class MapFromDTOHelper
 
         MapValuesUpsertGrowthLogDtoToGrowthLog(dto, log);
         return log;
+    }
+
+    public static PlantExchange MapUpsertPlantExchangeDtoToPlantExchange(this UpsertPlantExchangeDto dto)
+    {
+        return new PlantExchange
+        {
+            PlantedId = dto.PlantedId,
+            Title = dto.Title,
+            Content = dto.Content,
+            PlantStatus = dto.PlantStatus,
+            Contact = dto.Contact,
+            MainImage = dto.MainImage,
+            IsActive = dto.IsActive,
+            ExchangeTypeId = dto.ExchangeTypeId,
+            City = dto.City,
+            CountryId = dto.CountryId,
+            ExchangeFor = dto.ExchangeFor,
+            Price = dto.Price,
+            Shipping = dto.Shipping
+        };
+    }
+
+    public static PlantExchange MapUpsertPlantExchangeDtoToPlantExchange(this UpsertPlantExchangeDto dto, PlantExchange exchange)
+    {
+
+        exchange.PlantedId = dto.PlantedId;
+        exchange.Title = dto.Title;
+        exchange.Content = dto.Content;
+        exchange.PlantStatus = dto.PlantStatus;
+        exchange.Contact = dto.Contact;
+        exchange.MainImage = dto.MainImage;
+        exchange.IsActive = dto.IsActive;
+        exchange.ExchangeTypeId = dto.ExchangeTypeId;
+        exchange.City = dto.City;
+        exchange.CountryId = dto.CountryId;
+        exchange.ExchangeFor = dto.ExchangeFor;
+        exchange.Price = dto.Price;
+        exchange.Shipping = dto.Shipping;
+
+        return exchange;
     }
 }

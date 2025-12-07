@@ -13,4 +13,5 @@ public class PlantExchangeDto
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public decimal? Price { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

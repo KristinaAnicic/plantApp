@@ -1,6 +1,4 @@
-﻿
-using PlantApp.Data.Models;
-using PlantApp.Domain.Dtos.Plant;
+﻿using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.Planted;
 
 namespace PlantApp.Domain.Dtos.PlantExchange;
@@ -14,7 +12,7 @@ public class PlantExchangeGetDto : PlantExchangeDto
 
     public string? ExchangeFor { get; set; }
     public required string Shipping { get; set; }
+    public double? UserRating { get; set; }
 
-    public ICollection<Image>? Images { get; set; }
-    public ICollection<UserRating>? UserRatings { get; set; }
+    public List<ImageDto>? Images { get; set; }
 }

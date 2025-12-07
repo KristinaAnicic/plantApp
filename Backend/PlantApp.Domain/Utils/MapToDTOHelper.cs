@@ -8,7 +8,6 @@ using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Dtos.PlantPlace;
 using PlantApp.Domain.Dtos.Reminder;
 using PlantApp.Domain.Dtos.User;
-using System.Numerics;
 
 namespace PlantApp.Domain.Utils;
 
@@ -223,16 +222,33 @@ public static class MapToDTOHelper
             ExchangeType = exchange.ExchangeType,
             Place = $"{exchange.City}, {exchange.Country?.Name}",
             Image = exchange.MainImage,
-            Price = exchange.Price
+            Price = exchange.Price,
+            CreatedAt = exchange.CreatedAt
         };
     }
 
-   /* public static UserRatingDto MapUserRatingToUserRatingDto(this UserRating userRating)
+    public static PlantExchangeGetDto MapPlantExchangeToPlantExchangeGetDto(this PlantExchange exchange)
     {
-        return UserRatingDto{
+        return new PlantExchangeGetDto
+        {
+            Id = exchange.Id,
+            Title = exchange.Title,
+            ExchangeType = exchange.ExchangeType,
+            Place = $"{exchange.City}, {exchange.Country?.Name}",
+            Image = exchange.MainImage,
+            Price = exchange.Price,
+            CreatedAt = exchange.CreatedAt,
+            User = new ReferenceDto { Id = exchange.UserId, Name = exchange.User != null ? exchange.User.Username : "unknown" },
+            Planted = exchange.Planted.MapPlantedToPlantedDto(),
+            Content = exchange.Content,
+            PlantStatus = exchange.PlantStatus,
+            ExchangeFor = exchange.ExchangeFor,
+            Shipping = exchange.Shipping,
+            Images = exchange.Images.Select(img => img.MapImageToImageDto()).ToList(),
+            UserRating = exchange.User.RatingsReceived?.Average(r => r.Rating)
+        };
+    }
 
-        }
-    }*/
 
     public static ReferenceDto MapReferenceToDto<T>(this T reference)
     {
