@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos.PlantExchange;
+using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
 using System.Security.Authentication;
@@ -11,7 +12,7 @@ public class PlantExchangeService(
     IRepository<PlantExchange> repository,   
     IRepository<Country> countryRepo,
     IRepository<Planted> plantedRepo
-)
+) : IPlantExchangeService
 {
     //user rating
 
