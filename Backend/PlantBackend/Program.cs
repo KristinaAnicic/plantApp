@@ -32,6 +32,7 @@ builder.Services.AddScoped<IPlantPlaceService, PlantPlaceService>();
 builder.Services.AddScoped<IReminderService, ReminderService>();
 builder.Services.AddScoped<IGrowthLogService, GrowthLogService>();
 builder.Services.AddScoped<IPlantExchangeService, PlantExchangeService>();
+builder.Services.AddScoped<IUserRatingService, UserRatingService>();
 
 builder.Services.AddScoped<SeedDataService>();
 

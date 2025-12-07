@@ -191,4 +191,22 @@ public static class MapFromDTOHelper
 
         return exchange;
     }
+
+    public static UserRating MapAddUserRatingDtoToUserRating(this AddUserRatingDto dto)
+    {
+        return new UserRating
+        {
+            RatedId = dto.RatedUserId,
+            Rating = dto.Rating,
+            Comment = dto.Comment
+        };
+    }
+
+    public static UserRating MapUpdateUserRatingDtoToUserRating(this UpdateUserRatingDto dto, UserRating userRating)
+    {
+        userRating.Rating = dto.Rating;
+        userRating.Comment = dto.Comment;
+
+        return userRating;
+    }
 }

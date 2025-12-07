@@ -250,6 +250,19 @@ public static class MapToDTOHelper
     }
 
 
+     public static UserRatingDto MapUserRatingToUserRatingDto(this UserRating userRating)
+     {
+        return new UserRatingDto
+        {
+            Rater = new ReferenceDto { Id = userRating.RaterId, Name = userRating.Rater.Username },
+            Rated = new ReferenceDto { Id = userRating.RatedId, Name = userRating.Rated.Username },
+            Rating = userRating.Rating,
+            Comment = userRating.Comment,
+            CreatedAt = userRating.CreatedAt,
+            UpdatedAt = userRating.UpdatedAt
+        };
+     }
+
     public static ReferenceDto MapReferenceToDto<T>(this T reference)
     {
         int id = EF.Property<int>(reference, "Id");
