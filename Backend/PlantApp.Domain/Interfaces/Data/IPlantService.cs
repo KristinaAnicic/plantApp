@@ -1,12 +1,13 @@
-﻿using PlantApp.Domain.Dtos.Plant;
+﻿using PlantApp.Domain.Dtos;
+using PlantApp.Domain.Dtos.Plant;
 
 namespace PlantApp.Domain.Interfaces.Data;
 
 public interface IPlantService
 {
-    public Task<List<PlantDto>> GetAllAsync();
+    public Task<ListResponse<PlantDto>> GetAllAsync(int page);
     public Task<PlantGetDto?> GetByIdAsync(int id);
-    public Task<List<PlantDto>> GetFilteredAsync(FilterByDto filter);
+    public Task<ListResponse<PlantDto>> GetFilteredAsync(FilterByDto filter, int page);
     public Task AddAsync(UpsertPlantDto plantDto);
     public Task UpdateAsync(int Id, UpsertPlantDto plantDto);
     public Task DeleteAsync(int Id);

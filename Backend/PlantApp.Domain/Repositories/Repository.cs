@@ -61,7 +61,12 @@ public class Repository<T> : IRepository<T> where T : class
         return await query.FirstOrDefaultAsync(key);
     }
 
-    public async Task<List<T>> GetAllByKeyAsync(Expression<Func<T, bool>> predicate, bool includeNavigations = false, params Expression<Func<T, object>>[]? includes)
+    public async Task<List<T>> GetAllByKeyAsync(
+        Expression<Func<T, bool>> predicate, 
+        bool includeNavigations = false,
+        int? page = null,
+        int? pageSize = null,
+        params Expression<Func<T, object>>[]? includes)
     {
         var query = dbSet.AsQueryable();
 
@@ -77,7 +82,15 @@ public class Repository<T> : IRepository<T> where T : class
         if (includeNavigations)
             { query = IncludeNavigations(query); }
 
-        return await query.Where(predicate).ToListAsync();
+        query = query.Where(predicate);
+
+        if (page != null)
+        {
+            query = query.Skip((page.Value - 1) * (pageSize ?? 25))
+                         .Take(pageSize ?? 25);
+        }
+
+        return await query.ToListAsync();
     }
 
     public async Task AddAsync(T entity)
@@ -149,8 +162,11 @@ public class Repository<T> : IRepository<T> where T : class
             .ToListAsync();
     }
 
-    public async Task<int> CountAsync(Expression<Func<T, bool>> count)
+    public async Task<int> CountAsync(Expression<Func<T, bool>>? count = null)
     {
+        if (count == null)
+            return await dbSet.CountAsync();
+
         return await dbSet.CountAsync(count);
     }
 

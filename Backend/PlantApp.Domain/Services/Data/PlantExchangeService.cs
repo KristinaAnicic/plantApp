@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlantApp.Data.Models;
+using PlantApp.Domain.Dtos;
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Interfaces.Data;
@@ -19,30 +20,37 @@ public class PlantExchangeService(
     //user rating
 
     public int currentUser = 0;
-    public async Task<List<PlantExchangeDto>> GetActiveAsync()
+    public async Task<ListResponse<PlantExchangeDto>> GetActiveAsync(int page)
     {
-        var exchanges = await repository.GetAllByKeyAsync(e => e.IsActive == true);
+        var exchanges = await repository.GetAllByKeyAsync(e => e.IsActive == true, false, page);
         
         exchanges = exchanges.OrderByDescending(e => e.CreatedAt).ToList();
+        var dto = exchanges.Select(e => e.MapPlantExchangeToPlantExchangeDto()).ToList();
+        var total = await repository.CountAsync();
 
-        return exchanges.Select(e => e.MapPlantExchangeToPlantExchangeDto()).ToList();
+        return new ListResponse<PlantExchangeDto> { Total = total, Items = dto };
     }
 
-    public async Task<List<PlantExchangeDto>> GetActiveFilteredAsync(PlantExchangeFilterDto filter)
+    public async Task<ListResponse<PlantExchangeDto>> GetActiveFilteredAsync(PlantExchangeFilterDto filter, int page)
     {
-        var exchanges = await repository.GetAllByKeyAsync(e =>
-            e.IsActive == true &&
-            (string.IsNullOrWhiteSpace(filter.Name) ||
-                EF.Functions.ILike(e.Title, $"%{filter.Name}%") ||
-                EF.Functions.ILike(e.Content, $"%{filter.Name}%")) &&
-            (string.IsNullOrWhiteSpace(filter.City) || EF.Functions.ILike(e.City, $"%{filter.City}%")) &&
-            (filter.PriceFrom == null || e.Price == null || e.Price > filter.PriceFrom) &&
-            (filter.PriceTo == null || e.Price == null || e.Price < filter.PriceTo) &&
-            (filter.ExchangeType == null || e.ExchangeTypeId == filter.ExchangeType));
+        var exchanges = await repository.GetAllByKeyAsync(
+            e =>
+                e.IsActive == true &&
+                (string.IsNullOrWhiteSpace(filter.Name) ||
+                    EF.Functions.ILike(e.Title, $"%{filter.Name}%") ||
+                    EF.Functions.ILike(e.Content, $"%{filter.Name}%")) &&
+                (string.IsNullOrWhiteSpace(filter.City) || EF.Functions.ILike(e.City, $"%{filter.City}%")) &&
+                (filter.PriceFrom == null || e.Price == null || e.Price > filter.PriceFrom) &&
+                (filter.PriceTo == null || e.Price == null || e.Price < filter.PriceTo) &&
+                (filter.ExchangeType == null || e.ExchangeTypeId == filter.ExchangeType),   
+            false, page);
 
         exchanges = exchanges.OrderByDescending(e => e.CreatedAt).ToList();
 
-        return exchanges.Select(e => e.MapPlantExchangeToPlantExchangeDto()).ToList();
+        var dto = exchanges.Select(e => e.MapPlantExchangeToPlantExchangeDto()).ToList();
+        var total = await repository.CountAsync();
+
+        return new ListResponse<PlantExchangeDto> { Total = total, Items = dto };
     }
 
     public async Task<PlantExchangeGetDto> GetByIdAsync(int id)

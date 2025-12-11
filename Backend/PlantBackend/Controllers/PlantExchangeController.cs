@@ -10,16 +10,16 @@ namespace PlantBackend.Controllers;
 public class PlantExchangeController(IPlantExchangeService plantExchangeService) : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int page)
     {
-        var result = await plantExchangeService.GetActiveAsync();
+        var result = await plantExchangeService.GetActiveAsync(page);
         return Ok(result);
     }
 
     [HttpGet("filter")]
-    public async Task<IActionResult> GetAll([FromBody] PlantExchangeFilterDto filter)
+    public async Task<IActionResult> GetAll([FromQuery] int page, [FromBody] PlantExchangeFilterDto filter)
     {
-        var result = await plantExchangeService.GetActiveFilteredAsync(filter);
+        var result = await plantExchangeService.GetActiveFilteredAsync(filter, page);
         return Ok(result);
     }
 

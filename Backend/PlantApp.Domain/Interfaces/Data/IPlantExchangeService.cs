@@ -1,11 +1,12 @@
-﻿using PlantApp.Domain.Dtos.PlantExchange;
+﻿using PlantApp.Domain.Dtos;
+using PlantApp.Domain.Dtos.PlantExchange;
 
 namespace PlantApp.Domain.Interfaces.Data;
 
 public interface IPlantExchangeService
 {
-    public Task<List<PlantExchangeDto>> GetActiveAsync();
-    public Task<List<PlantExchangeDto>> GetActiveFilteredAsync(PlantExchangeFilterDto filter);
+    public Task<ListResponse<PlantExchangeDto>> GetActiveAsync(int page);
+    public Task<ListResponse<PlantExchangeDto>> GetActiveFilteredAsync(PlantExchangeFilterDto filter, int page);
     public Task<PlantExchangeGetDto> GetByIdAsync(int id);
     public Task AddAsync(UpsertPlantExchangeDto dto);
     public Task UpdateAsync(int id, UpsertPlantExchangeDto dto);

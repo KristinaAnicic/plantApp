@@ -1,5 +1,6 @@
 ﻿using PlantApp.Data.Models;
 using PlantApp.Data.Models.Categories;
+using PlantApp.Domain.Dtos;
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
@@ -28,10 +29,13 @@ public class PlantService(
 {
 
     public int currentUser = 0;
-    public async Task<List<PlantDto>> GetAllAsync()
+    public async Task<ListResponse<PlantDto>> GetAllAsync(int page)
     {
-        var plants = await repository.GetAllAsync();
-        return plants.Select(p => p.MapPlantToPlantDto()).ToList();
+        var plants = await repository.GetAllPlantsAsync(page);
+        int total = await repository.CountAsync();
+
+        var dto = plants.Select(p => p.MapPlantToPlantDto()).ToList();
+        return new ListResponse<PlantDto> { Total = total, Items = dto };
     }
 
     public async Task<PlantGetDto?> GetByIdAsync(int id)
@@ -40,10 +44,13 @@ public class PlantService(
         return plant?.MapPlantToPlantGetDto();
     }
 
-    public async Task<List<PlantDto>> GetFilteredAsync(FilterByDto filter)
+    public async Task<ListResponse<PlantDto>> GetFilteredAsync(FilterByDto filter, int page)
     {
-        var plants = await repository.GetPlantsFiltered(filter);
-        return plants.Select(p => p.MapPlantToPlantDto()).ToList();
+        var plants = await repository.GetPlantsFiltered(filter, page);
+        int total = await repository.CountAsync();
+
+        var dto = plants.Select(p => p.MapPlantToPlantDto()).ToList();
+        return new ListResponse<PlantDto> { Total = total, Items = dto };
     }
 
     public async Task AddAsync(UpsertPlantDto plantDto) {

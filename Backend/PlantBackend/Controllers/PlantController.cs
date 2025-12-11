@@ -9,16 +9,16 @@ namespace PlantBackend.Controllers;
 public class PlantController(IPlantService plantService) : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int page)
     {
-        var result = await plantService.GetAllAsync();
+        var result = await plantService.GetAllAsync(page);
         return Ok(result);
     }
 
     [HttpGet("search")]
-    public async Task<IActionResult> GetAllFIltered([FromBody] FilterByDto filter)
+    public async Task<IActionResult> GetAllFIltered([FromQuery] int page, [FromBody] FilterByDto filter)
     {
-        var result = await plantService.GetFilteredAsync(filter);
+        var result = await plantService.GetFilteredAsync(filter, page);
         return Ok(result);
     }
 

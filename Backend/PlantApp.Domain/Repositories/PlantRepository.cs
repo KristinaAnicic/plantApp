@@ -8,7 +8,8 @@ namespace PlantApp.Domain.Repositories;
 
 public class PlantRepository(AppDbContext context) : Repository<Plant>(context), IPlantRepository
 {
-    public async Task<List<Plant>> GetPlantsFiltered(FilterByDto filter)
+    private const int pageSize = 25;
+    public async Task<List<Plant>> GetPlantsFiltered(FilterByDto filter, int page)
     {
         return await dbSet.Where(p =>
             (filter.IsLowMaintenance == null || p.IsLowMaintenance == filter.IsLowMaintenance) &&
@@ -23,6 +24,19 @@ public class PlantRepository(AppDbContext context) : Repository<Plant>(context),
                 EF.Functions.ILike(p.CommonName, $"%{filter.Name}%") || 
                 EF.Functions.ILike(p.BotanicalName, $"%{filter.Name}%")
             ) && p.DeletedAt == null
-        ).ToListAsync();
+        )
+        .Skip((page - 1) * pageSize)
+        .Take(pageSize)
+        .ToListAsync();
+    }
+
+    public async Task<List<Plant>> GetAllPlantsAsync(int page)
+    {
+        var query = dbSet
+            .Where(q => q.DeletedAt == null)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
+        
+        return await query.ToListAsync();
     }
 }
