@@ -21,7 +21,7 @@ public static class MapToDTOHelper
             BotanicalName = plant.BotanicalName,
             CommonName = plant.CommonName,
             EntityDescription = plant.EntityDescription,
-            Image = plant.Images?.FirstOrDefault()?.Name ?? null,
+            Image = plant.Images?.FirstOrDefault()?.Url ?? null,
         };
     }
 
@@ -33,7 +33,7 @@ public static class MapToDTOHelper
             BotanicalName = plant.BotanicalName,
             CommonName = plant.CommonName,
             EntityDescription = plant.EntityDescription,
-            Image = plant.Images?.FirstOrDefault()?.Name ?? null,
+            Image = plant.Images?.FirstOrDefault()?.Url ?? null,
             Fragrance = plant.Fragrance?.Name ?? "Unknown",
             HardinessLevel = plant.HardinessLevel != null ? $"{plant.HardinessLevel.Level} ({plant.HardinessLevel.Description})" : "Unknown",
             IsSpecie = plant.IsSpecie,
@@ -69,7 +69,7 @@ public static class MapToDTOHelper
         return new ImageDto
         {
             Id = img.Id,
-            Url = img.Name,
+            Url = img.Url,
             Copyright = img.Copyright,
         };
     }

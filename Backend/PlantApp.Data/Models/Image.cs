@@ -4,7 +4,7 @@ namespace PlantApp.Data.Models;
 
 public class Image : BaseEntity
 {
-    public required string Name { get; set; }
+    public required string Url { get; set; }
     public string? Copyright { get; set; }
 
     [ForeignKey(nameof(UserId))]

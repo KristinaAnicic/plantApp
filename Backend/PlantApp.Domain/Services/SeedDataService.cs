@@ -30,22 +30,22 @@ public class SeedDataService
         var plantImageFilePath = Path.Combine(csvPath, "plant_image.csv");
         var imageList = await GetPlantImages(plantImageFilePath);
 
-        var existingNames = context.Images.Select(i => i.Name).ToHashSet();
+        var existingNames = context.Images.Select(i => i.Url).ToHashSet();
 
         if (!imageList.Any()) return;
 
         foreach (var image in imageList)
         {
-            if (string.IsNullOrEmpty(image.Name)) continue;
+            if (string.IsNullOrEmpty(image.Url)) continue;
 
-            if (!existingNames.Contains(image.Name))
+            if (!existingNames.Contains(image.Url))
             {
                 context.Images.Add(
-                    new Image { 
-                        Name = image.Name, 
+                    new Image {
+                        Url = image.Url, 
                         Copyright = image.Copyright 
                     });
-                existingNames.Add(image.Name);
+                existingNames.Add(image.Url);
             }
         }
 
@@ -95,7 +95,7 @@ public class SeedDataService
         var sunlightMap = BuildMap(plantSunlightFilePath);
         var imageMap = await GetPlantImagesMap(plantImageFilePath);
 
-        var imagesDict = await context.Images.ToDictionaryAsync(i => i.Name);
+        var imagesDict = await context.Images.ToDictionaryAsync(i => i.Url);
         var batch = new List<Batch>();
         int batchSize = 1000;
 
@@ -166,7 +166,7 @@ public class SeedDataService
                 {
                     foreach (var image in plantImages)
                     {
-                        if (!string.IsNullOrEmpty(image.Name) && imagesDict.TryGetValue(image.Name, out var existingImage))
+                        if (!string.IsNullOrEmpty(image.Url) && imagesDict.TryGetValue(image.Url, out var existingImage))
                             plant.Images.Add(existingImage);
                     }
                 }
@@ -319,8 +319,8 @@ public class SeedDataService
 
             if (!string.IsNullOrWhiteSpace(image))
                 imageList.Add(new PlantImage { 
-                    PlantId = plantId, 
-                    Name = $"https://apps.rhs.org.uk/plantselectorimages/detail/{image}", 
+                    PlantId = plantId,
+                    Url = $"https://apps.rhs.org.uk/plantselectorimages/detail/{image}", 
                     Copyright = copyright 
                 });
         }
@@ -370,7 +370,7 @@ public class LookupRecord
 public class PlantImage
 {
     public int PlantId { get; set; }
-    public string? Name { get; set; }
+    public string? Url { get; set; }
     public string? Copyright { get; set; }
 }
 
