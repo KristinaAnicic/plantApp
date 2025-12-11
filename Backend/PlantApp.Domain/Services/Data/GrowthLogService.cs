@@ -3,13 +3,15 @@ using PlantApp.Domain.Dtos.GrowthLog;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
+using System.Numerics;
 
 namespace PlantApp.Domain.Services.Data;
 
 public class GrowthLogService(
     IGrowthLogRepository repository,
     IRepository<PlantStatus> statusRepo,
-    IRepository<Planted> plantedRepo
+    IRepository<Planted> plantedRepo,
+    IImageService imageService
 ) : IGrowthLogService
 {
     public int currentUser = 0;
@@ -34,7 +36,7 @@ public class GrowthLogService(
 
     public async Task<GrowthLogGetDto> GetByIdAsync(int id)
     {
-        var log = await repository.GetAllGrowthLogById(id);
+        var log = await repository.GetGrowthLogById(id);
 
         CheckLogAndAuthorization(log);
         return log.MapGrowthLogToGrowthLogGetDto();
@@ -53,13 +55,9 @@ public class GrowthLogService(
 
         if (dto.Images != null && dto.Images.Any())
         {
-            log.Images = dto.Images
-                .Select(url => new Image 
-                { 
-                    Name = url,
-                    UserId = currentUser
-                })
-                .ToList();
+            log.Images.Clear();
+
+            await imageService.AddImagesSafeAsync(log, dto.Images);
         }
 
         await repository.AddAsync(log);
@@ -70,7 +68,7 @@ public class GrowthLogService(
         if (id != dto.Id)
             throw new ArgumentException("DTO id does not match provided id");
         
-        var log = await repository.GetAllGrowthLogById(id);
+        var log = await repository.GetGrowthLogById(id);
 
         CheckLogAndAuthorization(log);
 
@@ -84,13 +82,9 @@ public class GrowthLogService(
 
         if (dto.Images != null && dto.Images.Any())
         {
-            log.Images = dto.Images
-                .Select(url => new Image
-                {
-                    Name = url,
-                    UserId = currentUser
-                })
-                .ToList();
+            log!.Images.Clear();
+
+            await imageService.AddImagesSafeAsync(log, dto.Images);
         }
 
         await repository.UpdateAsync(log!);
@@ -98,10 +92,29 @@ public class GrowthLogService(
 
     public async Task DeleteAsync(int id)
     {
-        var log = await repository.GetAllGrowthLogById(id);
+        var log = await repository.GetGrowthLogById(id);
         CheckLogAndAuthorization(log);
 
         await repository.DeleteGrowthLog(log!);
+    }
+
+    public async Task AddImages(int logId, List<string> urls)
+    {
+        var log = await repository.GetByIdAsync(logId);
+        CheckLogAndAuthorization(log);
+
+        await imageService.AddImagesToEntityAsync(log!, urls);
+
+        await repository.UpdateAsync(log!);
+    }
+
+    public async Task RemoveImageById(int logId, int imageId)
+    {
+        var log = await repository.GetGrowthLogById(logId);
+        CheckLogAndAuthorization(log);
+
+        await imageService.RemoveImageFromEntityAsync(log!, imageId);
+        await repository.UpdateAsync(log!);
     }
 
     private void CheckLogAndAuthorization(GrowthLog? log)

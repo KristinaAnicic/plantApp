@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlantApp.Data.Models;
+using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
@@ -11,7 +12,8 @@ namespace PlantApp.Domain.Services.Data;
 public class PlantExchangeService(
     IRepository<PlantExchange> repository,   
     IRepository<Country> countryRepo,
-    IRepository<Planted> plantedRepo
+    IRepository<Planted> plantedRepo,
+    IImageService imageService
 ) : IPlantExchangeService
 {
     //user rating
@@ -59,6 +61,12 @@ public class PlantExchangeService(
 
         var exchange = dto.MapUpsertPlantExchangeDtoToPlantExchange();
 
+        if (dto.Images != null && dto.Images.Any())
+        {
+            exchange.Images.Clear();
+            await imageService.AddImagesSafeAsync(exchange, dto.Images);
+        }
+
         await repository.AddAsync(exchange);
     }
 
@@ -77,6 +85,13 @@ public class PlantExchangeService(
 
         dto.MapUpsertPlantExchangeDtoToPlantExchange(existingExchange);
 
+        if (dto.Images != null && dto.Images.Any())
+        {
+            existingExchange.Images.Clear();
+
+            await imageService.AddImagesSafeAsync(existingExchange, dto.Images);
+        }
+
         await repository.UpdateAsync(existingExchange);
     }
 
@@ -93,6 +108,29 @@ public class PlantExchangeService(
         await repository.DeleteAsync(existingExchange, false);
     }
 
+    public async Task AddImages(int exchangeId, List<string> urls)
+    {
+        var exchange = await repository.GetByIdAsync(exchangeId);
+        if (exchange == null)
+            throw new ArgumentException("Plant not found");
+
+        if (exchange.UserId != currentUser)
+            throw new InvalidOperationException("Access denied");
+
+        await imageService.AddImagesToEntityAsync(exchange, urls);
+        await repository.UpdateAsync(exchange);
+    }
+
+    public async Task RemoveImageById(int exchangeId, int imageId)
+    {
+        var exchange = await repository.GetByIdAsync(exchangeId);
+        if (exchange == null)
+            throw new ArgumentException("Plant not found");
+
+        await imageService.RemoveImageFromEntityAsync(exchange, imageId);
+        await repository.UpdateAsync(exchange);
+    }
+
     public async Task<int?> ValidatePlantExchange(UpsertPlantExchangeDto dto)
     {
         if (dto.PlantedId != null)
@@ -102,7 +140,7 @@ public class PlantExchangeService(
             if (planted == null)
                 dto.PlantedId = null;
 
-            if (planted.Place.UserId != currentUser)
+            if (planted != null && planted.Place != null && planted.Place.UserId != currentUser)
                 throw new AuthenticationException("Cannot add reference to the planted");
         }
 

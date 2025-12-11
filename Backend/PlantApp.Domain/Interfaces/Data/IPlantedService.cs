@@ -10,4 +10,6 @@ public interface IPlantedService
     public Task AddAsync(UpsertPlantedDto dto);
     public Task UpdateAsync(int id, UpsertPlantedDto dto);
     public Task DeleteAsync(int id);
+    public Task AddImages(int plantedId, List<string> urls);
+    public Task RemoveImageById(int plantedId, int imageId);
 }

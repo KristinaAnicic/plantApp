@@ -1,5 +1,4 @@
-﻿using PlantApp.Data.Models;
-using PlantApp.Domain.Dtos.Planted;
+﻿using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
@@ -8,9 +7,10 @@ namespace PlantApp.Domain.Services.Data;
 
 public class PlantedService(
     IPlantedRepository repository,
-    IRepository<Image> imageRepository
+    IImageService imageService
 ) : IPlantedService
 {
+    public int currentUser = 0;
     public async Task<List<PlantedDto>> GetAllByUserIdAsync(int userId)
     {
         var planted = await repository.GetPlantedPlantsByUserId(userId);
@@ -53,9 +53,9 @@ public class PlantedService(
 
         if (dto.Images != null && dto.Images.Any())
         {
-            var images = await imageRepository.GetByIdsAsync(dto.Images);
-            images = images.Where(im => im.UserId == currentUser || im.UserId == null).ToList();
-            planted.Images = images;
+            planted.Images.Clear();
+
+            await imageService.AddImagesSafeAsync(planted, dto.Images);
         }
 
         await repository.AddAsync(planted);
@@ -80,9 +80,9 @@ public class PlantedService(
 
         if (dto.Images != null && dto.Images.Any())
         {
-            var images = await imageRepository.GetByIdsAsync(dto.Images);
-            images = images.Where(im => im.UserId == currentUser || im.UserId == null).ToList();
-            existingPlanted.Images = images;
+            existingPlanted.Images.Clear();
+
+            await imageService.AddImagesSafeAsync(existingPlanted, dto.Images);
         }
 
         await repository.UpdateAsync(existingPlanted);
@@ -98,5 +98,29 @@ public class PlantedService(
         }   
 
         await repository.DeletePlantedAsync(planted);
+    }
+
+    public async Task AddImages(int plantedId, List<string> urls)
+    {
+        var planted = await repository.GetByIdAsync(plantedId);
+        if (planted == null)
+            throw new ArgumentException("Plant not found");
+
+        await imageService.AddImagesToEntityAsync(planted, urls);
+        await repository.UpdateAsync(planted);
+    }
+
+    public async Task RemoveImageById(int plantedId, int imageId)
+    {
+        var planted = await repository.GetByIdAsync(plantedId);
+        if (planted == null)
+            throw new ArgumentException("Plant not found");
+
+        if (planted.Place != null && planted.Place.UserId != currentUser)
+            throw new InvalidOperationException("Access denied");
+
+        await imageService.RemoveImageFromEntityAsync(planted, imageId);
+
+        await repository.UpdateAsync(planted);
     }
 }

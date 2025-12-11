@@ -2,7 +2,7 @@
 
 namespace PlantApp.Data.Models;
 
-public class PlantExchange : BaseEntity
+public class PlantExchange : BaseEntity, IHasImages
 {
     [ForeignKey(nameof(UserId))]
     public User? User { get; set; }
@@ -37,5 +37,5 @@ public class PlantExchange : BaseEntity
     public ExchangeStatus? ExchangeStatus {  get; set; }
     public required int ExchangeStatusId { get; set; }*/
 
-    public ICollection<Image>? Images { get; set; }
+    public ICollection<Image> Images { get; set; } = new List<Image>();
 }

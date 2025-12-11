@@ -1,6 +1,4 @@
-﻿using PlantApp.Data.Models;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace PlantApp.Domain.Dtos.Plant;
 
@@ -33,7 +31,7 @@ public class UpsertPlantDto
     public string? GenusDescription { get; set; }
 
     public List<int> SoilTypes { get; set; } = new List<int>();
-    public List<int> Images { get; set; } = new List<int>();
+    public List<string> Images { get; set; } = new List<string>();
     public List<int> Sunlights { get; set; } = new List<int>();
     public List<int> Aspects { get; set; } = new List<int>();
     public List<int> Moistures { get; set; } = new List<int>();

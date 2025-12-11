@@ -1,7 +1,4 @@
-﻿using PlantApp.Data.Models;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace PlantApp.Domain.Dtos.User;
+﻿namespace PlantApp.Domain.Dtos.User;
 
 public class UpdateUserDto
 {

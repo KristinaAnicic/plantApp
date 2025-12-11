@@ -29,7 +29,7 @@ public class GrowthLogRepository(AppDbContext context) : Repository<GrowthLog>(c
         return await query.ToListAsync();
     }
 
-    public async Task<GrowthLog?> GetAllGrowthLogById(int id)
+    public async Task<GrowthLog?> GetGrowthLogById(int id)
     {
         var query = AddIncludes(dbSet.AsQueryable());
         return await query.FirstOrDefaultAsync(q => q.Id == id);

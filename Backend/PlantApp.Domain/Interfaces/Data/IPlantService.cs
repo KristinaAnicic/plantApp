@@ -10,6 +10,8 @@ public interface IPlantService
     public Task AddAsync(UpsertPlantDto plantDto);
     public Task UpdateAsync(int Id, UpsertPlantDto plantDto);
     public Task DeleteAsync(int Id);
+    public Task AddImages(int plantId, List<string> urls);
+    public Task RemoveImageById(int plantId, int imageId);
     public Task<ManyPlantAttributesDto> GetMultiReferenceDataAsync();
     public Task<OnePlantAttributesDto> GetSinglePlantReferenceDataAsync();
 }

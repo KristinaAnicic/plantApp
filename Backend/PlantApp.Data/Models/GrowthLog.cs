@@ -2,7 +2,7 @@
 
 namespace PlantApp.Data.Models;
 
-public class GrowthLog : BaseEntity
+public class GrowthLog : BaseEntity, IHasImages
 {
     [ForeignKey(nameof(PlantedId))]
     public Planted? Planted { get; set; }
@@ -14,5 +14,5 @@ public class GrowthLog : BaseEntity
     public PlantStatus? PlantStatus { get; set; }
     public int PlantStatusId { get; set; }
 
-    public ICollection<Image>? Images { get; set; }
+    public ICollection<Image> Images { get; set; } = new List<Image>();
 }

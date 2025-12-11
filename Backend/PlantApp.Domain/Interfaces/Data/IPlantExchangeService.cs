@@ -10,4 +10,6 @@ public interface IPlantExchangeService
     public Task AddAsync(UpsertPlantExchangeDto dto);
     public Task UpdateAsync(int id, UpsertPlantExchangeDto dto);
     public Task DeleteAsync(int id);
+    public Task AddImages(int exchangeId, List<string> urls);
+    public Task RemoveImageById(int exchangeId, int imageId);
 }

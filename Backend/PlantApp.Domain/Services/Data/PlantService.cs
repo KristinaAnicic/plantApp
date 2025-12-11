@@ -16,16 +16,18 @@ public class PlantService(
     IRepository<TimeToFullHeight> timeRepository,
     IRepository<PlantFamily> familyRepository,
     IRepository<SoilType> soilRepository,
-    IRepository<Image> imageRepository,
     IRepository<Sunlight> sunlightRepository,
     IRepository<Aspect> aspectRepository,
     IRepository<Moisture> moistureRepository,
     IRepository<Ph> phRepository,
     IRepository<Exposure> exposureRepository,
     IRepository<Habit> habitRepository,
-    IRepository<Season> seasonRepository
+    IRepository<Season> seasonRepository,
+    IImageService imageService
 ) : IPlantService
 {
+
+    public int currentUser = 0;
     public async Task<List<PlantDto>> GetAllAsync()
     {
         var plants = await repository.GetAllAsync();
@@ -66,9 +68,6 @@ public class PlantService(
         var soils = await soilRepository.GetByIdsAsync(plantDto.SoilTypes);
         plant.SoilTypes = soils;
 
-        var images = await imageRepository.GetByIdsAsync(plantDto.Images);
-        plant.Images = images;
-
         var sunlights = await sunlightRepository.GetByIdsAsync(plantDto.Sunlights);
         plant.Sunlights = sunlights;
 
@@ -89,6 +88,14 @@ public class PlantService(
 
         var seasons = await seasonRepository.GetByIdsAsync(plantDto.Seasons);
         plant.Seasons = seasons;
+
+
+        if (plantDto.Images != null && plantDto.Images.Any())
+        {
+            plant.Images.Clear();
+
+            await imageService.AddImagesSafeAsync(plant, plantDto.Images);
+        }
 
         await repository.AddAsync(plant);
     }
@@ -125,7 +132,6 @@ public class PlantService(
         plantDto.MapUpsertPlantDtoToPlant(existingPlant);
 
         existingPlant.SoilTypes = await soilRepository.GetByIdsAsync(plantDto.SoilTypes);
-        existingPlant.Images = await imageRepository.GetByIdsAsync(plantDto.Images);
         existingPlant.Sunlights = await sunlightRepository.GetByIdsAsync(plantDto.Sunlights);
         existingPlant.Aspects = await aspectRepository.GetByIdsAsync(plantDto.Aspects);
         existingPlant.Moistures = await moistureRepository.GetByIdsAsync(plantDto.Moistures);
@@ -133,6 +139,12 @@ public class PlantService(
         existingPlant.Exposures = await exposureRepository.GetByIdsAsync(plantDto.Exposures);
         existingPlant.Habits = await habitRepository.GetByIdsAsync(plantDto.Habits);
         existingPlant.Seasons = await seasonRepository.GetByIdsAsync(plantDto.Seasons);
+
+        if (plantDto.Images != null && plantDto.Images.Any())
+        {
+            existingPlant.Images.Clear();
+            await imageService.AddImagesSafeAsync(existingPlant, plantDto.Images);
+        }
 
         await repository.UpdateAsync(existingPlant);
     }
@@ -150,6 +162,26 @@ public class PlantService(
         }
 
         await repository.DeleteAsync(plant, false);
+    }
+
+    public async Task AddImages(int plantId, List<string> urls)
+    {
+        var plant = await repository.GetByIdAsync(plantId);
+        if (plant == null)
+            throw new ArgumentException("Plant not found");
+
+        await imageService.AddImagesToEntityAsync(plant, urls);
+        await repository.UpdateAsync(plant);
+    }
+
+    public async Task RemoveImageById(int plantId, int imageId)
+    {
+        var plant = await repository.GetByIdAsync(plantId);
+        if (plant == null)
+            throw new ArgumentException("Plant not found");
+
+        await imageService.RemoveImageFromEntityAsync(plant, imageId);
+        await repository.UpdateAsync(plant);
     }
 
     public async Task<ManyPlantAttributesDto> GetMultiReferenceDataAsync()

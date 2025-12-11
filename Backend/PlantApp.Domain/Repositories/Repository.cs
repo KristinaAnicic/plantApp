@@ -42,6 +42,25 @@ public class Repository<T> : IRepository<T> where T : class
         
     }
 
+    public async Task<T?> GetByKeyAsync(Expression<Func<T, bool>> key, bool includeNavigations = false, params Expression<Func<T, object>>[]? includes)
+    {
+        var query = dbSet.AsQueryable();
+
+        if (includes != null)
+        {
+            foreach (var include in includes)
+            {
+                if (include != null)
+                    query = query.Include(include);
+            }
+        }
+
+        if (includeNavigations)
+            query = IncludeNavigations(query);
+
+        return await query.FirstOrDefaultAsync(key);
+    }
+
     public async Task<List<T>> GetAllByKeyAsync(Expression<Func<T, bool>> predicate, bool includeNavigations = false, params Expression<Func<T, object>>[]? includes)
     {
         var query = dbSet.AsQueryable();

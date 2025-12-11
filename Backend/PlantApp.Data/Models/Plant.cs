@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlantApp.Data.Models;
 
-public class Plant : BaseEntity
+public class Plant : BaseEntity, IHasImages
 {
     [Required]
     public required string BotanicalName { get; set; }
