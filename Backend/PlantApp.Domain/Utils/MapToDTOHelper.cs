@@ -195,7 +195,7 @@ public static class MapToDTOHelper
             CreatedAt = log.CreatedAt,
             Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList(),
             PlantedId = log.PlantedId,
-            Plant = log.Planted.Name
+            Plant = log.Planted != null ? log.Planted.Name : null
         };
     }
 
@@ -209,7 +209,7 @@ public static class MapToDTOHelper
             CreatedAt = log.CreatedAt,
             Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList(),
             PlantedId = log.PlantedId,
-            Plant = log.Planted.Name
+            Plant = log.Planted != null ? log.Planted.Name : null,
         };
     }
 
@@ -239,7 +239,7 @@ public static class MapToDTOHelper
             Price = exchange.Price,
             CreatedAt = exchange.CreatedAt,
             User = new ReferenceDto { Id = exchange.UserId, Name = exchange.User != null ? exchange.User.Username : "unknown" },
-            Planted = exchange.Planted.MapPlantedToPlantedDto(),
+            Planted = exchange.Planted != null ? exchange.Planted.MapPlantedToPlantedDto() : null,
             Content = exchange.Content,
             PlantStatus = exchange.PlantStatus,
             ExchangeFor = exchange.ExchangeFor,
@@ -254,8 +254,8 @@ public static class MapToDTOHelper
      {
         return new UserRatingDto
         {
-            Rater = new ReferenceDto { Id = userRating.RaterId, Name = userRating.Rater.Username },
-            Rated = new ReferenceDto { Id = userRating.RatedId, Name = userRating.Rated.Username },
+            Rater = new ReferenceDto { Id = userRating.RaterId, Name = userRating.Rater != null ? userRating.Rater.Username : "Unknown" },
+            Rated = new ReferenceDto { Id = userRating.RatedId, Name = userRating.Rated != null? userRating.Rated.Username : "Unknown" },
             Rating = userRating.Rating,
             Comment = userRating.Comment,
             CreatedAt = userRating.CreatedAt,

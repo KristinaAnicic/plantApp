@@ -227,7 +227,7 @@ public static class PlantDataFetcher
         return result;
     }
 
-    public static async Task CheckIds(int numOfFiles)
+    public static void CheckIds(int numOfFiles)
     {
         var ids = CsvHelper.ReadIdsFromCsv(Path.Combine(csvPath,"plant_data.csv"));
         
