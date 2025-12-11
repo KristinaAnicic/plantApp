@@ -4,8 +4,8 @@ namespace PlantApp.Domain.Interfaces.Data;
 
 public interface IUserRatingService
 {
-    public Task<List<UserRatingDto>> GetRatingsForUserId(int ratedUserId);
-    public Task AddRating(AddUserRatingDto dto);
-    public Task UpdateRating(int id, UpdateUserRatingDto dto);
-    public Task DeleteRating(int id);
+    public Task<List<UserRatingDto>> GetAllForUserIdAsync(int ratedUserId);
+    public Task AddAsync(AddUserRatingDto dto);
+    public Task UpdateAsync(int id, UpdateUserRatingDto dto);
+    public Task DeleteAsync(int id);
 }

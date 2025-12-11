@@ -13,7 +13,7 @@ public class PlantPlaceService(
 ) : IPlantPlaceService
 {
     int currentUser = 0;
-    public async Task<List<PlaceDto>> GetAllPlaces(int userId)
+    public async Task<List<PlaceDto>> GetAllAsync(int userId)
     {
         var places = await repository.GetAllByKeyAsync(p => p.UserId == userId, true);
         places.OrderBy(p => p.Name)
@@ -24,7 +24,7 @@ public class PlantPlaceService(
         return places.Select(p => p.MapPlaceToPlaceDto()).ToList();
     }
 
-    public async Task<PlaceGetDto> GetPlaceById(int id)
+    public async Task<PlaceGetDto> GetByIdAsync(int id)
     {
         int currentUser = 0;
         var place = await repository.GetByIdAsync(id);
@@ -38,7 +38,7 @@ public class PlantPlaceService(
         return place.MapPlaceToPlaceGetDto();
     }
 
-    public async Task AddPlace(UpsertPlaceDto dto)
+    public async Task AddAsync(UpsertPlaceDto dto)
     {
         var country = countryRepository.GetByIdAsync(dto.CountryId);
         if (country == null)
@@ -50,7 +50,7 @@ public class PlantPlaceService(
         await repository.AddAsync(place);
     }
 
-    public async Task UpdatePlace(int id, UpsertPlaceDto place)
+    public async Task UpdateAsync(int id, UpsertPlaceDto place)
     {
         if (id != place.Id)
             throw new ArgumentException("DTO ID does not match the provided Id parameter.");
@@ -65,7 +65,7 @@ public class PlantPlaceService(
         await repository.UpdateAsync(existingPlace);
     }
 
-    public async Task DeletePlace(int id)
+    public async Task DeleteAsync(int id)
     {
         var place = await repository.GetByIdAsync(id);
 
@@ -73,7 +73,7 @@ public class PlantPlaceService(
             throw new ArgumentException("Place with provided Id does not exist");
 
         if (place.PlantedList != null && place.PlantedList.Any())
-            throw new ArgumentException("You have to move planted plants to another place before deleting");
+            throw new ArgumentException("You have to remove or move planted plants to another place before deleting");
 
         await repository.DeleteAsync(place);
     }

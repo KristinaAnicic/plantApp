@@ -17,7 +17,7 @@ public class PlantExchangeService(
     //user rating
 
     public int currentUser = 0;
-    public async Task<List<PlantExchangeDto>> GetActivePlantExchanges()
+    public async Task<List<PlantExchangeDto>> GetActiveAsync()
     {
         var exchanges = await repository.GetAllByKeyAsync(e => e.IsActive == true);
         
@@ -26,7 +26,7 @@ public class PlantExchangeService(
         return exchanges.Select(e => e.MapPlantExchangeToPlantExchangeDto()).ToList();
     }
 
-    public async Task<List<PlantExchangeDto>> GetActivePlantsFiltered(PlantExchangeFilterDto filter)
+    public async Task<List<PlantExchangeDto>> GetActiveFilteredAsync(PlantExchangeFilterDto filter)
     {
         var exchanges = await repository.GetAllByKeyAsync(e =>
             e.IsActive == true &&
@@ -43,7 +43,7 @@ public class PlantExchangeService(
         return exchanges.Select(e => e.MapPlantExchangeToPlantExchangeDto()).ToList();
     }
 
-    public async Task<PlantExchangeGetDto> GetPlantExchange(int id)
+    public async Task<PlantExchangeGetDto> GetByIdAsync(int id)
     {
         var exchange = await repository.GetByIdAsync(id);
 
@@ -53,7 +53,7 @@ public class PlantExchangeService(
         return exchange.MapPlantExchangeToPlantExchangeGetDto();
     }
 
-    public async Task AddPlantExchange(UpsertPlantExchangeDto dto)
+    public async Task AddAsync(UpsertPlantExchangeDto dto)
     {
         dto.PlantedId = await ValidatePlantExchange(dto);
 
@@ -62,7 +62,7 @@ public class PlantExchangeService(
         await repository.AddAsync(exchange);
     }
 
-    public async Task UpdatePlantExchange(int id, UpsertPlantExchangeDto dto)
+    public async Task UpdateAsync(int id, UpsertPlantExchangeDto dto)
     {
 
         var existingExchange = await repository.GetByIdAsync(id);
@@ -80,7 +80,7 @@ public class PlantExchangeService(
         await repository.UpdateAsync(existingExchange);
     }
 
-    public async Task DeletePlantExchange(int id)
+    public async Task DeleteAsync(int id)
     {
         var existingExchange = await repository.GetByIdAsync(id);
 

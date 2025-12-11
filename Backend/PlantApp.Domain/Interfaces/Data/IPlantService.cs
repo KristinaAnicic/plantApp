@@ -4,12 +4,12 @@ namespace PlantApp.Domain.Interfaces.Data;
 
 public interface IPlantService
 {
-    public Task<List<PlantDto>> GetAllPlants();
-    public Task<PlantGetDto?> GetPlantById(int id);
-    public Task<List<PlantDto>> GetPlantsByName(FilterByDto filter, string? name = null);
-    public Task InsertPlant(UpsertPlantDto plantDto);
-    public Task UpdatePlant(UpsertPlantDto plantDto, int Id);
-    public Task DeletePlantAsync(int Id);
-    public Task<ManyPlantAttributesDto> GetMultiReferenceData();
-    public Task<OnePlantAttributesDto> GetSinglePlantReferenceData();
+    public Task<List<PlantDto>> GetAllAsync();
+    public Task<PlantGetDto?> GetByIdAsync(int id);
+    public Task<List<PlantDto>> GetFilteredAsync(FilterByDto filter);
+    public Task AddAsync(UpsertPlantDto plantDto);
+    public Task UpdateAsync(int Id, UpsertPlantDto plantDto);
+    public Task DeleteAsync(int Id);
+    public Task<ManyPlantAttributesDto> GetMultiReferenceDataAsync();
+    public Task<OnePlantAttributesDto> GetSinglePlantReferenceDataAsync();
 }

@@ -2,6 +2,7 @@
 
 public class FilterByDto
 {
+    public string? Name { get; set; } = null;
     public bool? IsLowMaintenance { get; set; } = null;
     public bool? IsDroughtResistant { get; set; } = null;
     public List<int>? Habits { get; set; } = null;

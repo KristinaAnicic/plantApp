@@ -16,13 +16,13 @@ public class ReminderService(
 ) : IReminderService
 {
     public int currentUser = 0;
-    public async Task<List<ReminderDto>> GetReminders()
+    public async Task<List<ReminderDto>> GetAllAsync()
     {
         var reminders = await repository.GetAllRemindersAsync(currentUser);
         return reminders.Select(r => r.MapReminderToReminderDto()).ToList();
     }
 
-    public async Task<ReminderGetDto> GetReminder(int id)
+    public async Task<ReminderGetDto> GetByIdAsync(int id)
     {
         var reminder = await repository.GetReminderAsync(id);
         CheckReminderAndAuthorization(reminder);
@@ -33,7 +33,7 @@ public class ReminderService(
     //save to ReminderHistory
     //change NextDueDate
     //set delayDays to 0
-    public async Task ReminderDone(int id, DateTime? dateDone)
+    public async Task ReminderDoneAsync(int id, DateTime? dateDone)
     {
         var reminder = await repository.GetReminderAsync(id);
         CheckReminderAndAuthorization(reminder);
@@ -80,7 +80,7 @@ public class ReminderService(
         await repository.UpdateAsync(reminder);
     }
 
-    public async Task DelayReminder(int id, int delay)
+    public async Task DelayReminderAsync(int id, int delay)
     {
         var reminder = await repository.GetReminderAsync(id);
 
@@ -91,7 +91,7 @@ public class ReminderService(
 
         await repository.UpdateAsync(reminder);
     }
-    public async Task AddReminder(UpsertReminderDto dto)
+    public async Task AddAsync(UpsertReminderDto dto)
     {
         await ValidateReferences(dto);
         var reminder = dto.MapUpsertReminderDtoToReminder();
@@ -104,7 +104,7 @@ public class ReminderService(
     }
 
     //on frontend disable changing nextDueDate or reminderHistory calculate delay by previous reminder
-    public async Task UpdateReminder(int id, UpsertReminderDto dto)
+    public async Task UpdateAsync(int id, UpsertReminderDto dto)
     {
         if (dto.Id != id)
             throw new ArgumentException("DTO id does not match with provided id");
@@ -119,7 +119,7 @@ public class ReminderService(
         await repository.UpdateAsync(reminder!);
     }
 
-    public async Task DeleteReminder(int id)
+    public async Task DeleteAsync(int id)
     {
         var reminder = await repository.GetReminderAsync(id);
 

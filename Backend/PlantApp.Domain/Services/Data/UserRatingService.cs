@@ -13,7 +13,7 @@ public class UserRatingService(
 {
     public int currentUser = 0;
 
-    public async Task<List<UserRatingDto>> GetRatingsForUserId(int ratedUserId)
+    public async Task<List<UserRatingDto>> GetAllForUserIdAsync(int ratedUserId)
     {
         var ratings = await repository.GetAllByKeyAsync(u => u.RatedId == ratedUserId, true);
 
@@ -25,7 +25,7 @@ public class UserRatingService(
         return ratings.Select(r => r.MapUserRatingToUserRatingDto()).ToList();
     }
 
-    public async Task AddRating(AddUserRatingDto dto)
+    public async Task AddAsync(AddUserRatingDto dto)
     {
         var rating = await repository.GetAllByKeyAsync(u => u.RatedId == dto.RatedUserId && u.RaterId == currentUser);
         if (rating.Any()) {
@@ -43,7 +43,7 @@ public class UserRatingService(
         await repository.AddAsync(newRating);
     }
 
-    public async Task UpdateRating(int id, UpdateUserRatingDto dto)
+    public async Task UpdateAsync(int id, UpdateUserRatingDto dto)
     {
         var rating = await repository.GetByIdAsync(id);
 
@@ -60,7 +60,7 @@ public class UserRatingService(
         await repository.UpdateAsync(rating);
     }
 
-    public async Task DeleteRating(int id)
+    public async Task DeleteAsync(int id)
     {
         var rating = await repository.GetByIdAsync(id);
 

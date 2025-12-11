@@ -14,13 +14,13 @@ public class GrowthLogService(
 {
     public int currentUser = 0;
 
-    public async Task<List<GrowthLogDto>> GetGrowthLogs()
+    public async Task<List<GrowthLogDto>> GetAllAsync()
     {
         var logs = await repository.GetAllGrowthLogsByUserId(currentUser);
         return logs.Select(l => l.MapGrowthLogToGrowthLogDto()).ToList();
     }
 
-    public async Task<List<GrowthLogDto>> GetGrowthLogByPlantedId(int plantedId)
+    public async Task<List<GrowthLogDto>> GetAllByPlantedIdAsync(int plantedId)
     {
         var logs = await repository.GetAllGrowthLogsByPlantedId(plantedId);
 
@@ -32,7 +32,7 @@ public class GrowthLogService(
         return logs.Select(l => l.MapGrowthLogToGrowthLogDto()).ToList();
     }
 
-    public async Task<GrowthLogGetDto> GetGrowthLogById(int id)
+    public async Task<GrowthLogGetDto> GetByIdAsync(int id)
     {
         var log = await repository.GetAllGrowthLogById(id);
 
@@ -41,7 +41,7 @@ public class GrowthLogService(
 
     }
 
-    public async Task AddGrowthLog(UpsertGrowthLogDto dto)
+    public async Task AddAsync(UpsertGrowthLogDto dto)
     {
         if (!await plantedRepo.IdExistsAsync(dto.PlantedId))
             throw new ArgumentException("Unknown planted");
@@ -65,7 +65,7 @@ public class GrowthLogService(
         await repository.AddAsync(log);
     }
 
-    public async Task UpdateGrowthLog(int id, UpsertGrowthLogDto dto)
+    public async Task UpdateAsync(int id, UpsertGrowthLogDto dto)
     {
         if (id != dto.Id)
             throw new ArgumentException("DTO id does not match provided id");
@@ -96,7 +96,7 @@ public class GrowthLogService(
         await repository.UpdateAsync(log!);
     }
 
-    public async Task DeleteGrowthLog(int id)
+    public async Task DeleteAsync(int id)
     {
         var log = await repository.GetAllGrowthLogById(id);
         CheckLogAndAuthorization(log);

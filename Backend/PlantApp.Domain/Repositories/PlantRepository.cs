@@ -8,7 +8,7 @@ namespace PlantApp.Domain.Repositories;
 
 public class PlantRepository(AppDbContext context) : Repository<Plant>(context), IPlantRepository
 {
-    public async Task<List<Plant>> GetPlantsFiltered(FilterByDto filter, string? name = null)
+    public async Task<List<Plant>> GetPlantsFiltered(FilterByDto filter)
     {
         return await dbSet.Where(p =>
             (filter.IsLowMaintenance == null || p.IsLowMaintenance == filter.IsLowMaintenance) &&
@@ -19,9 +19,9 @@ public class PlantRepository(AppDbContext context) : Repository<Plant>(context),
             (filter.Height == null || p.HeightTypeId == filter.Height) &&
             (filter.TimeToFullHeight == null || p.TimeToFullHeightId == filter.TimeToFullHeight) &&
             (filter.Exposure == null || p.Exposures.Any(e => e.Id == filter.Exposure)) &&
-            (string.IsNullOrEmpty(name) || 
-                EF.Functions.ILike(p.CommonName, $"%{name}%") || 
-                EF.Functions.ILike(p.BotanicalName, $"%{name}%")
+            (string.IsNullOrEmpty(filter.Name) || 
+                EF.Functions.ILike(p.CommonName, $"%{filter.Name}%") || 
+                EF.Functions.ILike(p.BotanicalName, $"%{filter.Name}%")
             ) && p.DeletedAt == null
         ).ToListAsync();
     }

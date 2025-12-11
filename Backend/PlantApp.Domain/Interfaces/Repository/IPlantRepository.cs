@@ -5,5 +5,5 @@ namespace PlantApp.Domain.Interfaces.Repository;
 
 public interface IPlantRepository : IRepository<Plant>
 {
-    public Task<List<Plant>> GetPlantsFiltered(FilterByDto filter, string? name = null);
+    public Task<List<Plant>> GetPlantsFiltered(FilterByDto filter);
 }

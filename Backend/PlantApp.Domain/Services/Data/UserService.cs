@@ -10,18 +10,18 @@ public class UserService(
     IRepository<User> repository
 ) : IUserService
 {
-    public async Task<List<User>> GetAllUsers()
+    public async Task<List<User>> GetAllAsync()
     {
         return await repository.GetAllAsync();
     }
 
-    public async Task<UserGetDto?> GetUser(int id)
+    public async Task<UserGetDto?> GetByIdAsync(int id)
     {
         var user = await repository.GetByIdAsync(id);
         return user?.MapUserToUserGetDto();
     }
 
-    public async Task AddUser(AddUserDto dto)
+    public async Task AddAsync(AddUserDto dto)
     {
         var existingEmail = await repository.ExistsAsync(u => EF.Functions.ILike(u.Email, dto.Email));
         if (existingEmail) 
@@ -37,7 +37,7 @@ public class UserService(
         await repository.AddAsync(plant);
     }
 
-    public async Task UpdateUser(int id, UpdateUserDto dto)
+    public async Task UpdateAsync(int id, UpdateUserDto dto)
     {
         if (dto == null)
             throw new ArgumentNullException(nameof(dto));
@@ -55,7 +55,7 @@ public class UserService(
         await repository.UpdateAsync(existingUser);
     }
 
-    public async Task DeleteUser(int id)
+    public async Task DeleteAsync(int id)
     {
         var user = await repository.GetByIdAsync(id);
 

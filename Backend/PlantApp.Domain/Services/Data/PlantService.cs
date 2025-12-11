@@ -26,25 +26,25 @@ public class PlantService(
     IRepository<Season> seasonRepository
 ) : IPlantService
 {
-    public async Task<List<PlantDto>> GetAllPlants()
+    public async Task<List<PlantDto>> GetAllAsync()
     {
         var plants = await repository.GetAllAsync();
         return plants.Select(p => p.MapPlantToPlantDto()).ToList();
     }
 
-    public async Task<PlantGetDto?> GetPlantById(int id)
+    public async Task<PlantGetDto?> GetByIdAsync(int id)
     {
         var plant = await repository.GetByIdAsync(id);
         return plant?.MapPlantToPlantGetDto();
     }
 
-    public async Task<List<PlantDto>> GetPlantsByName(FilterByDto filter, string? name = null)
+    public async Task<List<PlantDto>> GetFilteredAsync(FilterByDto filter)
     {
-        var plants = await repository.GetPlantsFiltered(filter, name);
+        var plants = await repository.GetPlantsFiltered(filter);
         return plants.Select(p => p.MapPlantToPlantDto()).ToList();
     }
 
-    public async Task InsertPlant(UpsertPlantDto plantDto) {
+    public async Task AddAsync(UpsertPlantDto plantDto) {
         if (plantDto.SynonymParentPlantId != null && !(await repository.IdExistsAsync(plantDto.SynonymParentPlantId.Value)))
         {
             plantDto.SynonymParentPlantId = null;
@@ -93,7 +93,7 @@ public class PlantService(
         await repository.AddAsync(plant);
     }
 
-    public async Task UpdatePlant(UpsertPlantDto plantDto, int Id)
+    public async Task UpdateAsync(int Id, UpsertPlantDto plantDto)
     {
         if (plantDto == null)
             throw new ArgumentNullException(nameof(plantDto));
@@ -137,7 +137,7 @@ public class PlantService(
         await repository.UpdateAsync(existingPlant);
     }
 
-    public async Task DeletePlantAsync(int Id)
+    public async Task DeleteAsync(int Id)
     {
         var plant = await repository.GetByIdAsync(Id);
         if (plant == null)
@@ -152,7 +152,7 @@ public class PlantService(
         await repository.DeleteAsync(plant, false);
     }
 
-    public async Task<ManyPlantAttributesDto> GetMultiReferenceData()
+    public async Task<ManyPlantAttributesDto> GetMultiReferenceDataAsync()
     {
         return new ManyPlantAttributesDto
         {
@@ -167,7 +167,7 @@ public class PlantService(
         };
     }
 
-    public async Task<OnePlantAttributesDto> GetSinglePlantReferenceData()
+    public async Task<OnePlantAttributesDto> GetSinglePlantReferenceDataAsync()
     {
         return new OnePlantAttributesDto
         {

@@ -11,13 +11,13 @@ public class PlantedService(
     IRepository<Image> imageRepository
 ) : IPlantedService
 {
-    public async Task<List<PlantedDto>> GetPlantedPlants(int userId)
+    public async Task<List<PlantedDto>> GetAllByUserIdAsync(int userId)
     {
         var planted = await repository.GetPlantedPlantsByUserId(userId);
         return planted.Select(p => p.MapPlantedToPlantedDto()).ToList();
     }
 
-    public async Task<List<GroupedPlantedDto>> GetPlantedPlantsGroupedByPlace(int userId)
+    public async Task<List<GroupedPlantedDto>> GetAllByUserIdGroupedByPlaceAsync(int userId)
     {
         var planted = await repository.GetPlantedPlantsByUserIdGrouped(userId);
         var groupedDto = planted
@@ -31,7 +31,7 @@ public class PlantedService(
         return groupedDto;
     }
 
-    public async Task<PlantedGetDto> GetPlantedById(int id)
+    public async Task<PlantedGetDto> GetByIdAsync(int id)
     {
         var planted = await repository.GetByIdAsync(id);
 
@@ -44,7 +44,7 @@ public class PlantedService(
         return planted.MapPlantedToPlantedGetDto();
     }
 
-    public async Task AddPlanted(UpsertPlantedDto dto)
+    public async Task AddAsync(UpsertPlantedDto dto)
     {
         //temporary until jwt is implemented
         int currentUser = 0;
@@ -61,7 +61,7 @@ public class PlantedService(
         await repository.AddAsync(planted);
     }
 
-    public async Task UpdatePlanted(int id, UpsertPlantedDto dto)
+    public async Task UpdateAsync(int id, UpsertPlantedDto dto)
     {
         //temporary until jwt is implemented
         int currentUser = 0;
@@ -88,7 +88,7 @@ public class PlantedService(
         await repository.UpdateAsync(existingPlanted);
     }
 
-    public async Task DeletePlanted(int id)
+    public async Task DeleteAsync(int id)
     {
         var planted = await repository.GetByIdAsync(id);
 
