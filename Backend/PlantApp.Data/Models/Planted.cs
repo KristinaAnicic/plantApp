@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using PlantApp.Data.Models.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlantApp.Data.Models;
 
@@ -23,8 +24,8 @@ public class Planted : BaseEntity, IHasImages
     public PlantStatus? PlantStatus { get; set; }
     public int PlantStatusId { get; set; }
 
-    public ICollection<GrowthLog>? GrowthLogs { get; set; }
+    public ICollection<GrowthLog> GrowthLogs { get; set; } = new List<GrowthLog>();
     public ICollection<Image> Images { get; set; } = new List<Image>();
-    public ICollection<Reminder>? Reminders { get; set; }
-    public ICollection<ReminderHistory>? ReminderHistory { get; set; }
+    public ICollection<Reminder> Reminders { get; set; } = new List<Reminder>();
+    public ICollection<ReminderHistory> ReminderHistory { get; set; } = new List<ReminderHistory>();
 }

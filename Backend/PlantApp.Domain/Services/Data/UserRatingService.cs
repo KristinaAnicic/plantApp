@@ -11,7 +11,7 @@ public class UserRatingService(
     IRepository<User> userRepo  
 ) : IUserRatingService
 {
-    public int currentUser = 0;
+    public int currentUser = 3;
 
     public async Task<List<UserRatingDto>> GetAllForUserIdAsync(int ratedUserId)
     {

@@ -15,7 +15,7 @@ public class ReminderService(
     IRepository<Planted> plantedRepo
 ) : IReminderService
 {
-    public int currentUser = 0;
+    public int currentUser = 3;
     public async Task<List<ReminderDto>> GetAllAsync()
     {
         var reminders = await repository.GetAllRemindersAsync(currentUser);
@@ -40,6 +40,11 @@ public class ReminderService(
 
         DateTime dateDoneVar = dateDone ?? DateTime.UtcNow;
 
+        var delayDays = Math.Max(
+            0,
+            (int)(dateDoneVar.Date - reminder!.NextDueDate.Date).TotalDays
+        );
+
         var reminderHistory = new ReminderHistory
         {
             PlantedId = reminder!.PlantedId,
@@ -48,33 +53,31 @@ public class ReminderService(
             FrequencyNum = reminder.FrequencyNum,
             DueDate = reminder.NextDueDate,
             DateDone = dateDoneVar,
-            delay = (int)Math.Floor((dateDoneVar - reminder.NextDueDate).TotalDays)
+            delay = delayDays
         };
 
         await reminderHistoryRepo.AddAsync(reminderHistory);
 
-        var currentDueDate = reminder.NextDueDate.AddDays(reminder.DelayDays);
         var newDueDate = new DateTime();
 
-        switch (reminder.ReminderTypeId) {
+        switch (reminder.FrequencyTypeId) {
             case 1:
-                newDueDate = currentDueDate.AddDays(reminder.FrequencyNum);
+                newDueDate = dateDoneVar.AddDays(reminder.FrequencyNum);
                 break;
             case 2:
-                newDueDate = currentDueDate.AddDays(reminder.FrequencyNum * 7);
+                newDueDate = dateDoneVar.AddDays(reminder.FrequencyNum * 7);
                 break;
             case 3:
-                newDueDate = currentDueDate.AddMonths(reminder.FrequencyNum);
+                newDueDate = dateDoneVar.AddMonths(reminder.FrequencyNum);
                 break;
             case 4:
-                newDueDate = currentDueDate.AddYears(reminder.FrequencyNum);
+                newDueDate = dateDoneVar.AddYears(reminder.FrequencyNum);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(reminder.ReminderTypeId), "Unknown ReminderTypeId");
         }
 
         reminder.NextDueDate = newDueDate;
-        reminder.UpdatedAt = DateTime.UtcNow;
         reminder.DelayDays = 0;
 
         await repository.UpdateAsync(reminder);
@@ -113,6 +116,10 @@ public class ReminderService(
 
         CheckReminderAndAuthorization(reminder);
         await ValidateReferences(dto);
+
+        var planted = await plantedRepo.GetByIdAsync(dto.PlantedId);
+        if (planted!.Place!.UserId != currentUser)
+            throw new ArgumentException("Does not have access to the planted");
 
         dto.MapUpsertReminderDtoToReminder(reminder);
 

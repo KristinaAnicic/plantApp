@@ -1,4 +1,5 @@
 ﻿using PlantApp.Data.Models;
+using PlantApp.Data.Models.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 
@@ -8,7 +9,7 @@ public class ImageService(
     IRepository<Image> imageRepository
 ) : IImageService
 {
-    public int currentUser = 0;
+    public int currentUser = 3;
     public async Task AddImagesToEntityAsync(IHasImages entity, List<string> urls)
     {
         var distinctUrls = urls.Select(u => u.Trim()).Where(u => !string.IsNullOrWhiteSpace(u)).Distinct().ToList();
@@ -67,12 +68,24 @@ public class ImageService(
         }
     }
 
-    public async Task RemoveImageFromEntityAsync(IHasImages entity, int imageId)
+
+    public async Task<string?> RemoveImageFromEntityAsync<T>(T entity, int imageId, IRepository<T> entityRepository) where T : class, IHasImages
     {
         var image = await imageRepository.GetByIdAsync(imageId);
         if (image == null)
             throw new ArgumentException("Image not found");
 
+        var deletedUrl = image.Url;
         entity.Images.Remove(image);
+
+        await entityRepository.UpdateAsync(entity);
+        if (!image.Plants.Any() && !image.GrowthLogs.Any() && !image.Planted.Any() && !image.PlantExchanges.Any())
+        {
+            await imageRepository.DeleteAsync(image, false);
+            return deletedUrl;
+        }
+
+        return null;
     }
+
 }

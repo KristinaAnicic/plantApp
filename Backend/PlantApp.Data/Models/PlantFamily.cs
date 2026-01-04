@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PlantApp.Data.Models.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlantApp.Data.Models;
 
-public class PlantFamily
+public class PlantFamily : IReferenceEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

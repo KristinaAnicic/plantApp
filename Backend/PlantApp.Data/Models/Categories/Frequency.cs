@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PlantApp.Data.Models.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlantApp.Data.Models.Categories;
 
-public class Frequency
+public class Frequency : IReferenceEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

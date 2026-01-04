@@ -1,4 +1,4 @@
-﻿namespace PlantApp.Data.Models;
+﻿namespace PlantApp.Data.Models.Interfaces;
 
 public interface IHasImages
 {

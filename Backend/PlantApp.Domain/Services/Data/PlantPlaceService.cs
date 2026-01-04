@@ -12,7 +12,7 @@ public class PlantPlaceService(
     IRepository<Country> countryRepository
 ) : IPlantPlaceService
 {
-    int currentUser = 0;
+    int currentUser = 3;
     public async Task<List<PlaceDto>> GetAllAsync(int userId)
     {
         var places = await repository.GetAllByKeyAsync(p => p.UserId == userId, true);
@@ -26,7 +26,6 @@ public class PlantPlaceService(
 
     public async Task<PlaceGetDto> GetByIdAsync(int id)
     {
-        int currentUser = 0;
         var place = await repository.GetByIdAsync(id);
 
         if (place == null)
@@ -75,6 +74,6 @@ public class PlantPlaceService(
         if (place.PlantedList != null && place.PlantedList.Any())
             throw new ArgumentException("You have to remove or move planted plants to another place before deleting");
 
-        await repository.DeleteAsync(place);
+        await repository.DeleteAsync(place, false);
     }
 }

@@ -15,18 +15,32 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
         return await query.ToListAsync();
     }
 
+    public async Task<Planted?> GetPlantedById(int id)
+    {
+        var query = dbSet.AsQueryable();
+        query = IncludeNavigations(query);
+        query = query
+            .Include(q => q.Place!.Country)
+            .Include(q => q.Plant!.Images)
+            .Include(q => q.Reminders)
+                .ThenInclude(r => r.ReminderType);
+
+        return await query.FirstOrDefaultAsync(q => q.Id == id);
+    }
+
     public async Task<Dictionary<Place, List<Planted>>> GetPlantedPlantsByUserIdGrouped(int userId, bool filterByName = false)
     {
         var query = FilterPlanted(userId)
             .Include(p => p.Reminders)
+            .Include(p => p.Place!.Country)
             .AsQueryable();
 
         query = OrderPlanted(query, filterByName);
 
         return await query
-        .GroupBy(p => new { p.PlaceId, p.Place })
+        .GroupBy(p => p.Place)
         .ToDictionaryAsync(
-            g => g.Key.Place!,
+            g => g.Key!,
             g => g.ToList());
     }
 
@@ -50,7 +64,7 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
             .Include(p => p.PlantStatus)
             .Where(p => p.Plant != null && p.Place != null && p.Place.UserId == userId && p.PlantStatusId != 3);
     }
-    private IQueryable<Planted> OrderPlanted(IQueryable<Planted> query, bool filterByName)
+    /*private IQueryable<Planted> OrderPlanted(IQueryable<Planted> query, bool filterByName)
     {
         if (filterByName)
         {
@@ -59,13 +73,39 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
         else
         {
             query = query.OrderBy(p => p.Reminders
-                                        .Select(r => (r.NextDueDate.AddDays(r.DelayDays) - DateTime.UtcNow).TotalDays)
-                                        .DefaultIfEmpty(double.MaxValue)
+                                        .Select(r => r.NextDueDate.AddDays(r.DelayDays))
+                                        .DefaultIfEmpty(DateTime.MaxValue)
                                         .Min())
                 .ThenBy(p => p.UpdatedAt)
                 .ThenBy(p => p.CreatedAt);
         }
 
         return query;
+    }*/
+
+    private IQueryable<Planted> OrderPlanted(IQueryable<Planted> query, bool filterByName)
+    {
+        if (filterByName)
+        {
+            return query.OrderBy(p => p.Plant!.CommonName);
+        }
+        else
+        {
+            var queryWithMin = query
+                .Select(p => new
+                {
+                    Planted = p,
+                    MinReminderDate = p.Reminders
+                        .OrderBy(r => r.NextDueDate.AddDays(r.DelayDays))
+                        .Select(r => (DateTime?)r.NextDueDate.AddDays(r.DelayDays))
+                        .FirstOrDefault() ?? DateTime.MaxValue
+                })
+                .OrderBy(x => x.MinReminderDate)
+                .ThenBy(x => x.Planted.UpdatedAt)
+                .ThenBy(x => x.Planted.CreatedAt)
+                .Select(x => x.Planted);
+
+            return queryWithMin;
+        }
     }
 }

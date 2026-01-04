@@ -2,27 +2,37 @@
 using Microsoft.VisualBasic.FileIO;
 using PlantApp.Data;
 using PlantApp.Data.Models;
-using PlantApp.Data.Models.Categories;
 
 namespace PlantApp.Domain.Services;
 
-public class SeedDataService
+public class SeedCsvDataService
 {
     public static readonly string mainPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "PlantApp.Data");
     public static readonly string csvPath = Path.Combine(mainPath, "csv");
     public static List<PlantSynonym> plantSynonymList = new List<PlantSynonym>();
     protected readonly AppDbContext context;
-    public SeedDataService(AppDbContext context)
+    public SeedCsvDataService(AppDbContext context)
     {
         this.context = context;
     }
 
     public async Task SeedData()
     {
-        await SeedCsvData("fragrances", "fragrance_types.csv");
-        await SeedCsvData("plant_families", "plant_family.csv");
-        await PopulateImages();
-        await SeedPlantData();
+        var fragrances = await context.Fragrances.ToListAsync();
+        if (!fragrances.Any())
+            await SeedCsvData("fragrances", "fragrance_types.csv");
+
+        var family = await context.PlantFamilies.ToListAsync();
+        if(!family.Any())
+            await SeedCsvData("plant_families", "plant_family.csv");
+
+        var images = await context.Images.ToListAsync();
+        if (!images.Any())
+            await PopulateImages();
+
+        var plants = await context.Plants.ToListAsync();
+        if (!plants.Any())
+            await SeedPlantData();
     }
 
     public async Task PopulateImages()

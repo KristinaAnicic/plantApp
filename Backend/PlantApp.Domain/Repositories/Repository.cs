@@ -2,6 +2,7 @@
 using PlantApp.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PlantApp.Domain.Repositories;
 
@@ -33,12 +34,47 @@ public class Repository<T> : IRepository<T> where T : class
         return await query.ToListAsync();
     }
 
-    public async Task<T?> GetByIdAsync(int id)
+    /*public async Task<List<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
     {
         var query = dbSet.AsQueryable();
+
+        foreach (var include in includes)
+        {
+            if (include != null)
+                query = query.Include(include.Name);
+        }    
+
+        var deletedProperty = typeof(T).GetProperty("DeletedAt");
+        if (deletedProperty != null)
+        {
+            query = query.Where(q => EF.Property<DateTime?>(q, "DeletedAt") == null);
+        }
+
+        return await query.ToListAsync();
+    }*/
+
+    public async Task<T?> GetByIdAsync(int id, params Expression<Func<T, object>>[]? includes)
+    {
+        var query = dbSet.AsQueryable();
+
+        if (includes != null)
+        {
+            foreach (var include in includes)
+            {
+                if (include != null)
+                    query = query.Include(include);
+            }
+        }
+
         query = IncludeNavigations(query);
-            
-       return await query.FirstOrDefaultAsync(q => EF.Property<int>(q, "Id") == id);
+
+        var deletedProperty = typeof(T).GetProperty("DeletedAt");
+        if (deletedProperty != null)
+        {
+            query = query.Where(q => EF.Property<DateTime?>(q, "DeletedAt") == null);
+        }
+
+        return await query.FirstOrDefaultAsync(q => EF.Property<int>(q, "Id") == id);
         
     }
 
@@ -57,6 +93,12 @@ public class Repository<T> : IRepository<T> where T : class
 
         if (includeNavigations)
             query = IncludeNavigations(query);
+
+        var deletedProperty = typeof(T).GetProperty("DeletedAt");
+        if (deletedProperty != null)
+        {
+            query = query.Where(q => EF.Property<DateTime?>(q, "DeletedAt") == null);
+        }
 
         return await query.FirstOrDefaultAsync(key);
     }
@@ -83,6 +125,12 @@ public class Repository<T> : IRepository<T> where T : class
             { query = IncludeNavigations(query); }
 
         query = query.Where(predicate);
+
+        var deletedProperty = typeof(T).GetProperty("DeletedAt");
+        if (deletedProperty != null)
+        {
+            query = query.Where(q => EF.Property<DateTime?>(q, "DeletedAt") == null);
+        }
 
         if (page != null)
         {
@@ -156,7 +204,15 @@ public class Repository<T> : IRepository<T> where T : class
     {
         if (ids == null || ids.Count == 0) return new List<T>();
 
-        return await dbSet
+        var query = dbSet.AsQueryable();
+
+        var deletedProperty = typeof(T).GetProperty("DeletedAt");
+        if (deletedProperty != null)
+        {
+            query = query.Where(q => EF.Property<DateTime?>(q, "DeletedAt") == null);
+        }
+
+        return await query
             .Where(e =>
                 ids.Contains(EF.Property<int>(e, "Id")))
             .ToListAsync();
@@ -170,7 +226,7 @@ public class Repository<T> : IRepository<T> where T : class
         return await dbSet.CountAsync(count);
     }
 
-    public IQueryable<T> IncludeNavigations(IQueryable<T> query)
+    /*public IQueryable<T> IncludeNavigations(IQueryable<T> query)
     {
         var navigationProperties = context.Model.FindEntityType(typeof(T))?.GetNavigations();
 
@@ -185,5 +241,32 @@ public class Repository<T> : IRepository<T> where T : class
             }
         }
         return query;
+    }*/
+
+    public IQueryable<T> IncludeNavigations(IQueryable<T> query, bool all = true)
+    {
+        var entityType = context.Model.FindEntityType(typeof(T));
+
+        if (entityType == null)
+            return query;
+
+        foreach (var navigation in entityType.GetNavigations())
+        {
+            if (!navigation.DeclaringEntityType.IsOwned())
+            {
+                query = query.Include(navigation.Name);
+            }
+        }
+
+        if (all)
+        {
+            foreach (var skipNavigation in entityType.GetSkipNavigations())
+            {
+                query = query.Include(skipNavigation.Name);
+            }
+        }
+
+        return query;
     }
+
 }

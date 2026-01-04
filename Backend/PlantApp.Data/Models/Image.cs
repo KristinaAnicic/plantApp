@@ -11,8 +11,8 @@ public class Image : BaseEntity
     public User? User { get; set; }
     public int? UserId { get; set; }
 
-    public ICollection<Plant>? Plants { get; set; }
-    public ICollection<GrowthLog>? GrowthLogs { get; set; }
-    public ICollection<PlantExchange>? PlantExchanges { get; set; }
-    public ICollection<Planted>? Planted { get; set; }
+    public ICollection<Plant> Plants { get; set; } = new List<Plant>();
+    public ICollection<GrowthLog> GrowthLogs { get; set; } = new List<GrowthLog>();
+    public ICollection<PlantExchange> PlantExchanges { get; set; } = new List<PlantExchange>();
+    public ICollection<Planted> Planted { get; set; } = new List<Planted>();
 }

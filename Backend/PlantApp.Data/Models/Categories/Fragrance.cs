@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PlantApp.Data.Models.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlantApp.Data.Models;
 
-public class Fragrance
+public class Fragrance : IReferenceEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

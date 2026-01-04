@@ -13,5 +13,5 @@ public class City
     [ForeignKey(nameof(CountryId))]
     public Country? Country { get; set; }
     public required int CountryId { get; set; }
-    public ICollection<Place>? Places { get; set; }
+    //public ICollection<Place>? Places { get; set; }
 }

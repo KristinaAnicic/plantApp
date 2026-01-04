@@ -6,7 +6,7 @@ public class UpsertPlantedDto
     public string? Name { get; set; }
     public int PlantId { get; set; }
     public required int PlaceId { get; set; }
-    public required DateTime DatePlanted { get; set; }
+    public required DateTime? DatePlanted { get; set; } = null;
     public string? Source { get; set; }
     public string? Note { get; set; }
     public bool IsOutside { get; set; } = false;

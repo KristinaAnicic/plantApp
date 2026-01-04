@@ -24,6 +24,7 @@ builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 builder.Services.AddScoped<IPlantedRepository, PlantedRepository>();
 builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
 builder.Services.AddScoped<IGrowthLogRepository, GrowthLogRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IPlantService, PlantService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -35,7 +36,8 @@ builder.Services.AddScoped<IPlantExchangeService, PlantExchangeService>();
 builder.Services.AddScoped<IUserRatingService, UserRatingService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 
-builder.Services.AddScoped<SeedDataService>();
+builder.Services.AddScoped<SeedCsvDataService>();
+builder.Services.AddScoped<SeedTemporaryDataService>();
 
 
 var app = builder.Build();
@@ -50,12 +52,15 @@ if (app.Environment.IsDevelopment())
 //await PlantDataFetcher.FetchAllDataAsync();
 //await PlantDataFetcher.CheckIds(45);
 
-/*using (var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var seeder = services.GetRequiredService<SeedDataService>();
+    var seeder = services.GetRequiredService<SeedCsvDataService>();
     await seeder.SeedData();
-}*/
+
+    var seedTemp = services.GetRequiredService<SeedTemporaryDataService>();
+    await seedTemp.SeedAllData();
+}
 
 app.UseHttpsRedirection();
 

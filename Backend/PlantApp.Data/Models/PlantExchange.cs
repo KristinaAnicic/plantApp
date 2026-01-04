@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using PlantApp.Data.Models.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlantApp.Data.Models;
 

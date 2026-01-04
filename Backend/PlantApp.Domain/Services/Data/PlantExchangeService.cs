@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos;
-using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
@@ -19,8 +18,8 @@ public class PlantExchangeService(
 {
     //user rating
 
-    public int currentUser = 0;
-    public async Task<ListResponse<PlantExchangeDto>> GetActiveAsync(int page)
+    public int currentUser = 3;
+    public async Task<ListResponse<PlantExchangeDto>> GetActiveAsync(int page = 1)
     {
         var exchanges = await repository.GetAllByKeyAsync(e => e.IsActive == true, false, page);
         
@@ -31,7 +30,7 @@ public class PlantExchangeService(
         return new ListResponse<PlantExchangeDto> { Total = total, Items = dto };
     }
 
-    public async Task<ListResponse<PlantExchangeDto>> GetActiveFilteredAsync(PlantExchangeFilterDto filter, int page)
+    public async Task<ListResponse<PlantExchangeDto>> GetActiveFilteredAsync(PlantExchangeFilterDto filter, int page = 1)
     {
         var exchanges = await repository.GetAllByKeyAsync(
             e =>
@@ -129,14 +128,16 @@ public class PlantExchangeService(
         await repository.UpdateAsync(exchange);
     }
 
-    public async Task RemoveImageById(int exchangeId, int imageId)
+    public async Task<string?> RemoveImageById(int exchangeId, int imageId)
     {
         var exchange = await repository.GetByIdAsync(exchangeId);
         if (exchange == null)
             throw new ArgumentException("Plant not found");
 
-        await imageService.RemoveImageFromEntityAsync(exchange, imageId);
-        await repository.UpdateAsync(exchange);
+        var deletedUrl = await imageService.RemoveImageFromEntityAsync(exchange, imageId, repository);
+        //await repository.UpdateAsync(exchange);
+
+        return deletedUrl;
     }
 
     public async Task<int?> ValidatePlantExchange(UpsertPlantExchangeDto dto)

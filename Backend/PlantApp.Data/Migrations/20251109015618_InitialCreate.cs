@@ -414,7 +414,6 @@ namespace PlantApp.Data.Migrations
                     note = table.Column<string>(type: "text", nullable: true),
                     user_id = table.Column<int>(type: "integer", nullable: false),
                     country_id = table.Column<int>(type: "integer", nullable: false),
-                    city_id = table.Column<int>(type: "integer", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -422,11 +421,6 @@ namespace PlantApp.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_places", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_places_cities_city_id",
-                        column: x => x.city_id,
-                        principalTable: "cities",
-                        principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_places_countries_country_id",
                         column: x => x.country_id,
@@ -985,11 +979,6 @@ namespace PlantApp.Data.Migrations
                 name: "IX_ph_plant_plants_id",
                 table: "ph_plant",
                 column: "plants_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_places_city_id",
-                table: "places",
-                column: "city_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_places_country_id",

@@ -17,9 +17,9 @@ public class User : BaseEntity
     public DateOnly DateOfBirth { get; set; }
     //public decimal Rating { get; set; }
 
-    public ICollection<Place>? Places { get; set; }
-    public ICollection<PlantExchange>? PlantExchanges { get; set; }
-    public ICollection<UserRating>? RatingsGiven { get; set; }
-    public ICollection<UserRating>? RatingsReceived { get; set; }
-    public ICollection<Image>? UploadedImages { get; set; }
+    public ICollection<Place> Places { get; set; } = new List<Place>();
+    public ICollection<PlantExchange> PlantExchanges { get; set; } = new List<PlantExchange>();
+    public ICollection<UserRating> RatingsGiven { get; set; } = new List<UserRating>();
+    public ICollection<UserRating> RatingsReceived { get; set; } = new List<UserRating>();  
+    public ICollection<Image> UploadedImages { get; set; } = new List<Image>();
 }

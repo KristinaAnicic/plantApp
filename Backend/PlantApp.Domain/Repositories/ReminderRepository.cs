@@ -31,6 +31,6 @@ public class ReminderRepository(AppDbContext context) : Repository<Reminder>(con
             .Include(r => r.ReminderType)
             .Include(r => r.FrequencyType);
 
-        return await query.FirstOrDefaultAsync();
+        return await query.FirstOrDefaultAsync(q => q.Id == id);
     }
 }

@@ -10,14 +10,14 @@ namespace PlantBackend.Controllers;
 public class PlantExchangeController(IPlantExchangeService plantExchangeService) : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int page)
+    public async Task<IActionResult> GetAll([FromQuery] int page = 1)
     {
         var result = await plantExchangeService.GetActiveAsync(page);
         return Ok(result);
     }
 
     [HttpGet("filter")]
-    public async Task<IActionResult> GetAll([FromQuery] int page, [FromBody] PlantExchangeFilterDto filter)
+    public async Task<IActionResult> GetAll([FromBody] PlantExchangeFilterDto filter, [FromQuery] int page = 1)
     {
         var result = await plantExchangeService.GetActiveFilteredAsync(filter, page);
         return Ok(result);
@@ -61,7 +61,16 @@ public class PlantExchangeController(IPlantExchangeService plantExchangeService)
     [HttpDelete("{id}/images/{imageId}")]
     public async Task<IActionResult> DeleteImage(int id, int imageId)
     {
-        await plantExchangeService.RemoveImageById(id, imageId);
+        var deletedUrl = await plantExchangeService.RemoveImageById(id, imageId);
+        if (deletedUrl != null)
+        {
+            return Ok(new
+            {
+                imageDeleted = true,
+                deletedUrl
+            });
+        }
+
         return NoContent();
     }
 }

@@ -53,6 +53,7 @@ public static class MapFromDTOHelper
         user.Gender = dto.Gender;
         user.Contact = dto.Contact;
         user.DateOfBirth = dto.DateOfBirth;
+        user.RoleId = dto.RoleId;
 
         return user;
     }
@@ -68,6 +69,7 @@ public static class MapFromDTOHelper
         user.Contact = dto.Contact;
         user.DateOfBirth = dto.DateOfBirth;
         user.Username = dto.Username;
+        user.RoleId = dto.RoleId;
 
         return user;
     }
@@ -75,7 +77,7 @@ public static class MapFromDTOHelper
     public static Planted MapUpsertPlantedDtoToPlanted(this UpsertPlantedDto dto, Planted? planted = null)
     {
         if (planted == null)
-            planted = new Planted { PlaceId = dto.PlaceId, PlantId = dto.PlantId, DatePlanted = dto.DatePlanted };
+            planted = new Planted { PlaceId = dto.PlaceId, PlantId = dto.PlantId, DatePlanted = dto.DatePlanted ?? DateTime.UtcNow };
 
         MapValuesUpsertPlantedDtoToPlanted(dto, planted);
         return planted;
@@ -85,7 +87,7 @@ public static class MapFromDTOHelper
     {
         planted.PlantId = dto.PlantId;
         planted.PlaceId = dto.PlaceId;
-        planted.DatePlanted = dto.DatePlanted;
+        planted.DatePlanted = dto.DatePlanted ?? DateTime.UtcNow;
         planted.Source = dto.Source;
         planted.Note = dto.Note;
         planted.IsOutside = dto.IsOutside;

@@ -17,9 +17,9 @@ public class PlantedController(IPlantedService plantedService) : Controller
     }
 
     [HttpGet("grouped")]
-    public async Task<IActionResult> GetAllGroupedByPlace([FromQuery] int placeId)
+    public async Task<IActionResult> GetAllGroupedByPlace([FromQuery] int userId)
     {
-        var result = await plantedService.GetAllByUserIdGroupedByPlaceAsync(placeId);
+        var result = await plantedService.GetAllByUserIdGroupedByPlaceAsync(userId);
         return Ok(result);
     }
 
@@ -61,7 +61,16 @@ public class PlantedController(IPlantedService plantedService) : Controller
     [HttpDelete("{id}/images/{imageId}")]
     public async Task<IActionResult> DeleteImage(int id, int imageId)
     {
-        await plantedService.RemoveImageById(id, imageId);
+        var deletedUrl = await plantedService.RemoveImageById(id, imageId);
+        if (deletedUrl != null)
+        {
+            return Ok(new
+            {
+                imageDeleted = true,
+                deletedUrl
+            });
+        }
+
         return NoContent();
     }
 }

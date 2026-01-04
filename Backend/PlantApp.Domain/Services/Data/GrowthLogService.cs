@@ -3,18 +3,17 @@ using PlantApp.Domain.Dtos.GrowthLog;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
-using System.Numerics;
 
 namespace PlantApp.Domain.Services.Data;
 
 public class GrowthLogService(
     IGrowthLogRepository repository,
     IRepository<PlantStatus> statusRepo,
-    IRepository<Planted> plantedRepo,
+    IPlantedRepository plantedRepo,
     IImageService imageService
 ) : IGrowthLogService
 {
-    public int currentUser = 0;
+    public int currentUser = 3;
 
     public async Task<List<GrowthLogDto>> GetAllAsync()
     {
@@ -39,17 +38,22 @@ public class GrowthLogService(
         var log = await repository.GetGrowthLogById(id);
 
         CheckLogAndAuthorization(log);
-        return log.MapGrowthLogToGrowthLogGetDto();
+        return log!.MapGrowthLogToGrowthLogGetDto();
 
     }
 
     public async Task AddAsync(UpsertGrowthLogDto dto)
     {
-        if (!await plantedRepo.IdExistsAsync(dto.PlantedId))
+
+        var planted = await plantedRepo.GetByIdAsync(dto.PlantedId);
+        if (planted == null)
             throw new ArgumentException("Unknown planted");
 
         if (!await statusRepo.IdExistsAsync(dto.PlantStatusId))
             throw new ArgumentException("Unknown plant status");
+
+        if (planted.Place != null && planted.Place.UserId != currentUser)
+            throw new AccessViolationException("Cannot add log to someone's planted");
 
         var log = dto.MapUpsertGrowthLogDtoToGrowthLog();
 
@@ -72,11 +76,15 @@ public class GrowthLogService(
 
         CheckLogAndAuthorization(log);
 
-        if (!await plantedRepo.IdExistsAsync(dto.PlantedId))
+        var planted = await plantedRepo.GetByIdAsync(dto.PlantedId);
+        if (planted == null)
             throw new ArgumentException("Unknown planted");
 
         if (!await statusRepo.IdExistsAsync(dto.PlantStatusId))
             throw new ArgumentException("Unknown plant status");
+
+        if (planted.Place != null && planted.Place.UserId != currentUser)
+            throw new AccessViolationException("Cannot add log to someone's planted");
 
         dto.MapUpsertGrowthLogDtoToGrowthLog(log);
 
@@ -108,13 +116,15 @@ public class GrowthLogService(
         await repository.UpdateAsync(log!);
     }
 
-    public async Task RemoveImageById(int logId, int imageId)
+    public async Task<string?> RemoveImageById(int logId, int imageId)
     {
         var log = await repository.GetGrowthLogById(logId);
         CheckLogAndAuthorization(log);
 
-        await imageService.RemoveImageFromEntityAsync(log!, imageId);
-        await repository.UpdateAsync(log!);
+        var deletedUrl = await imageService.RemoveImageFromEntityAsync(log!, imageId, repository);
+        //await repository.UpdateAsync(log!);
+
+        return deletedUrl;
     }
 
     private void CheckLogAndAuthorization(GrowthLog? log)

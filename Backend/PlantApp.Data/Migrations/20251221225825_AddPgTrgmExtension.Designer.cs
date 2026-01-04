@@ -12,8 +12,8 @@ using PlantApp.Data;
 namespace PlantApp.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251109015618_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251221225825_AddPgTrgmExtension")]
+    partial class AddPgTrgmExtension
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -127,6 +127,23 @@ namespace PlantApp.Data.Migrations
                     b.ToTable("image_plant_exchange");
                 });
 
+            modelBuilder.Entity("ImagePlanted", b =>
+                {
+                    b.Property<int>("ImagesId")
+                        .HasColumnType("integer")
+                        .HasColumnName("images_id");
+
+                    b.Property<int>("PlantedId")
+                        .HasColumnType("integer")
+                        .HasColumnName("planted_id");
+
+                    b.HasKey("ImagesId", "PlantedId");
+
+                    b.HasIndex("PlantedId");
+
+                    b.ToTable("image_planted");
+                });
+
             modelBuilder.Entity("MoisturePlant", b =>
                 {
                     b.Property<int>("MoisturesId")
@@ -178,6 +195,25 @@ namespace PlantApp.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("aspects");
+                });
+
+            modelBuilder.Entity("PlantApp.Data.Models.Categories.Frequency", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("frequencies");
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Categories.Season", b =>
@@ -233,10 +269,24 @@ namespace PlantApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Iso")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("iso");
+
+                    b.Property<string>("Iso3")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("iso3");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
+
+                    b.Property<int>("PhoneCode")
+                        .HasColumnType("integer")
+                        .HasColumnName("phone_code");
 
                     b.HasKey("Id");
 
@@ -438,22 +488,22 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<int?>("PlantedId")
-                        .HasColumnType("integer")
-                        .HasColumnName("planted_id");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("url");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("PlantedId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("images");
                 });
@@ -837,13 +887,21 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("text")
+                        .HasColumnName("image");
+
                     b.Property<bool>("IsOutside")
                         .HasColumnType("boolean")
                         .HasColumnName("is_outside");
 
-                    b.Property<string>("Notes")
+                    b.Property<string>("Name")
                         .HasColumnType("text")
-                        .HasColumnName("notes");
+                        .HasColumnName("name");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
 
                     b.Property<int>("PlaceId")
                         .HasColumnType("integer")
@@ -914,22 +972,29 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
+                    b.Property<int>("DelayDays")
+                        .HasColumnType("integer")
+                        .HasColumnName("delay_days");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
 
-                    b.Property<string>("Frequency")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("frequency");
+                    b.Property<int>("FrequencyNum")
+                        .HasColumnType("integer")
+                        .HasColumnName("frequency_num");
 
-                    b.Property<DateTime>("NexDueDate")
+                    b.Property<int>("FrequencyTypeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("frequency_type_id");
+
+                    b.Property<DateTime>("NextDueDate")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("nex_due_date");
+                        .HasColumnName("next_due_date");
 
-                    b.Property<string>("Notes")
+                    b.Property<string>("Note")
                         .HasColumnType("text")
-                        .HasColumnName("notes");
+                        .HasColumnName("note");
 
                     b.Property<int>("PlantedId")
                         .HasColumnType("integer")
@@ -945,11 +1010,73 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FrequencyTypeId");
+
                     b.HasIndex("PlantedId");
 
                     b.HasIndex("ReminderTypeId");
 
                     b.ToTable("reminders");
+                });
+
+            modelBuilder.Entity("PlantApp.Data.Models.ReminderHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime>("DateDone")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_done");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("due_date");
+
+                    b.Property<int>("FrequencyNum")
+                        .HasColumnType("integer")
+                        .HasColumnName("frequency_num");
+
+                    b.Property<int>("FrequencyTypeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("frequency_type_id");
+
+                    b.Property<int?>("PlantedId")
+                        .HasColumnType("integer")
+                        .HasColumnName("planted_id");
+
+                    b.Property<int>("ReminderTypeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reminder_type_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("delay")
+                        .HasColumnType("integer")
+                        .HasColumnName("delay");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FrequencyTypeId");
+
+                    b.HasIndex("PlantedId");
+
+                    b.HasIndex("ReminderTypeId");
+
+                    b.ToTable("reminder_history");
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.ReminderType", b =>
@@ -1139,6 +1266,11 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("username");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RoleId");
@@ -1168,10 +1300,6 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
 
-                    b.Property<int>("PlantExchangeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("plant_exchange_id");
-
                     b.Property<int>("RatedId")
                         .HasColumnType("integer")
                         .HasColumnName("rated_id");
@@ -1189,8 +1317,6 @@ namespace PlantApp.Data.Migrations
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PlantExchangeId");
 
                     b.HasIndex("RatedId");
 
@@ -1340,6 +1466,21 @@ namespace PlantApp.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ImagePlanted", b =>
+                {
+                    b.HasOne("PlantApp.Data.Models.Image", null)
+                        .WithMany()
+                        .HasForeignKey("ImagesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PlantApp.Data.Models.Planted", null)
+                        .WithMany()
+                        .HasForeignKey("PlantedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MoisturePlant", b =>
                 {
                     b.HasOne("PlantApp.Data.Models.Moisture", null)
@@ -1402,9 +1543,11 @@ namespace PlantApp.Data.Migrations
 
             modelBuilder.Entity("PlantApp.Data.Models.Image", b =>
                 {
-                    b.HasOne("PlantApp.Data.Models.Planted", null)
-                        .WithMany("Images")
-                        .HasForeignKey("PlantedId");
+                    b.HasOne("PlantApp.Data.Models.User", "User")
+                        .WithMany("UploadedImages")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Place", b =>
@@ -1449,7 +1592,7 @@ namespace PlantApp.Data.Migrations
                         .HasForeignKey("SpreadTypeId");
 
                     b.HasOne("PlantApp.Data.Models.Plant", "SynonymParentPlant")
-                        .WithMany()
+                        .WithMany("Synonyms")
                         .HasForeignKey("SynonymParentPlantId");
 
                     b.HasOne("PlantApp.Data.Models.TimeToFullHeight", "TimeToFullHeight")
@@ -1539,6 +1682,12 @@ namespace PlantApp.Data.Migrations
 
             modelBuilder.Entity("PlantApp.Data.Models.Reminder", b =>
                 {
+                    b.HasOne("PlantApp.Data.Models.Categories.Frequency", "FrequencyType")
+                        .WithMany("Reminders")
+                        .HasForeignKey("FrequencyTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("PlantApp.Data.Models.Planted", "Planted")
                         .WithMany("Reminders")
                         .HasForeignKey("PlantedId")
@@ -1550,6 +1699,33 @@ namespace PlantApp.Data.Migrations
                         .HasForeignKey("ReminderTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("FrequencyType");
+
+                    b.Navigation("Planted");
+
+                    b.Navigation("ReminderType");
+                });
+
+            modelBuilder.Entity("PlantApp.Data.Models.ReminderHistory", b =>
+                {
+                    b.HasOne("PlantApp.Data.Models.Categories.Frequency", "FrequencyType")
+                        .WithMany("ReminderHistory")
+                        .HasForeignKey("FrequencyTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PlantApp.Data.Models.Planted", "Planted")
+                        .WithMany("ReminderHistory")
+                        .HasForeignKey("PlantedId");
+
+                    b.HasOne("PlantApp.Data.Models.ReminderType", "ReminderType")
+                        .WithMany("ReminderHistory")
+                        .HasForeignKey("ReminderTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FrequencyType");
 
                     b.Navigation("Planted");
 
@@ -1569,12 +1745,6 @@ namespace PlantApp.Data.Migrations
 
             modelBuilder.Entity("PlantApp.Data.Models.UserRating", b =>
                 {
-                    b.HasOne("PlantApp.Data.Models.PlantExchange", "PlantExchange")
-                        .WithMany("UserRatings")
-                        .HasForeignKey("PlantExchangeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PlantApp.Data.Models.User", "Rated")
                         .WithMany("RatingsReceived")
                         .HasForeignKey("RatedId")
@@ -1586,8 +1756,6 @@ namespace PlantApp.Data.Migrations
                         .HasForeignKey("RaterId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("PlantExchange");
 
                     b.Navigation("Rated");
 
@@ -1639,6 +1807,13 @@ namespace PlantApp.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PlantApp.Data.Models.Categories.Frequency", b =>
+                {
+                    b.Navigation("ReminderHistory");
+
+                    b.Navigation("Reminders");
+                });
+
             modelBuilder.Entity("PlantApp.Data.Models.Country", b =>
                 {
                     b.Navigation("Cities");
@@ -1672,11 +1847,8 @@ namespace PlantApp.Data.Migrations
             modelBuilder.Entity("PlantApp.Data.Models.Plant", b =>
                 {
                     b.Navigation("PlantedList");
-                });
 
-            modelBuilder.Entity("PlantApp.Data.Models.PlantExchange", b =>
-                {
-                    b.Navigation("UserRatings");
+                    b.Navigation("Synonyms");
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.PlantFamily", b =>
@@ -1695,7 +1867,7 @@ namespace PlantApp.Data.Migrations
                 {
                     b.Navigation("GrowthLogs");
 
-                    b.Navigation("Images");
+                    b.Navigation("ReminderHistory");
 
                     b.Navigation("Reminders");
                 });
@@ -1707,6 +1879,8 @@ namespace PlantApp.Data.Migrations
 
             modelBuilder.Entity("PlantApp.Data.Models.ReminderType", b =>
                 {
+                    b.Navigation("ReminderHistory");
+
                     b.Navigation("Reminders");
                 });
 
@@ -1734,6 +1908,8 @@ namespace PlantApp.Data.Migrations
                     b.Navigation("RatingsGiven");
 
                     b.Navigation("RatingsReceived");
+
+                    b.Navigation("UploadedImages");
                 });
 #pragma warning restore 612, 618
         }

@@ -7,17 +7,21 @@ using PlantApp.Domain.Utils;
 namespace PlantApp.Domain.Services.Data;
 
 public class UserService(
-    IRepository<User> repository
+    IUserRepository repository,
+    IRepository<Role> roleRepo
 ) : IUserService
 {
-    public async Task<List<User>> GetAllAsync()
+    public async Task<List<UserDto>> GetAllAsync()
     {
-        return await repository.GetAllAsync();
+        var users = await repository.GetAllUsers();
+        return users.Select(u => u.MapUserToUserDto()).ToList();
     }
 
     public async Task<UserGetDto?> GetByIdAsync(int id)
     {
-        var user = await repository.GetByIdAsync(id);
+        var user = await repository.GetUserById(id);
+        if (user == null)
+            throw new ArgumentException("User not found");
         return user?.MapUserToUserGetDto();
     }
 
@@ -30,6 +34,14 @@ public class UserService(
         var existingUsername = await repository.ExistsAsync(u => EF.Functions.ILike(u.Username, dto.Username));
         if (existingUsername)
             throw new ArgumentException("Username already exists");
+
+        var role = await roleRepo.GetByIdAsync(dto.RoleId);
+        if (role == null)
+            throw new ArgumentException("Role not found");
+
+        int currentUserRole = 3;
+        if (currentUserRole != 1 && dto.RoleId != 3)
+            dto.RoleId = 3;
 
         var plant = dto.MapAddUserDtoToUser();
         plant.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(dto.Password, 13);
@@ -49,6 +61,10 @@ public class UserService(
 
         if (existingUser == null)
             throw new ArgumentException("User with the provided Id does not exist.");
+
+        int currentUserRole = 3;
+        if (currentUserRole != 1 && dto.RoleId != 3)
+            dto.RoleId = 3;
 
         dto.MapUpdateUserDtoToUser(existingUser);
         

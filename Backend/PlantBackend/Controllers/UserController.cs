@@ -30,7 +30,7 @@ public class UserController(IUserService userService) : Controller
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] AddUserDto dto)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateUserDto dto)
     {
         await userService.UpdateAsync(id, dto);
         return NoContent();

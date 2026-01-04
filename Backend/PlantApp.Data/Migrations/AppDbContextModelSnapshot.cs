@@ -560,10 +560,6 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("city");
 
-                    b.Property<int?>("CityId")
-                        .HasColumnType("integer")
-                        .HasColumnName("city_id");
-
                     b.Property<int>("CountryId")
                         .HasColumnType("integer")
                         .HasColumnName("country_id");
@@ -594,8 +590,6 @@ namespace PlantApp.Data.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CityId");
 
                     b.HasIndex("CountryId");
 
@@ -1555,10 +1549,6 @@ namespace PlantApp.Data.Migrations
 
             modelBuilder.Entity("PlantApp.Data.Models.Place", b =>
                 {
-                    b.HasOne("PlantApp.Data.Models.City", null)
-                        .WithMany("Places")
-                        .HasForeignKey("CityId");
-
                     b.HasOne("PlantApp.Data.Models.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId")
@@ -1819,11 +1809,6 @@ namespace PlantApp.Data.Migrations
                     b.Navigation("ReminderHistory");
 
                     b.Navigation("Reminders");
-                });
-
-            modelBuilder.Entity("PlantApp.Data.Models.City", b =>
-                {
-                    b.Navigation("Places");
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Country", b =>

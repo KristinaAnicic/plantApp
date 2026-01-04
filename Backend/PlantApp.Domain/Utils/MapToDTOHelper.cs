@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlantApp.Data.Models;
+using PlantApp.Data.Models.Interfaces;
 using PlantApp.Domain.Dtos;
 using PlantApp.Domain.Dtos.GrowthLog;
 using PlantApp.Domain.Dtos.Plant;
@@ -77,7 +78,7 @@ public static class MapToDTOHelper
     {
         return new PlaceDto
         {
-            Id =place.Id,
+            Id = place.Id,
             Name = place.Name,
             Address = $"{place.Address} ({place.City}, {place.Country?.Name})",
         };
@@ -109,7 +110,27 @@ public static class MapToDTOHelper
             DateOfBirth = user.DateOfBirth,
             Places = user.Places?.Select(p  => p.MapPlaceToPlaceGetDto()).ToList(),
             PlantExchanges = user.PlantExchanges?.Select(pe => pe.MapPlantExchangeToPlantExchangeDto()).ToList(),
-            Rating = user.RatingsReceived?.Average(r => r.Rating),
+            Rating = user.RatingsReceived != null && user.RatingsReceived.Any()
+                        ? user.RatingsReceived.Average(r => r.Rating)
+                        : 0,
+            NumOfRatings = user.RatingsReceived?.Count()
+        };
+    }
+
+    public static UserDto MapUserToUserDto(this User user)
+    {
+        return new UserDto
+        {
+            Id = user.Id,
+            Email = user.Email,
+            Username = user.Username,
+            DisplayName = user.DisplayName,
+            Role = user.Role?.Name ?? "Unknown",
+            Gender = user.Gender,
+            DateOfBirth = user.DateOfBirth,
+            Rating = user.RatingsReceived != null && user.RatingsReceived.Any()
+                        ? user.RatingsReceived.Average(r => r.Rating)
+                        : 0,
             NumOfRatings = user.RatingsReceived?.Count()
         };
     }
@@ -119,10 +140,11 @@ public static class MapToDTOHelper
         return new PlantedDto
         {
             Id = planted.Id,
-            Place = $"{planted.Place?.Address}, {planted.Place?.City}",
+            Place = $"{planted.Place?.Name} ({planted.Place?.Address}, {planted.Place?.City})",
             PlantName = $"{planted.Plant?.BotanicalName} ({planted.Plant?.CommonName})",
+            PlantStatus = planted.PlantStatus?.Name ?? "Unknown",
             DatePlanted = planted.DatePlanted,
-            Image = planted.Image,
+            Image = planted.Image ?? planted.Images?.FirstOrDefault()?.Url,
             Name = planted.Name
         };
     }
@@ -162,7 +184,7 @@ public static class MapToDTOHelper
             Plant = reminder.Planted.Name,
             PlantedId = reminder.PlantedId,
             ReminderType = reminder.ReminderType?.Name,
-            NextDueDate = reminder.NextDueDate,
+            NextDueDate = reminder.NextDueDate.AddDays(reminder.DelayDays),
             Notes = reminder.Note,
             IsLate = (reminder.NextDueDate - DateTime.UtcNow).TotalDays < 0
         };
@@ -175,7 +197,8 @@ public static class MapToDTOHelper
             Id = reminder.Id,
             PlantedId = reminder.PlantedId,
             ReminderType = reminder.ReminderType.MapReferenceToDto(),
-            NextDueDate = reminder.NextDueDate,
+            NextDueDate = reminder.NextDueDate.AddDays(reminder.DelayDays),
+            DaysDelayed = reminder.DelayDays,
             Notes = reminder.Note,
             PlantedName = reminder.Planted.Name ?? $"{reminder.Planted.Plant?.BotanicalName} ({reminder.Planted.Plant?.CommonName})",
             //Frequency = $"every {reminder.FrequencyNum} {reminder.FrequencyType.Name}"
@@ -245,7 +268,9 @@ public static class MapToDTOHelper
             ExchangeFor = exchange.ExchangeFor,
             Shipping = exchange.Shipping,
             Images = exchange.Images.Select(img => img.MapImageToImageDto()).ToList(),
-            UserRating = exchange.User.RatingsReceived?.Average(r => r.Rating)
+            UserRating = exchange.User.RatingsReceived != null && exchange.User.RatingsReceived.Any()
+                        ? exchange.User.RatingsReceived.Average(r => r.Rating)
+                        : 0,
         };
     }
 
@@ -263,24 +288,12 @@ public static class MapToDTOHelper
         };
      }
 
-    public static ReferenceDto MapReferenceToDto<T>(this T reference)
+    public static ReferenceDto MapReferenceToDto(this IReferenceEntity reference)
     {
-        int id = EF.Property<int>(reference, "Id");
-        string? name = null;
-
-        if (typeof(T) == typeof(HardinessLevel))
-        {
-            name = EF.Property<string>(reference, "Level");
-        }
-        else
-        {
-            name = EF.Property<string>(reference, "Name");
-        }
-
         return new ReferenceDto
         {
-            Id = id,
-            Name = name
+            Id = reference.Id,
+            Name = reference.Name
         };
     }
 }

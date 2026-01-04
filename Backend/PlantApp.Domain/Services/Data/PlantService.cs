@@ -28,7 +28,7 @@ public class PlantService(
 ) : IPlantService
 {
 
-    public int currentUser = 0;
+    public int currentUser = 3;
     public async Task<ListResponse<PlantDto>> GetAllAsync(int page)
     {
         var plants = await repository.GetAllPlantsAsync(page);
@@ -44,11 +44,9 @@ public class PlantService(
         return plant?.MapPlantToPlantGetDto();
     }
 
-    public async Task<ListResponse<PlantDto>> GetFilteredAsync(FilterByDto filter, int page)
+    public async Task<ListResponse<PlantDto>> GetFilteredAsync(FilterByDto filter, int page = 1)
     {
-        var plants = await repository.GetPlantsFiltered(filter, page);
-        int total = await repository.CountAsync();
-
+        (int total, var plants) = await repository.GetPlantsFiltered(filter, page);
         var dto = plants.Select(p => p.MapPlantToPlantDto()).ToList();
         return new ListResponse<PlantDto> { Total = total, Items = dto };
     }
@@ -181,14 +179,16 @@ public class PlantService(
         await repository.UpdateAsync(plant);
     }
 
-    public async Task RemoveImageById(int plantId, int imageId)
+    public async Task<string?> RemoveImageById(int plantId, int imageId)
     {
         var plant = await repository.GetByIdAsync(plantId);
         if (plant == null)
             throw new ArgumentException("Plant not found");
 
-        await imageService.RemoveImageFromEntityAsync(plant, imageId);
-        await repository.UpdateAsync(plant);
+        var deletedUrl = await imageService.RemoveImageFromEntityAsync(plant, imageId, repository);
+        //await repository.UpdateAsync(plant);
+
+        return deletedUrl;
     }
 
     public async Task<ManyPlantAttributesDto> GetMultiReferenceDataAsync()
@@ -214,6 +214,7 @@ public class PlantService(
             HardinessLevels = (await hardinessRepository.GetAllAsync()).Select(a => a.MapReferenceToDto()).ToList(),
             SpreadTypes = (await spreadRepository.GetAllAsync()).Select(a => a.MapReferenceToDto()).ToList(),
             HeightTypes = (await heightRepository.GetAllAsync()).Select(a => a.MapReferenceToDto()).ToList(),
+            TimeToFullHeights = (await timeRepository.GetAllAsync()).Select(a => a.MapReferenceToDto()).ToList(),
             Families = (await familyRepository.GetAllAsync()).Select(a => a.MapReferenceToDto()).ToList()
         };
     }

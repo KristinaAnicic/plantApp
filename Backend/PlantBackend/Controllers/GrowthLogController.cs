@@ -60,7 +60,16 @@ public class GrowthLogController(IGrowthLogService growthLogService) : Controlle
     [HttpDelete("{id}/images/{imageId}")]
     public async Task<IActionResult> DeleteImage(int id, int imageId)
     {
-        await growthLogService.RemoveImageById(id, imageId);
+        var deletedUrl = await growthLogService.RemoveImageById(id, imageId);
+        if (deletedUrl != null)
+        {
+            return Ok(new
+            {
+                imageDeleted = true,
+                deletedUrl
+            });
+        }
+
         return NoContent();
     }
 }

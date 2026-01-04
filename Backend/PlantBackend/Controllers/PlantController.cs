@@ -15,8 +15,8 @@ public class PlantController(IPlantService plantService) : Controller
         return Ok(result);
     }
 
-    [HttpGet("search")]
-    public async Task<IActionResult> GetAllFIltered([FromQuery] int page, [FromBody] FilterByDto filter)
+    [HttpPost("search")]
+    public async Task<IActionResult> GetAllFIltered([FromBody] FilterByDto filter, [FromQuery] int page = 1)
     {
         var result = await plantService.GetFilteredAsync(filter, page);
         return Ok(result);
@@ -60,7 +60,16 @@ public class PlantController(IPlantService plantService) : Controller
     [HttpDelete("{id}/images/{imageId}")]
     public async Task<IActionResult> DeleteImage(int id, int imageId)
     {
-        await plantService.RemoveImageById(id, imageId);
+        var deletedUrl = await plantService.RemoveImageById(id, imageId);
+        if (deletedUrl != null)
+        {
+            return Ok(new
+            {
+                imageDeleted = true,
+                deletedUrl
+            });
+        }
+
         return NoContent();
     }
 
