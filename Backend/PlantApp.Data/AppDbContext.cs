@@ -38,6 +38,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<UserRating> UserRatings { get; set; }
     public DbSet<Frequency> Frequencies { get; set; }
     public DbSet<ReminderHistory> ReminderHistory { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

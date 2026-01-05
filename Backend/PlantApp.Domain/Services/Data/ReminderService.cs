@@ -1,6 +1,9 @@
-﻿using PlantApp.Data.Models;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
+using PlantApp.Data.Models;
 using PlantApp.Data.Models.Categories;
 using PlantApp.Domain.Dtos.Reminder;
+using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
@@ -12,13 +15,17 @@ public class ReminderService(
     IRepository<ReminderHistory> reminderHistoryRepo,
     IRepository<ReminderType> reminderTypeRepo,
     IRepository<Frequency> frequencyRepo,
-    IRepository<Planted> plantedRepo
+    IRepository<Planted> plantedRepo,
+    ICurrentUserContext userContext,
+    ILogger<ReminderService> logger
 ) : IReminderService
 {
-    public int currentUser = 3;
+    private int CurrentUserId => userContext.GetCurrentUserId();
     public async Task<List<ReminderDto>> GetAllAsync()
     {
-        var reminders = await repository.GetAllRemindersAsync(currentUser);
+        var reminders = await repository.GetAllRemindersAsync(CurrentUserId);
+
+        logger.LogInformation("Retrieved {Count} reminders for user {UserId}", reminders.Count, CurrentUserId);
         return reminders.Select(r => r.MapReminderToReminderDto()).ToList();
     }
 
@@ -58,29 +65,20 @@ public class ReminderService(
 
         await reminderHistoryRepo.AddAsync(reminderHistory);
 
-        var newDueDate = new DateTime();
-
-        switch (reminder.FrequencyTypeId) {
-            case 1:
-                newDueDate = dateDoneVar.AddDays(reminder.FrequencyNum);
-                break;
-            case 2:
-                newDueDate = dateDoneVar.AddDays(reminder.FrequencyNum * 7);
-                break;
-            case 3:
-                newDueDate = dateDoneVar.AddMonths(reminder.FrequencyNum);
-                break;
-            case 4:
-                newDueDate = dateDoneVar.AddYears(reminder.FrequencyNum);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(reminder.ReminderTypeId), "Unknown ReminderTypeId");
-        }
+        DateTime newDueDate = reminder.FrequencyTypeId switch
+        {
+            1 => dateDoneVar.AddDays(reminder.FrequencyNum),
+            2 => dateDoneVar.AddDays(reminder.FrequencyNum * 7),
+            3 => dateDoneVar.AddMonths(reminder.FrequencyNum),
+            4 => dateDoneVar.AddYears(reminder.FrequencyNum),
+            _ => throw new InvalidOperationException("Unknown frequency type for reminder.")
+        };
 
         reminder.NextDueDate = newDueDate;
         reminder.DelayDays = 0;
 
         await repository.UpdateAsync(reminder);
+        logger.LogInformation("Reminder {ReminderId} marked as done by user {UserId}", id, CurrentUserId);
     }
 
     public async Task DelayReminderAsync(int id, int delay)
@@ -93,17 +91,26 @@ public class ReminderService(
         reminder.UpdatedAt = DateTime.UtcNow;
 
         await repository.UpdateAsync(reminder);
+
+        logger.LogInformation("Reminder {ReminderId} delayed by {Delay} days by user {UserId}", id, delay, CurrentUserId);
     }
     public async Task AddAsync(UpsertReminderDto dto)
     {
         await ValidateReferences(dto);
         var reminder = dto.MapUpsertReminderDtoToReminder();
 
-        var planted = await plantedRepo.GetByIdAsync(dto.PlantedId);
-        if (planted!.Place!.UserId != currentUser)
-            throw new ArgumentException("Does not have access to the planted");
+        var planted = await plantedRepo.GetByIdAsync(dto.PlantedId)
+            ?? throw new KeyNotFoundException("Planted plant does not exist.");
+
+        if (planted.Place!.UserId != CurrentUserId)
+        {
+            logger.LogWarning("User {UserId} attempted to add reminder for planted {PlantedId} without permission", CurrentUserId, dto.PlantedId);
+            throw new UnauthorizedAccessException("You are not authorized to add a reminder for this planted plant.");
+        }
 
         await repository.AddAsync(reminder);
+
+        logger.LogInformation("Reminder {ReminderId} added for planted {PlantedId} by user {UserId}", reminder.Id, dto.PlantedId, CurrentUserId);
     }
 
     //on frontend disable changing nextDueDate or reminderHistory calculate delay by previous reminder
@@ -117,13 +124,19 @@ public class ReminderService(
         CheckReminderAndAuthorization(reminder);
         await ValidateReferences(dto);
 
-        var planted = await plantedRepo.GetByIdAsync(dto.PlantedId);
-        if (planted!.Place!.UserId != currentUser)
-            throw new ArgumentException("Does not have access to the planted");
+        var planted = await plantedRepo.GetByIdAsync(dto.PlantedId)
+            ?? throw new KeyNotFoundException("Planted plant does not exist.");
+
+        if (planted.Place!.UserId != CurrentUserId)
+        {
+            logger.LogWarning("User {UserId} attempted to update reminder {ReminderId} without permission", CurrentUserId, id);
+            throw new UnauthorizedAccessException("You are not authorized to update this reminder.");
+        }
 
         dto.MapUpsertReminderDtoToReminder(reminder);
 
         await repository.UpdateAsync(reminder!);
+        logger.LogInformation("Reminder {ReminderId} updated by user {UserId}", id, CurrentUserId);
     }
 
     public async Task DeleteAsync(int id)
@@ -133,26 +146,28 @@ public class ReminderService(
         CheckReminderAndAuthorization(reminder);
 
         await repository.DeleteAsync(reminder!, false);
+
+        logger.LogInformation("Reminder {ReminderId} deleted by user {UserId}", id, CurrentUserId);
     }
 
     private async Task ValidateReferences(UpsertReminderDto dto)
     {
         if (!await frequencyRepo.IdExistsAsync(dto.FrequencyTypeId))
-            throw new ArgumentException("Frequency type does not exist");
+            throw new KeyNotFoundException("Frequency type does not exist.");
 
         if (!await reminderTypeRepo.IdExistsAsync(dto.ReminderTypeId))
-            throw new ArgumentException("Reminder type does not exist");
+            throw new KeyNotFoundException("Reminder type does not exist.");
 
         if (!await plantedRepo.IdExistsAsync(dto.PlantedId))
-            throw new ArgumentException("Planted does not exist");
+            throw new KeyNotFoundException("Planted plant does not exist.");
     }
 
     private void CheckReminderAndAuthorization(Reminder? reminder)
     {
         if (reminder == null)
-            throw new ArgumentException("Reminder noot found");
+            throw new KeyNotFoundException("Reminder not found.");
 
-        if (reminder.Planted != null && reminder.Planted.Place != null && reminder.Planted.Place.UserId != currentUser)
-            throw new UnauthorizedAccessException("Cannot access this reminder");
+        if (reminder.Planted?.Place?.UserId != CurrentUserId)
+            throw new UnauthorizedAccessException("You are not authorized to access this reminder.");
     }
 }

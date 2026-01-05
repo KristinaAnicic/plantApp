@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Interfaces.Data;
-using PlantApp.Domain.Services.Data;
 
 namespace PlantBackend.Controllers;
 
 [Route("api/planted")]
 [ApiController]
+[Authorize]
 public class PlantedController(IPlantedService plantedService) : Controller
 {
     [HttpGet]

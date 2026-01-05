@@ -56,13 +56,15 @@ public class PlantRepository(AppDbContext context) : Repository<Plant>(context),
             .ToListAsync());
     }
 
-    public async Task<List<Plant>> GetAllPlantsAsync(int page)
+    public async Task<(int, List<Plant>)> GetAllPlantsAsync(int page)
     {
         var query = dbSet
             .Where(q => q.DeletedAt == null)
             .Skip((page - 1) * pageSize)
             .Take(pageSize);
-        
-        return await query.ToListAsync();
+
+        var total = query.Count();
+
+        return (total, await query.ToListAsync());
     }
 }

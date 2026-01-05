@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Interfaces.Data;
 
@@ -6,6 +7,7 @@ namespace PlantBackend.Controllers;
 
 [Route("api/plant")]
 [ApiController]
+[Authorize(Roles = "Admin")]
 public class PlantController(IPlantService plantService) : Controller
 {
     [HttpGet]
@@ -29,6 +31,7 @@ public class PlantController(IPlantService plantService) : Controller
         return Ok(result);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] UpsertPlantDto dto)
     {
@@ -36,6 +39,7 @@ public class PlantController(IPlantService plantService) : Controller
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("{id}/images")]
     public async Task<IActionResult> AddImage(int id, [FromBody] List<string> urls)
     {
@@ -43,6 +47,7 @@ public class PlantController(IPlantService plantService) : Controller
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpsertPlantDto dto)
     {
@@ -50,6 +55,7 @@ public class PlantController(IPlantService plantService) : Controller
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -57,6 +63,7 @@ public class PlantController(IPlantService plantService) : Controller
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}/images/{imageId}")]
     public async Task<IActionResult> DeleteImage(int id, int imageId)
     {

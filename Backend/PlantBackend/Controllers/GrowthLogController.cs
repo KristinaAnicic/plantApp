@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PlantApp.Domain.Dtos.GrowthLog;
 using PlantApp.Domain.Interfaces.Data;
 
@@ -6,6 +7,7 @@ namespace PlantBackend.Controllers;
 
 [Route("api/log")]
 [ApiController]
+[Authorize]
 public class GrowthLogController(IGrowthLogService growthLogService) : Controller
 {
     [HttpGet]

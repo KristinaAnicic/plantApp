@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos;
 using PlantApp.Domain.Dtos.PlantExchange;
+using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
@@ -13,12 +15,14 @@ public class PlantExchangeService(
     IRepository<PlantExchange> repository,   
     IRepository<Country> countryRepo,
     IRepository<Planted> plantedRepo,
-    IImageService imageService
+    IImageService imageService,
+    ICurrentUserContext userContext,
+    ILogger<PlantExchangeService> logger
 ) : IPlantExchangeService
 {
     //user rating
 
-    public int currentUser = 3;
+    private int CurrentUserId => userContext.GetCurrentUserId();
     public async Task<ListResponse<PlantExchangeDto>> GetActiveAsync(int page = 1)
     {
         var exchanges = await repository.GetAllByKeyAsync(e => e.IsActive == true, false, page);
@@ -57,7 +61,10 @@ public class PlantExchangeService(
         var exchange = await repository.GetByIdAsync(id);
 
         if (exchange == null)
-            throw new ArgumentException("Plant exchange not found");      
+        {
+            logger.LogWarning("Plant exchange {ExchangeId} not found", id);
+            throw new KeyNotFoundException("The requested plant exchange does not exist.");
+        }
 
         return exchange.MapPlantExchangeToPlantExchangeGetDto();
     }
@@ -75,6 +82,8 @@ public class PlantExchangeService(
         }
 
         await repository.AddAsync(exchange);
+
+        logger.LogInformation("Plant exchange added by user {UserId}", CurrentUserId);
     }
 
     public async Task UpdateAsync(int id, UpsertPlantExchangeDto dto)
@@ -83,23 +92,29 @@ public class PlantExchangeService(
         var existingExchange = await repository.GetByIdAsync(id);
 
         if (existingExchange == null)
-            throw new ArgumentException("Plant Exchange not found");
+        {
+            logger.LogWarning("Attempt to update non-existing exchange {ExchangeId}", id);
+            throw new KeyNotFoundException("The plant exchange you are trying to update does not exist.");
+        }
 
-        if (existingExchange.UserId != currentUser)
-            throw new AuthenticationException("Access denied");
+        if (existingExchange.UserId != CurrentUserId)
+        {
+            logger.LogWarning("User {UserId} tried to update exchange {ExchangeId}", CurrentUserId, id);
+            throw new AuthenticationException("You are not authorized to edit this plant exchange.");
+        }
 
         dto.PlantedId = await ValidatePlantExchange(dto);
-
         dto.MapUpsertPlantExchangeDtoToPlantExchange(existingExchange);
 
         if (dto.Images != null && dto.Images.Any())
         {
             existingExchange.Images.Clear();
-
             await imageService.AddImagesSafeAsync(existingExchange, dto.Images);
         }
 
         await repository.UpdateAsync(existingExchange);
+
+        logger.LogInformation("Plant exchange {ExchangeId} updated by user {UserId}", id, CurrentUserId);
     }
 
     public async Task DeleteAsync(int id)
@@ -107,22 +122,24 @@ public class PlantExchangeService(
         var existingExchange = await repository.GetByIdAsync(id);
 
         if (existingExchange == null)
-            throw new ArgumentException("Plant Exchange not found");
+            throw new KeyNotFoundException("The plant exchange you are trying to delete does not exist.");
 
-        if (existingExchange.UserId != currentUser)
-            throw new AuthenticationException("Access denied");
+        if (existingExchange.UserId != CurrentUserId)
+            throw new AuthenticationException("You are not authorized to delete this plant exchange.");
 
         await repository.DeleteAsync(existingExchange, false);
+
+        logger.LogInformation("Plant exchange {ExchangeId} deleted by user {UserId}", id, CurrentUserId);
     }
 
     public async Task AddImages(int exchangeId, List<string> urls)
     {
         var exchange = await repository.GetByIdAsync(exchangeId);
         if (exchange == null)
-            throw new ArgumentException("Plant not found");
+            throw new KeyNotFoundException("The plant exchange no longer exists.");
 
-        if (exchange.UserId != currentUser)
-            throw new InvalidOperationException("Access denied");
+        if (exchange.UserId != CurrentUserId)
+            throw new AuthenticationException("You are not authorized to add images to this exchange.");
 
         await imageService.AddImagesToEntityAsync(exchange, urls);
         await repository.UpdateAsync(exchange);
@@ -132,7 +149,7 @@ public class PlantExchangeService(
     {
         var exchange = await repository.GetByIdAsync(exchangeId);
         if (exchange == null)
-            throw new ArgumentException("Plant not found");
+            throw new KeyNotFoundException("The plant exchange no longer exists.");
 
         var deletedUrl = await imageService.RemoveImageFromEntityAsync(exchange, imageId, repository);
         //await repository.UpdateAsync(exchange);
@@ -147,16 +164,21 @@ public class PlantExchangeService(
             var planted = await plantedRepo.GetByIdAsync(dto.PlantedId.Value);
 
             if (planted == null)
-                dto.PlantedId = null;
+            {
+                logger.LogWarning("Invalid planted reference {PlantedId}", dto.PlantedId);
+                return null;
+            }
 
-            if (planted != null && planted.Place != null && planted.Place.UserId != currentUser)
-                throw new AuthenticationException("Cannot add reference to the planted");
+            if (planted != null && planted.Place != null && planted.Place.UserId != CurrentUserId)
+            {
+                throw new AuthenticationException("You are not allowed to use the selected planted plant in this exchange.");
+            }
         }
 
         var countryExists = await countryRepo.IdExistsAsync(dto.CountryId);
         if (!countryExists)
         {
-            throw new ArgumentException("Invalid country");
+            throw new ArgumentException("The selected country is invalid.");
         }
 
         return dto.PlantedId;

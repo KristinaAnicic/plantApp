@@ -1,7 +1,9 @@
-﻿using PlantApp.Data.Models;
+﻿using Microsoft.Extensions.Logging;
+using PlantApp.Data.Models;
 using PlantApp.Data.Models.Categories;
 using PlantApp.Domain.Dtos;
 using PlantApp.Domain.Dtos.Plant;
+using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
@@ -24,36 +26,48 @@ public class PlantService(
     IRepository<Exposure> exposureRepository,
     IRepository<Habit> habitRepository,
     IRepository<Season> seasonRepository,
-    IImageService imageService
+    IImageService imageService,
+    ICurrentUserContext userContext,
+    ILogger<PlantService> logger
 ) : IPlantService
 {
 
-    public int currentUser = 3;
+    private int CurrentUserId => userContext.GetCurrentUserId();
     public async Task<ListResponse<PlantDto>> GetAllAsync(int page)
     {
-        var plants = await repository.GetAllPlantsAsync(page);
-        int total = await repository.CountAsync();
-
+        (int total, var plants) = await repository.GetAllPlantsAsync(page);
         var dto = plants.Select(p => p.MapPlantToPlantDto()).ToList();
+
+        logger.LogInformation("Retrieved {Count} plants for page {Page}", dto.Count, page);
         return new ListResponse<PlantDto> { Total = total, Items = dto };
     }
 
     public async Task<PlantGetDto?> GetByIdAsync(int id)
     {
         var plant = await repository.GetByIdAsync(id);
-        return plant?.MapPlantToPlantGetDto();
+
+        if (plant == null)
+        {
+            logger.LogWarning("Plant {PlantId} not found", id);
+            throw new KeyNotFoundException("The requested plant does not exist.");
+        }
+
+        return plant.MapPlantToPlantGetDto();
     }
 
     public async Task<ListResponse<PlantDto>> GetFilteredAsync(FilterByDto filter, int page = 1)
     {
         (int total, var plants) = await repository.GetPlantsFiltered(filter, page);
         var dto = plants.Select(p => p.MapPlantToPlantDto()).ToList();
+
+        logger.LogInformation("Retrieved {Count} filtered plants for page {Page}", dto.Count, page);
         return new ListResponse<PlantDto> { Total = total, Items = dto };
     }
 
     public async Task AddAsync(UpsertPlantDto plantDto) {
         if (plantDto.SynonymParentPlantId != null && !(await repository.IdExistsAsync(plantDto.SynonymParentPlantId.Value)))
         {
+            logger.LogWarning("Synonym parent plant ID {ParentId} not found, ignoring", plantDto.SynonymParentPlantId);
             plantDto.SynonymParentPlantId = null;
         }
 
@@ -65,58 +79,53 @@ public class PlantService(
 
         if (!(await timeRepository.IdExistsAsync(plantDto.TimeToFullHeightId)))
         {
-            throw new ArgumentNullException();
+            logger.LogWarning("TimeToFullHeight ID {Id} invalid, using default", plantDto.TimeToFullHeightId);
+            throw new ArgumentException("Invalid time to full height specified.");
         }
-        
+
         var plant = plantDto.MapUpsertPlantDtoToPlant();
 
-        var soils = await soilRepository.GetByIdsAsync(plantDto.SoilTypes);
-        plant.SoilTypes = soils;
-
-        var sunlights = await sunlightRepository.GetByIdsAsync(plantDto.Sunlights);
-        plant.Sunlights = sunlights;
-
-        var aspects = await aspectRepository.GetByIdsAsync(plantDto.Aspects);
-        plant.Aspects = aspects;
-
-        var moistures = await moistureRepository.GetByIdsAsync(plantDto.Moistures);
-        plant.Moistures = moistures;
-
-        var phs = await phRepository.GetByIdsAsync(plantDto.Phs);
-        plant.Phs = phs;
-
-        var exposures = await exposureRepository.GetByIdsAsync(plantDto.Exposures);
-        plant.Exposures = exposures;
-
-        var habits = await habitRepository.GetByIdsAsync(plantDto.Habits);
-        plant.Habits = habits;
-
-        var seasons = await seasonRepository.GetByIdsAsync(plantDto.Seasons);
-        plant.Seasons = seasons;
+        plant.SoilTypes = await soilRepository.GetByIdsAsync(plantDto.SoilTypes);
+        plant.Sunlights = await sunlightRepository.GetByIdsAsync(plantDto.Sunlights);
+        plant.Aspects = await aspectRepository.GetByIdsAsync(plantDto.Aspects);
+        plant.Moistures = await moistureRepository.GetByIdsAsync(plantDto.Moistures);
+        plant.Phs = await phRepository.GetByIdsAsync(plantDto.Phs);
+        plant.Exposures = await exposureRepository.GetByIdsAsync(plantDto.Exposures);
+        plant.Habits = await habitRepository.GetByIdsAsync(plantDto.Habits);
+        plant.Seasons = await seasonRepository.GetByIdsAsync(plantDto.Seasons);
 
 
         if (plantDto.Images != null && plantDto.Images.Any())
         {
             plant.Images.Clear();
-
             await imageService.AddImagesSafeAsync(plant, plantDto.Images);
         }
 
         await repository.AddAsync(plant);
+
+        logger.LogInformation("Plant {PlantId} added by user {UserId}", plant.Id, CurrentUserId);
     }
 
     public async Task UpdateAsync(int Id, UpsertPlantDto plantDto)
     {
         if (plantDto == null)
-            throw new ArgumentNullException(nameof(plantDto));
+        {
+            logger.LogWarning("Null DTO provided for update");
+            throw new ArgumentNullException(nameof(plantDto), "Plant data is required for update.");
+        }
 
         if (plantDto.Id != Id)
-            throw new ArgumentException("DTO ID does not match the provided Id parameter.");
+        {
+            throw new ArgumentException("DTO ID does not match the provided route ID.");
+        }
 
         var existingPlant = await repository.GetByIdAsync(Id);
 
         if (existingPlant == null)
-            throw new ArgumentException("Plant with the provided Id does not exist.");
+        {
+            logger.LogWarning("Plant {PlantId} not found for update", Id);
+            throw new KeyNotFoundException("The plant you are trying to update does not exist.");
+        }
 
         if (plantDto.SynonymParentPlantId != null && !(await repository.IdExistsAsync(plantDto.SynonymParentPlantId.Value)))
         {
@@ -152,41 +161,53 @@ public class PlantService(
         }
 
         await repository.UpdateAsync(existingPlant);
+
+        logger.LogInformation("Plant {PlantId} updated by user {UserId}", Id, CurrentUserId);
     }
 
     public async Task DeleteAsync(int Id)
     {
         var plant = await repository.GetByIdAsync(Id);
         if (plant == null)
-            throw new ArgumentException("Plant with the provided Id does not exist.");
+        {
+            logger.LogWarning("Plant {PlantId} not found for deletion", Id);
+            throw new KeyNotFoundException("The plant you are trying to delete does not exist.");
+        }
 
         if (plant.PlantedList != null && plant.PlantedList.Any())
         {
             await repository.DeleteAsync(plant);
+            logger.LogWarning("Plant {PlantId} has planted instances so it is soft deleted by user {UserId}", Id, CurrentUserId);
             return;
         }
 
         await repository.DeleteAsync(plant, false);
+
+        logger.LogInformation("Plant {PlantId} deleted by user {UserId}", Id, CurrentUserId);
     }
 
     public async Task AddImages(int plantId, List<string> urls)
     {
         var plant = await repository.GetByIdAsync(plantId);
         if (plant == null)
-            throw new ArgumentException("Plant not found");
+            throw new KeyNotFoundException("The plant does not exist.");
 
         await imageService.AddImagesToEntityAsync(plant, urls);
         await repository.UpdateAsync(plant);
+
+        logger.LogInformation("Images added to plant {PlantId} by user {UserId}", plantId, CurrentUserId);
     }
 
     public async Task<string?> RemoveImageById(int plantId, int imageId)
     {
         var plant = await repository.GetByIdAsync(plantId);
         if (plant == null)
-            throw new ArgumentException("Plant not found");
+            throw new KeyNotFoundException("The plant does not exist.");
 
         var deletedUrl = await imageService.RemoveImageFromEntityAsync(plant, imageId, repository);
         //await repository.UpdateAsync(plant);
+
+        logger.LogInformation("Image removed from plant {PlantId} by user {UserId}", plantId, CurrentUserId);
 
         return deletedUrl;
     }

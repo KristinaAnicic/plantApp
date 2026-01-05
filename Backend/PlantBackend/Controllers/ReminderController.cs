@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PlantApp.Domain.Dtos.Reminder;
 using PlantApp.Domain.Interfaces.Data;
 
@@ -6,6 +7,7 @@ namespace PlantBackend.Controllers;
 
 [Route("api/reminder")]
 [ApiController]
+[Authorize]
 public class ReminderController(IReminderService reminderService) : Controller
 {
     [HttpGet]

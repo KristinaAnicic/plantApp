@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Interfaces.Data;
 
 namespace PlantBackend.Controllers;
 
 [Route("api/rating")]
+[Authorize]
 public class UserRatingController(IUserRatingService userRatingService) : Controller
 {
     [HttpGet("{id}")]
