@@ -78,6 +78,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.MapScalarApiReference(options =>
+    {
+        options
+            .WithTitle("My API")
+            .WithOpenApiRoutePattern("/swagger/v1/swagger.json");
+    });
 }
 
 //await PlantDataFetcher.FetchAllDataAsync();
