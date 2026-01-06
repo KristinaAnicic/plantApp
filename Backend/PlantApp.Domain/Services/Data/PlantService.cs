@@ -7,6 +7,7 @@ using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
+using PlantApp.Domain.Utils.Exceptions;
 
 namespace PlantApp.Domain.Services.Data;
 
@@ -46,12 +47,9 @@ public class PlantService(
     {
         var plant = await repository.GetByIdAsync(id);
 
-        if (plant == null)
-        {
-            logger.LogWarning("Plant {PlantId} not found", id);
-            throw new KeyNotFoundException("The requested plant does not exist.");
-        }
-
+        if (plant == null) 
+            throw new NotFoundException("Plant", id, logger);
+        
         return plant.MapPlantToPlantGetDto();
     }
 
@@ -79,8 +77,11 @@ public class PlantService(
 
         if (!(await timeRepository.IdExistsAsync(plantDto.TimeToFullHeightId)))
         {
-            logger.LogWarning("TimeToFullHeight ID {Id} invalid, using default", plantDto.TimeToFullHeightId);
-            throw new ArgumentException("Invalid time to full height specified.");
+            throw new InvalidOperationAppException(
+                userMessage: "Invalid plant data submitted (Time to full height).",
+                internalMessage: $"TimeToFullHeight with id {plantDto.TimeToFullHeightId} does not exist.",
+                logger: logger
+            );
         }
 
         var plant = plantDto.MapUpsertPlantDtoToPlant();
@@ -110,23 +111,20 @@ public class PlantService(
     {
         if (plantDto == null)
         {
-            logger.LogWarning("Null DTO provided for update");
-            throw new ArgumentNullException(nameof(plantDto), "Plant data is required for update.");
+            throw new InvalidOperationAppException(
+                userMessage: "Invalid plant data submitted.",
+                internalMessage: "Null UpsertPlantDto provided to UpdateAsync.",
+                logger: logger
+            );
         }
 
-        if (plantDto.Id != Id)
-        {
-            throw new ArgumentException("DTO ID does not match the provided route ID.");
-        }
+        if (plantDto.Id != Id) 
+            throw new DtoIdMismatchException("Plant", plantDto.Id ?? 0, Id, logger);      
 
         var existingPlant = await repository.GetByIdAsync(Id);
-
-        if (existingPlant == null)
-        {
-            logger.LogWarning("Plant {PlantId} not found for update", Id);
-            throw new KeyNotFoundException("The plant you are trying to update does not exist.");
-        }
-
+        if (existingPlant == null) 
+            throw new NotFoundException("Plant", Id, logger);
+        
         if (plantDto.SynonymParentPlantId != null && !(await repository.IdExistsAsync(plantDto.SynonymParentPlantId.Value)))
         {
             plantDto.SynonymParentPlantId = existingPlant.SynonymParentPlantId;
@@ -168,12 +166,9 @@ public class PlantService(
     public async Task DeleteAsync(int Id)
     {
         var plant = await repository.GetByIdAsync(Id);
-        if (plant == null)
-        {
-            logger.LogWarning("Plant {PlantId} not found for deletion", Id);
-            throw new KeyNotFoundException("The plant you are trying to delete does not exist.");
-        }
-
+        if (plant == null) 
+            throw new NotFoundException("Plant", Id, logger);
+        
         if (plant.PlantedList != null && plant.PlantedList.Any())
         {
             await repository.DeleteAsync(plant);
@@ -189,8 +184,8 @@ public class PlantService(
     public async Task AddImages(int plantId, List<string> urls)
     {
         var plant = await repository.GetByIdAsync(plantId);
-        if (plant == null)
-            throw new KeyNotFoundException("The plant does not exist.");
+        if (plant == null) 
+            throw new NotFoundException("Plant", plantId, logger);
 
         await imageService.AddImagesToEntityAsync(plant, urls);
         await repository.UpdateAsync(plant);
@@ -201,8 +196,8 @@ public class PlantService(
     public async Task<string?> RemoveImageById(int plantId, int imageId)
     {
         var plant = await repository.GetByIdAsync(plantId);
-        if (plant == null)
-            throw new KeyNotFoundException("The plant does not exist.");
+        if (plant == null) 
+            throw new NotFoundException("Plant", plantId, logger);
 
         var deletedUrl = await imageService.RemoveImageFromEntityAsync(plant, imageId, repository);
         //await repository.UpdateAsync(plant);

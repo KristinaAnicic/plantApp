@@ -1,9 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos.Authentication;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Repository;
+using PlantApp.Domain.Utils.Exceptions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -14,7 +17,8 @@ namespace PlantApp.Domain.Services;
 public class AuthService(
     IConfiguration config,
     IUserRepository userRepo,
-    IRepository<RefreshToken> refreshTokenRepo
+    IRepository<RefreshToken> refreshTokenRepo,
+    ILogger<AuthService> logger
     ) : IAuthService
 {
     private readonly string _key = config["Jwt:Key"]!;
@@ -32,7 +36,6 @@ public class AuthService(
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key));
-
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
         var tokenDescriptor = new JwtSecurityToken(
@@ -64,6 +67,7 @@ public class AuthService(
             ExpiryTime = DateTime.UtcNow.AddDays(7)
         });
 
+        logger.LogInformation("Refresh token generated for UserId {UserId}", userId);
         return refreshToken;
     }
 
@@ -84,16 +88,21 @@ public class AuthService(
         var refreshToken = await ValidateRefreshTokenAsync(request.UserId, request.RefreshToken);
 
         if (refreshToken == null)
-            throw new UnauthorizedAccessException("Invalid token"); 
+            throw new InvalidOperationAppException(
+                userMessage: "Refresh token is invalid or expired.",
+                internalMessage: $"Failed refresh token attempt for UserId {request.UserId} with token '{request.RefreshToken}'",
+                logger: logger
+            );
 
         var user = await userRepo.GetByIdAsync(request.UserId);
         if (user == null) {
-            throw new ArgumentException("User not found");
+            throw new NotFoundException("User", request.UserId, logger);
         }
 
         refreshToken.RevokedAt = DateTime.UtcNow;
         await refreshTokenRepo.UpdateAsync(refreshToken);
 
+        logger.LogInformation("Refresh token used and revoked for UserId {UserId}", request.UserId);
         return await CreateTokenResponse(user);
     }
 
@@ -109,15 +118,20 @@ public class AuthService(
     public async Task<TokenResponseDto> LoginUser(LoginDto dto)
     {
         var user = await userRepo.GetByKeyAsync(u => 
-            u.Username == dto.UsernameOrEmail || 
-            u.Email == dto.UsernameOrEmail, true);
+            EF.Functions.ILike(u.Username.ToLower(), dto.UsernameOrEmail) || 
+            EF.Functions.ILike(u.Email.ToLower(), dto.UsernameOrEmail), true);
 
         if (user == null || 
             !BCrypt.Net.BCrypt.EnhancedVerify(dto.Password, user.Password))
         {
-            throw new UnauthorizedAccessException("Invalid username or password.");
+            throw new InvalidOperationAppException(
+            userMessage: "Username or password is incorrect.",
+            internalMessage: $"Failed login attempt for UsernameOrEmail '{dto.UsernameOrEmail}'",
+            logger: logger
+        );
         }
 
+        logger.LogInformation("User {UserId} successfully logged in", user.Id);
         return await CreateTokenResponse(user);
     }
 
@@ -134,6 +148,11 @@ public class AuthService(
         {
             token.RevokedAt = DateTime.UtcNow;
             await refreshTokenRepo.UpdateAsync(token);
+            logger.LogInformation("Refresh token revoked for UserId {UserId}", dto.UserId);
+        }
+        else
+        {
+            logger.LogWarning("Attempt to revoke non-existing or already revoked refresh token for UserId {UserId}", dto.UserId);
         }
     }
 }

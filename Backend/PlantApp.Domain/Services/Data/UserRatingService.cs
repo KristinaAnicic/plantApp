@@ -5,6 +5,7 @@ using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
+using PlantApp.Domain.Utils.Exceptions;
 
 namespace PlantApp.Domain.Services.Data;
 
@@ -16,6 +17,7 @@ public class UserRatingService(
 ) : IUserRatingService
 {
     private int CurrentUserId => userContext.GetCurrentUserId();
+    private bool IsAdmin => userContext.GetCurrentUserRoleId() == 1;
 
     public async Task<List<UserRatingDto>> GetAllForUserIdAsync(int ratedUserId)
     {
@@ -35,18 +37,12 @@ public class UserRatingService(
     public async Task AddAsync(AddUserRatingDto dto)
     {
         var rating = await repository.GetAllByKeyAsync(u => u.RatedId == dto.RatedUserId && u.RaterId == CurrentUserId);
-        if (rating.Any())
-        {
-            logger.LogWarning("User {UserId} attempted to add duplicate rating for user {RatedUserId}", CurrentUserId, dto.RatedUserId);
-            throw new InvalidOperationException("You have already rated this user. You can update the existing rating instead.");
-        }
+        if (rating.Any() && !IsAdmin) 
+            throw new InvalidOperationAppException("You have already rated this user. You can update the existing rating instead.",null, logger);
 
         var userExists = await userRepo.IdExistsAsync(dto.RatedUserId);
-        if (!userExists)
-        {
-            logger.LogWarning("Rated user {RatedUserId} not found when user {UserId} attempted to rate", dto.RatedUserId, CurrentUserId);
-            throw new KeyNotFoundException("The user you are trying to rate does not exist.");
-        }
+        if (!userExists) 
+            throw new NotFoundException("User", dto.RatedUserId, logger);
 
         var newRating = dto.MapAddUserRatingDtoToUserRating();
         newRating.RaterId = CurrentUserId;
@@ -60,17 +56,10 @@ public class UserRatingService(
     {
         var rating = await repository.GetByIdAsync(id);
 
-        if (rating == null)
-        {
-            logger.LogWarning("Rating {RatingId} not found for update by user {UserId}", id, CurrentUserId);
-            throw new KeyNotFoundException("The rating you are trying to update does not exist.");
-        }
-
-        if (rating.RaterId != CurrentUserId)
-        {
-            logger.LogWarning("User {UserId} attempted to update rating {RatingId} without permission", CurrentUserId, id);
-            throw new UnauthorizedAccessException("You are not authorized to update this rating.");
-        }
+        if (rating == null) 
+            throw new NotFoundException("User rating", id, logger);
+        if (rating.RaterId != CurrentUserId && !IsAdmin) 
+            throw new UnauthorizedException("update", "user rating", logger);     
 
         dto.MapUpdateUserRatingDtoToUserRating(rating);
 
@@ -83,18 +72,11 @@ public class UserRatingService(
     {
         var rating = await repository.GetByIdAsync(id);
 
-        if (rating == null)
-        {
-            logger.LogWarning("Rating {RatingId} not found for deletion by user {UserId}", id, CurrentUserId);
-            throw new KeyNotFoundException("The rating you are trying to delete does not exist.");
-        }
-
-        if (rating.RaterId != CurrentUserId)
-        {
-            logger.LogWarning("User {UserId} attempted to delete rating {RatingId} without permission", CurrentUserId, id);
-            throw new UnauthorizedAccessException("You are not authorized to delete this rating.");
-        }
-
+        if (rating == null) 
+            throw new NotFoundException("User rating", id, logger);
+        if (rating.RaterId != CurrentUserId && !IsAdmin) 
+            throw new UnauthorizedException("delete", "user rating", logger);
+        
         await repository.DeleteAsync(rating, false);
 
         logger.LogInformation("User {UserId} deleted rating {RatingId}", CurrentUserId, id);

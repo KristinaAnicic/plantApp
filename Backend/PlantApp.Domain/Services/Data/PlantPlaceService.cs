@@ -5,7 +5,7 @@ using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
-using System.Security.Authentication;
+using PlantApp.Domain.Utils.Exceptions;
 
 namespace PlantApp.Domain.Services.Data;
 
@@ -17,6 +17,7 @@ public class PlantPlaceService(
 ) : IPlantPlaceService
 {
     private int CurrentUserId => userContext.GetCurrentUserId();
+    private bool IsAdmin => userContext.GetCurrentUserRoleId() == 1;
     public async Task<List<PlaceDto>> GetAllAsync(int userId)
     {
         var places = await repository.GetAllByKeyAsync(p => p.UserId == userId, true);
@@ -35,17 +36,10 @@ public class PlantPlaceService(
     {
         var place = await repository.GetByIdAsync(id);
 
-        if (place == null)
-        {
-            logger.LogWarning("Place {PlaceId} not found", id);
-            throw new KeyNotFoundException("The requested place does not exist.");
-        }
-
-        if (place.UserId != CurrentUserId)
-        {
-            logger.LogWarning("User {UserId} attempted to access place {PlaceId} without permission", CurrentUserId, id);
-            throw new AuthenticationException("You are not authorized to access this place.");
-        }
+        if (place == null) 
+            throw new NotFoundException("Place", id, logger);
+        if (place.UserId != CurrentUserId && !IsAdmin) 
+            throw new UnauthorizedException("access", "place", logger);
 
         return place.MapPlaceToPlaceGetDto();
     }
@@ -53,15 +47,12 @@ public class PlantPlaceService(
     public async Task AddAsync(UpsertPlaceDto dto)
     {
         var country = countryRepository.GetByIdAsync(dto.CountryId);
-        if (country == null)
-        {
-            logger.LogWarning("Country {CountryId} not found when adding place", dto.CountryId);
-            throw new KeyNotFoundException("The selected country does not exist.");
-        }
+        if (country == null) 
+            throw new NotFoundException("Country", dto.CountryId, logger);
 
         var place = dto.MapUpsertPlaceDtoToPlace();
-        
         place.UserId = CurrentUserId;
+
         await repository.AddAsync(place);
 
         logger.LogInformation("Place {PlaceId} added by user {UserId}", place.Id, CurrentUserId);
@@ -71,23 +62,15 @@ public class PlantPlaceService(
     {
         if (id != dto.Id)
         {
-            logger.LogWarning("DTO ID {DtoId} does not match route ID {Id}", dto.Id, id);
-            throw new ArgumentException("DTO ID does not match the provided route ID.");
+            throw new DtoIdMismatchException("Place", dto.Id ?? 0, id, logger);
         }
 
         var existingPlace = await repository.GetByIdAsync(id);
 
-        if (existingPlace == null)
-        {
-            logger.LogWarning("Place {PlaceId} not found for update", id);
-            throw new KeyNotFoundException("The place you are trying to update does not exist.");
-        }
-
-        if (existingPlace.UserId != CurrentUserId)
-        {
-            logger.LogWarning("User {UserId} attempted to update place {PlaceId} without permission", CurrentUserId, id);
-            throw new AuthenticationException("You are not authorized to update this place.");
-        }
+        if (existingPlace == null) 
+            throw new NotFoundException("Place", id, logger);
+        if (existingPlace.UserId != CurrentUserId && !IsAdmin) 
+            throw new UnauthorizedException("update", "place", logger);
 
         dto.MapUpsertPlaceDtoToPlace(existingPlace);
         await repository.UpdateAsync(existingPlace);
@@ -99,23 +82,18 @@ public class PlantPlaceService(
     {
         var place = await repository.GetByIdAsync(id);
 
-        if (place == null)
-        {
-            logger.LogWarning("Place {PlaceId} not found for deletion", id);
-            throw new KeyNotFoundException("The place you are trying to delete does not exist.");
-        }
-
-        if (place.UserId != CurrentUserId)
-        {
-            logger.LogWarning("User {UserId} attempted to delete place {PlaceId} without permission", CurrentUserId, id);
-            throw new AuthenticationException("You are not authorized to delete this place.");
-        }
+        if (place == null) 
+            throw new NotFoundException("Place", id, logger);
+        if (place.UserId != CurrentUserId && !IsAdmin) 
+            throw new UnauthorizedException("delete", "place", logger);
 
         if (place.PlantedList != null && place.PlantedList.Any())
         {
-            logger.LogWarning("Place {PlaceId} contains planted plants and cannot be deleted", id);
-            throw new InvalidOperationException(
-                "You must remove or move planted plants before deleting this place.");
+            throw new InvalidOperationAppException(
+                userMessage: "This place cannot be deleted while it contains plants.",
+                internalMessage: $"Place {id} has planted items and delete was attempted.",
+                logger: logger
+            );
         }
 
         await repository.DeleteAsync(place, false);

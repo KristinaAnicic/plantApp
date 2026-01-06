@@ -5,6 +5,7 @@ using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
+using PlantApp.Domain.Utils.Exceptions;
 
 namespace PlantApp.Domain.Services.Data;
 
@@ -18,6 +19,7 @@ public class GrowthLogService(
 ) : IGrowthLogService
 {
     private int CurrentUserId => userContext.GetCurrentUserId();
+    private bool IsAdmin => userContext.GetCurrentUserRoleId() == 1;
 
     public async Task<List<GrowthLogDto>> GetAllAsync()
     {
@@ -32,12 +34,9 @@ public class GrowthLogService(
 
         var log = logs.FirstOrDefault();
 
-        if (log != null && log.Planted != null && log.Planted.Place != null && log.Planted.Place.UserId != CurrentUserId)
+        if (log != null && log.Planted != null && log.Planted.Place != null && log.Planted.Place.UserId != CurrentUserId && !IsAdmin)
         {
-            logger.LogWarning(
-                "Unauthorized access to plantedId {PlantedId} by user {UserId}",
-                plantedId, CurrentUserId);
-            throw new UnauthorizedAccessException("You do not have access to this planted.");
+            throw new UnauthorizedException("access", $"Planted {plantedId}", logger);
         }
 
         return logs.Select(l => l.MapGrowthLogToGrowthLogDto()).ToList();
@@ -46,7 +45,6 @@ public class GrowthLogService(
     public async Task<GrowthLogGetDto> GetByIdAsync(int id)
     {
         var log = await repository.GetGrowthLogById(id);
-
         EnsureLogExistsAndAuthorized(log);
         return log!.MapGrowthLogToGrowthLogGetDto();
 
@@ -57,26 +55,19 @@ public class GrowthLogService(
 
         var planted = await plantedRepo.GetByIdAsync(dto.PlantedId);
         if (planted == null)
-            throw new KeyNotFoundException("Planted not found.");
+            throw new NotFoundException("Planted", dto.PlantedId, logger);
 
         if (!await statusRepo.IdExistsAsync(dto.PlantStatusId))
-            throw new KeyNotFoundException("Plant status not found.");
+            throw new NotFoundException("Plant status", dto.PlantStatusId, logger);
 
-        if (planted.Place != null && planted.Place.UserId != CurrentUserId)
-        {
-            logger.LogWarning(
-                "User {UserId} tried to add log to foreign planted {PlantedId}",
-                CurrentUserId, dto.PlantedId);
-
-            throw new UnauthorizedAccessException("You cannot add logs to this planted.");
-        }
+        if (planted.Place != null && planted.Place.UserId != CurrentUserId && !IsAdmin)
+            throw new UnauthorizedException("add log", $"Planted {dto.PlantedId}", logger);        
 
         var log = dto.MapUpsertGrowthLogDtoToGrowthLog();
 
         if (dto.Images != null && dto.Images.Any())
         {
             log.Images.Clear();
-
             await imageService.AddImagesSafeAsync(log, dto.Images);
         }
 
@@ -87,7 +78,7 @@ public class GrowthLogService(
     public async Task UpdateAsync(int id, UpsertGrowthLogDto dto)
     {
         if (id != dto.Id)
-            throw new ArgumentException("Route id does not match DTO id.");
+            throw new DtoIdMismatchException("GrowthLog", dto.Id, id, logger);
 
         var log = await repository.GetGrowthLogById(id);
 
@@ -95,13 +86,13 @@ public class GrowthLogService(
 
         var planted = await plantedRepo.GetByIdAsync(dto.PlantedId);
         if (planted == null)
-            throw new KeyNotFoundException("Planted not found.");
+            throw new NotFoundException("Planted", dto.PlantedId, logger);
 
         if (!await statusRepo.IdExistsAsync(dto.PlantStatusId))
-            throw new KeyNotFoundException("Plant status not found.");
+            throw new NotFoundException("Planted", dto.PlantedId, logger);
 
-        if (planted.Place != null && planted.Place.UserId != CurrentUserId)
-            throw new UnauthorizedAccessException("You cannot modify this planted.");
+        if (planted.Place != null && planted.Place.UserId != CurrentUserId && !IsAdmin)
+            throw new UnauthorizedException("modify log", $"Planted {dto.PlantedId}", logger);
 
         dto.MapUpsertGrowthLogDtoToGrowthLog(log);
 
@@ -112,7 +103,6 @@ public class GrowthLogService(
         }
 
         await repository.UpdateAsync(log!);
-
         logger.LogInformation("Growth log {LogId} updated", id);
     }
 
@@ -122,7 +112,6 @@ public class GrowthLogService(
         EnsureLogExistsAndAuthorized(log);
 
         await repository.DeleteGrowthLog(log!);
-
         logger.LogInformation("Growth log {LogId} deleted", id);
     }
 
@@ -132,7 +121,6 @@ public class GrowthLogService(
         EnsureLogExistsAndAuthorized(log);
 
         await imageService.AddImagesToEntityAsync(log!, urls);
-
         await repository.UpdateAsync(log!);
     }
 
@@ -150,15 +138,11 @@ public class GrowthLogService(
     private void EnsureLogExistsAndAuthorized(GrowthLog? log)
     {
         if (log == null)
-            throw new KeyNotFoundException("Growth log not found.");
+            throw new NotFoundException("Growth log", logger: logger);
 
-        if (log.Planted?.Place?.UserId != CurrentUserId)
+        if (log.Planted?.Place?.UserId != CurrentUserId && !IsAdmin)
         {
-            logger.LogWarning(
-                "Unauthorized access to growth log {LogId} by user {UserId}",
-                log.Id, CurrentUserId);
-
-            throw new UnauthorizedAccessException("You do not have access to this growth log.");
+            throw new UnauthorizedException("access", $"GrowthLog {log.Id}", logger);
         }
     }
 }

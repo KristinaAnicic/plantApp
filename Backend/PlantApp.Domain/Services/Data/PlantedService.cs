@@ -5,7 +5,7 @@ using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
-using System.Security;
+using PlantApp.Domain.Utils.Exceptions;
 
 namespace PlantApp.Domain.Services.Data;
 
@@ -19,10 +19,10 @@ public class PlantedService(
 ) : IPlantedService
 {
     private int CurrentUserId => userContext.GetCurrentUserId();
+    private bool IsAdmin => userContext.GetCurrentUserRoleId() == 1;
     public async Task<List<PlantedDto>> GetAllByUserIdAsync(int userId)
     {
         logger.LogInformation("Fetching planted plants for user {UserId}",userId);
-
         var planted = await repository.GetPlantedPlantsByUserId(userId);
         return planted.Select(p => p.MapPlantedToPlantedDto()).ToList();
     }
@@ -47,88 +47,67 @@ public class PlantedService(
     {
         var planted = await repository.GetPlantedById(id);
 
-        if (planted == null)
-        {
-            logger.LogWarning("Planted plant {PlantedId} not found", id);
-            throw new KeyNotFoundException($"Planted plant was not found.");
-        }
+        if (planted == null) 
+            throw new NotFoundException("Planted plant", id, logger);
 
-        if (planted.Reminders != null && planted.Reminders.Any())
-            planted.Reminders = planted.Reminders.OrderBy(r => (r.NextDueDate.AddDays(r.DelayDays) - DateTime.UtcNow).TotalDays).ToList();
+        if (planted.Reminders != null && planted.Reminders.Any()) 
+        { 
+            planted.Reminders = planted.Reminders
+                .OrderBy(r => (r.NextDueDate.AddDays(r.DelayDays) - DateTime.UtcNow).TotalDays)
+                .ToList();
+        }
 
         return planted.MapPlantedToPlantedGetDto();
     }
 
     public async Task AddAsync(UpsertPlantedDto dto)
     {
-        if (dto == null)
-            throw new ArgumentNullException(nameof(dto));
+        if (dto == null) 
+            throw new InvalidOperationAppException("Planted data is required.", logger: logger);
 
         if (dto.DatePlanted == null)
             dto.DatePlanted = DateTime.UtcNow;
 
         var place = await placeRepo.GetByIdAsync(dto.PlaceId);
-        if (place == null)
-        {
-            logger.LogWarning("Place {PlaceId} not found while adding planted plant", dto.PlaceId);
-            throw new KeyNotFoundException($"Place was not found.");
-        }
 
-        if (place.UserId != CurrentUserId)
-        {
-            logger.LogWarning("User {UserId} attempted to add plant to place {PlaceId} owned by {OwnerId}", CurrentUserId, place.Id, place.UserId);
-            throw new SecurityException("You are not authorized to add plants to this place.");
-        }
-
-        if (!await plantStatus.IdExistsAsync(dto.PlantStatusId))
-        {
-            logger.LogWarning("Invalid plant status {PlantStatusId}",dto.PlantStatusId);
-            throw new KeyNotFoundException($"Plant status was not found.");
-        }
+        if (place == null) 
+            throw new NotFoundException("Place", dto.PlaceId, logger);
+        if (place.UserId != CurrentUserId && !IsAdmin) 
+            throw new UnauthorizedException("add plant to", "place", logger);
+        if (!await plantStatus.IdExistsAsync(dto.PlantStatusId)) 
+            throw new NotFoundException("Plant status", dto.PlantStatusId, logger);
 
         var planted = dto.MapUpsertPlantedDtoToPlanted();
 
         if (dto.Images != null && dto.Images.Any())
         {
             planted.Images.Clear();
-
             await imageService.AddImagesSafeAsync(planted, dto.Images);
         }
 
         await repository.AddAsync(planted);
-
         logger.LogInformation("Planted plant added. User {UserId}, Place {PlaceId}", CurrentUserId, dto.PlaceId);
     }
 
     public async Task UpdateAsync(int id, UpsertPlantedDto dto)
     {
-        if (dto == null)
-            throw new ArgumentNullException(nameof(dto));
-
-        if (dto.Id != id)
-            throw new ArgumentException("DTO id does not match route id.");
+        if (dto == null) 
+            throw new InvalidOperationAppException("Planted data is required.", logger: logger);
+        if (dto.Id != id) 
+            throw new DtoIdMismatchException("Planted plant", dto.Id ?? 0, id, logger);
 
         var existingPlanted = await repository.GetByIdAsync(id);
-
-        if (existingPlanted == null)
-        {
-            logger.LogWarning("Attempt to update non-existing planted plant {PlantedId}", id);
-            throw new KeyNotFoundException($"Planted plant with id {id} does not exist.");
-        }
+        if (existingPlanted == null) 
+            throw new NotFoundException("Planted plant", id, logger);
 
         var place = await placeRepo.GetByIdAsync(dto.PlaceId);
-        if (place == null)
-        {
-            throw new KeyNotFoundException($"Place with id {dto.PlaceId} was not found.");
-        }
 
-        if (place.UserId != CurrentUserId)
-            throw new SecurityException("You are not authorized to update plants in this place.");
-
-        if (!await plantStatus.IdExistsAsync(dto.PlantStatusId))
-        {
-            throw new KeyNotFoundException("Plant status was not found.");
-        }
+        if (place == null) 
+            throw new NotFoundException("Place", dto.PlaceId, logger);
+        if (place.UserId != CurrentUserId && !IsAdmin) 
+            throw new UnauthorizedException("update plants in", "place", logger);
+        if (!await plantStatus.IdExistsAsync(dto.PlantStatusId)) 
+            throw new NotFoundException("Plant status", dto.PlantStatusId, logger);
 
         if (dto.DatePlanted == null)
             dto.DatePlanted = existingPlanted.DatePlanted;
@@ -142,7 +121,6 @@ public class PlantedService(
         }
 
         await repository.UpdateAsync(existingPlanted);
-
         logger.LogInformation("Planted plant {PlantedId} updated by user {UserId}", id, CurrentUserId);
     }
 
@@ -150,24 +128,18 @@ public class PlantedService(
     {
         var planted = await repository.GetByIdAsync(id);
 
-        if (planted == null)
-        {
-            logger.LogWarning("Attempt to delete non-existing planted plant {PlantedId}", id);
-            throw new KeyNotFoundException($"Planted plant with id {id} does not exist.");
-        }
+        if (planted == null) 
+            throw new NotFoundException("Planted plant", id, logger);
 
         await repository.DeletePlantedAsync(planted);
-
         logger.LogInformation("Planted plant {PlantedId} deleted by user {UserId}", id, CurrentUserId);
     }
 
     public async Task AddImages(int plantedId, List<string> urls)
     {
         var planted = await repository.GetByIdAsync(plantedId);
-        if (planted == null)
-        {
-            throw new KeyNotFoundException($"Planted plant was not found.");
-        }
+        if (planted == null) 
+            throw new NotFoundException("Planted plant", plantedId, logger);
 
         await imageService.AddImagesToEntityAsync(planted, urls);
         await repository.UpdateAsync(planted);
@@ -178,14 +150,11 @@ public class PlantedService(
     public async Task<string?> RemoveImageById(int plantedId, int imageId)
     {
         var planted = await repository.GetByIdAsync(plantedId);
-        if (planted == null)
-            throw new KeyNotFoundException("Plant not found");
+        if (planted == null) 
+            throw new NotFoundException("Planted plant", plantedId, logger);
 
-        if (planted.Place != null && planted.Place.UserId != CurrentUserId)
-        {
-            logger.LogWarning("User {UserId} attempted to remove image {ImageId} from planted {PlantedId}", CurrentUserId, imageId, plantedId);
-            throw new SecurityException("Access denied.");
-        }
+        if (planted.Place != null && planted.Place.UserId != CurrentUserId && !IsAdmin) 
+            throw new UnauthorizedException("remove image", "planted plant", logger);
 
         var deletedUrl = await imageService.RemoveImageFromEntityAsync(planted, imageId, repository);      
         //await repository.UpdateAsync(planted);

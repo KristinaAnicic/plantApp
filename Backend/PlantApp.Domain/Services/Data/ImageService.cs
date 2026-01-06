@@ -4,6 +4,7 @@ using PlantApp.Data.Models.Interfaces;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
+using PlantApp.Domain.Utils.Exceptions;
 
 namespace PlantApp.Domain.Services.Data;
 
@@ -14,10 +15,17 @@ public class ImageService(
 ) : IImageService
 {
     private int CurrentUserId => userContext.GetCurrentUserId();
+    private bool IsAdmin => userContext.GetCurrentUserRoleId() == 1;
     public async Task AddImagesToEntityAsync(IHasImages entity, List<string> urls)
     {
-        if (entity == null)
-            throw new ArgumentNullException(nameof(entity));
+        if (entity == null) 
+        {
+            throw new InvalidOperationAppException(
+                userMessage: "Entity is required for adding images.",
+                internalMessage: "Null entity provided to AddImagesToEntityAsync.",
+                logger: logger
+            );
+        }
 
         if (urls == null || urls.Count == 0)
         {
@@ -39,13 +47,8 @@ public class ImageService(
 
             if (image != null)
             {
-                if (image.UserId != null && image.UserId != CurrentUserId)
-                {
-                    logger.LogWarning(
-                        "User {UserId} attempted to add image {Url} owned by user {OwnerId}", CurrentUserId, url, image.UserId);
-
-                    throw new InvalidOperationException($"Image '{url}' belongs to another user and cannot be added.");
-                }
+                if (image.UserId != null && image.UserId != CurrentUserId && !IsAdmin) 
+                    throw new UnauthorizedException("add image", $"Image {url}", logger);            
 
                 if (!entity.Images.Any(i => i.Id == image.Id))
                 {
@@ -69,7 +72,13 @@ public class ImageService(
     public async Task AddImagesSafeAsync(IHasImages entity, List<string> urls)
     {
         if (entity == null)
-            throw new ArgumentNullException(nameof(entity));
+        {    
+            throw new InvalidOperationAppException(
+                userMessage: "Entity is required for adding images.",
+                internalMessage: "Null entity provided to AddImagesSafeAsync.",
+                logger: logger
+            );
+        }
 
         if (urls == null || urls.Count == 0)
             return;
@@ -88,11 +97,9 @@ public class ImageService(
 
             if (image != null)
             {
-                if (image.UserId != null && image.UserId != CurrentUserId)
+                if (image.UserId != null && image.UserId != CurrentUserId && !IsAdmin)
                 {
-                    logger.LogWarning(
-                        "Skipped image {Url} – owned by another user ({OwnerId})", url, image.UserId);
-
+                    logger.LogWarning("Skipped image {Url} – owned by another user ({OwnerId})", url, image.UserId);
                     continue;
                 }
 
@@ -114,19 +121,25 @@ public class ImageService(
     public async Task<string?> RemoveImageFromEntityAsync<T>(T entity, int imageId, IRepository<T> entityRepository) where T : class, IHasImages
     {
         if (entity == null)
-            throw new ArgumentNullException(nameof(entity));
+        {
+            throw new InvalidOperationAppException(
+                userMessage: "Entity is required for removing an image.",
+                internalMessage: "Null entity provided to RemoveImageFromEntityAsync.",
+                logger: logger
+            );
+        }
 
         var image = await imageRepository.GetByIdAsync(imageId);
-        if (image == null)
-        {
-            logger.LogWarning("Attempted to remove non-existing image {ImageId}",imageId);
-            throw new KeyNotFoundException($"Image with id {imageId} was not found.");
-        }
+        if (image == null) 
+            throw new NotFoundException("Image", imageId, logger);
 
         if (!entity.Images.Contains(image))
         {
-            logger.LogWarning("Image {ImageId} is not attached to entity {EntityType}", imageId, typeof(T).Name);
-            throw new InvalidOperationException($"Image {imageId} is not associated with this entity.");
+            throw new InvalidOperationAppException(
+                userMessage: "The image is not associated with this entity.",
+                internalMessage: $"Image {imageId} not attached to entity {typeof(T).Name}.",
+                logger: logger
+            );
         }
 
         var deletedUrl = image.Url;
@@ -138,9 +151,7 @@ public class ImageService(
         if (!image.Plants.Any() && !image.GrowthLogs.Any() && !image.Planted.Any() && !image.PlantExchanges.Any())
         {
             await imageRepository.DeleteAsync(image, false);
-            logger.LogInformation(
-                "Image {ImageId} deleted from repository (no remaining references)",
-                imageId);
+            logger.LogInformation("Image {ImageId} deleted from repository (no remaining references)",imageId);
 
             return deletedUrl;
         }

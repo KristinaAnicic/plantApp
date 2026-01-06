@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using PlantApp.Data;
 using PlantApp.Domain;
@@ -9,6 +10,7 @@ using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Repositories;
 using PlantApp.Domain.Services;
 using PlantApp.Domain.Services.Data;
+using PlantBackend.ExceptionHandlers;
 using Scalar.AspNetCore;
 using System.Text;
 
@@ -44,8 +46,18 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+{
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+    );
+    options.ConfigureWarnings(w =>
+        w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
+});
+
+builder.Services.AddExceptionHandler<ExceptionHandler>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -101,6 +113,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 
+app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 
