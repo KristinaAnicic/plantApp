@@ -7,5 +7,5 @@ public class UpdateUserDto
     public string? Contact { get; set; }
     public char Gender { get; set; }
     public DateOnly DateOfBirth { get; set; }
-    public int RoleId { get; set; } = 3;
+    public int? RoleId { get; set; } = 3;
 }
