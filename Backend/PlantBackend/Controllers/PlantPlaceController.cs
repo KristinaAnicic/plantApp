@@ -11,9 +11,9 @@ namespace PlantBackend.Controllers;
 public class PlantPlaceController(IPlantPlaceService plantPlaceService) : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int userId)
+    public async Task<IActionResult> GetAll()
     {
-        var result = await plantPlaceService.GetAllAsync(userId);
+        var result = await plantPlaceService.GetAllAsync();
         return Ok(result);
     }
 

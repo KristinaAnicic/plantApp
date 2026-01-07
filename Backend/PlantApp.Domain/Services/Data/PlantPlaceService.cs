@@ -18,8 +18,9 @@ public class PlantPlaceService(
 {
     private int CurrentUserId => userContext.GetCurrentUserId();
     private bool IsAdmin => userContext.GetCurrentUserRoleId() == 1;
-    public async Task<List<PlaceDto>> GetAllAsync(int userId)
+    public async Task<List<PlaceDto>> GetAllAsync()
     {
+        int userId = CurrentUserId;
         var places = await repository.GetAllByKeyAsync(p => p.UserId == userId, true);
         var sortedPlaces = places.OrderBy(p => p.Name)
             .ThenBy(p => p.Country != null ? p.Country.Name : p.City)
