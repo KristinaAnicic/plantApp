@@ -6,6 +6,7 @@ using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos.Authentication;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Repository;
+using PlantApp.Domain.Utils;
 using PlantApp.Domain.Utils.Exceptions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -111,7 +112,8 @@ public class AuthService(
         return new TokenResponseDto
         {
             AccessToken = GenerateToken(user),
-            RefreshToken = await GenerateAndSaveRefreshTokenAsync(user.Id)
+            RefreshToken = await GenerateAndSaveRefreshTokenAsync(user.Id),
+            User = user.MapUserToUserDto()
         };
     }
 

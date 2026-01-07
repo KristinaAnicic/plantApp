@@ -18,10 +18,13 @@ public class UserRepository(AppDbContext context) : Repository<User>(context), I
     public async Task<User?> GetUserById(int id)
     {
         var query = IncludeNavigations(dbSet.AsQueryable());
-        query = query.Include(q => q.Places)
+        query = query.Include(u => u.Places)
                         .ThenInclude(p => p.PlantedList)
-                     .Include(q => q.Places)
-                        .ThenInclude(p => p.Country);
+                            .ThenInclude(pl => pl.Images)
+                    .Include(u => u.Places)
+                        .ThenInclude(p => p.Country)
+                    .Include(u => u.PlantExchanges)
+                        .ThenInclude(pe => pe.ExchangeType);
 
         return await query.FirstOrDefaultAsync(q => q.Id == id && q.DeletedAt == null);
     }

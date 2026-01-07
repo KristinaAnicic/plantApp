@@ -26,6 +26,7 @@ public class ExceptionHandler(ILogger<ExceptionHandler> logger) : IExceptionHand
         {
             statusCode = StatusCodes.Status400BadRequest;
             message = "A required value was null: " + argEx.ParamName;
+            logger.LogError(argEx, "A required value was null");
         }
         else if (exception is UnauthorizedAccessException accEx)
         {

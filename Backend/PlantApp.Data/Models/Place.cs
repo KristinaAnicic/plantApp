@@ -17,5 +17,5 @@ public class Place : BaseEntity
     public Country? Country { get; set; }
     public int CountryId { get; set; }
 
-    public ICollection<Planted>? PlantedList { get; set; }
+    public ICollection<Planted> PlantedList { get; set; } = new List<Planted>();
 }

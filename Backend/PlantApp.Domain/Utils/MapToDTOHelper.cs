@@ -76,11 +76,15 @@ public static class MapToDTOHelper
     }
     public static PlaceDto MapPlaceToPlaceDto(this Place place)
     {
+        var placeName = place.Country != null ?
+            $"{place.City}, {place.Country?.Name}" :
+            place.City;
+
         return new PlaceDto
         {
             Id = place.Id,
             Name = place.Name,
-            Address = $"{place.Address} ({place.City}, {place.Country?.Name})",
+            Address = $"{place.Address} ({placeName})",
         };
     }
 
@@ -106,9 +110,10 @@ public static class MapToDTOHelper
             Username = user.Username,
             DisplayName = user.DisplayName,
             Role = user.Role?.Name ?? "Unknown",
+            RoleId = user.RoleId,
             Gender = user.Gender,
             DateOfBirth = user.DateOfBirth,
-            Places = user.Places?.Select(p  => p.MapPlaceToPlaceGetDto()).ToList(),
+            Places = user.Places?.Select(p => p.MapPlaceToPlaceGetDto()).ToList(),
             PlantExchanges = user.PlantExchanges?.Select(pe => pe.MapPlantExchangeToPlantExchangeDto()).ToList(),
             Rating = user.RatingsReceived != null && user.RatingsReceived.Any()
                         ? user.RatingsReceived.Average(r => r.Rating)
@@ -131,7 +136,8 @@ public static class MapToDTOHelper
             Rating = user.RatingsReceived != null && user.RatingsReceived.Any()
                         ? user.RatingsReceived.Average(r => r.Rating)
                         : 0,
-            NumOfRatings = user.RatingsReceived?.Count()
+            NumOfRatings = user.RatingsReceived?.Count(),
+            RoleId = user.RoleId
         };
     }
 
@@ -140,8 +146,12 @@ public static class MapToDTOHelper
         return new PlantedDto
         {
             Id = planted.Id,
-            Place = $"{planted.Place?.Name} ({planted.Place?.Address}, {planted.Place?.City})",
-            PlantName = $"{planted.Plant?.BotanicalName} ({planted.Plant?.CommonName})",
+            Place = planted.Place != null
+                ? $"{planted.Place.Name} ({planted.Place.Address}, {planted.Place.City})"
+                : "Unknown",
+            PlantName = planted.Plant != null
+                ? $"{planted.Plant.BotanicalName} ({planted.Plant.CommonName})"
+                : "Unknown",
             PlantStatus = planted.PlantStatus?.Name ?? "Unknown",
             DatePlanted = planted.DatePlanted,
             Image = planted.Image ?? planted.Images?.FirstOrDefault()?.Url,
@@ -228,7 +238,7 @@ public static class MapToDTOHelper
         {
             Id = log.Id,
             Note = log.Note,
-            PlantStatus = log.PlantStatus.MapReferenceToDto(),
+            PlantStatus = log.PlantStatus != null ? log.PlantStatus.MapReferenceToDto() : null,
             CreatedAt = log.CreatedAt,
             Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList(),
             PlantedId = log.PlantedId,
@@ -242,7 +252,7 @@ public static class MapToDTOHelper
         {
             Id = exchange.Id,
             Title = exchange.Title,
-            ExchangeType = exchange.ExchangeType,
+            ExchangeType = exchange.ExchangeType != null ? exchange.ExchangeType.MapReferenceToDto() : null,
             Place = $"{exchange.City}, {exchange.Country?.Name}",
             Image = exchange.MainImage,
             Price = exchange.Price,
@@ -256,7 +266,7 @@ public static class MapToDTOHelper
         {
             Id = exchange.Id,
             Title = exchange.Title,
-            ExchangeType = exchange.ExchangeType,
+            ExchangeType = exchange.ExchangeType != null ? exchange.ExchangeType.MapReferenceToDto() : null,
             Place = $"{exchange.City}, {exchange.Country?.Name}",
             Image = exchange.MainImage,
             Price = exchange.Price,
