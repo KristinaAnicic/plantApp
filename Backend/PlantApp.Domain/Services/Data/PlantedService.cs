@@ -20,18 +20,20 @@ public class PlantedService(
 {
     private int CurrentUserId => userContext.GetCurrentUserId();
     private bool IsAdmin => userContext.GetCurrentUserRoleId() == 1;
-    public async Task<List<PlantedDto>> GetAllByUserIdAsync(int userId)
+    public async Task<List<PlantedDto>> GetAllByUserIdAsync(int? userId)
     {
-        logger.LogInformation("Fetching planted plants for user {UserId}",userId);
-        var planted = await repository.GetPlantedPlantsByUserId(userId);
+        int actualUserId = userId ?? CurrentUserId;
+        logger.LogInformation("Fetching planted plants for user {UserId}", actualUserId);
+        var planted = await repository.GetPlantedPlantsByUserId(actualUserId);
         return planted.Select(p => p.MapPlantedToPlantedDto()).ToList();
     }
 
-    public async Task<List<GroupedPlantedDto>> GetAllByUserIdGroupedByPlaceAsync(int userId)
+    public async Task<List<GroupedPlantedDto>> GetAllByUserIdGroupedByPlaceAsync(int? userId)
     {
-        logger.LogInformation("Fetching planted plants grouped by place for user {UserId}", userId);
+        int actualUserId = userId ?? CurrentUserId;
+        logger.LogInformation("Fetching planted plants grouped by place for user {UserId}", actualUserId);
 
-        var planted = await repository.GetPlantedPlantsByUserIdGrouped(userId);
+        var planted = await repository.GetPlantedPlantsByUserIdGrouped(actualUserId);
         var groupedDto = planted
             .Select(g => new GroupedPlantedDto 
             { 

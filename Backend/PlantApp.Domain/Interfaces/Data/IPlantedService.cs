@@ -4,8 +4,8 @@ namespace PlantApp.Domain.Interfaces.Data;
 
 public interface IPlantedService
 {
-    public Task<List<PlantedDto>> GetAllByUserIdAsync(int userId);
-    public Task<List<GroupedPlantedDto>> GetAllByUserIdGroupedByPlaceAsync(int userId);
+    public Task<List<PlantedDto>> GetAllByUserIdAsync(int? userId);
+    public Task<List<GroupedPlantedDto>> GetAllByUserIdGroupedByPlaceAsync(int? userId);
     public Task<PlantedGetDto> GetByIdAsync(int id);
     public Task AddAsync(UpsertPlantedDto dto);
     public Task UpdateAsync(int id, UpsertPlantedDto dto);

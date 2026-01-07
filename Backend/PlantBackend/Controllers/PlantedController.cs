@@ -11,14 +11,14 @@ namespace PlantBackend.Controllers;
 public class PlantedController(IPlantedService plantedService) : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int userId)
+    public async Task<IActionResult> GetAll([FromQuery] int? userId)
     {
         var result = await plantedService.GetAllByUserIdAsync(userId);
         return Ok(result);
     }
 
     [HttpGet("grouped")]
-    public async Task<IActionResult> GetAllGroupedByPlace([FromQuery] int userId)
+    public async Task<IActionResult> GetAllGroupedByPlace([FromQuery] int? userId)
     {
         var result = await plantedService.GetAllByUserIdGroupedByPlaceAsync(userId);
         return Ok(result);

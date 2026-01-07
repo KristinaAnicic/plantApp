@@ -7,11 +7,10 @@ namespace PlantBackend.Controllers;
 
 [Route("api/plant")]
 [ApiController]
-[Authorize(Roles = "Admin")]
 public class PlantController(IPlantService plantService) : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int page)
+    public async Task<IActionResult> GetAll([FromQuery] int page = 1)
     {
         var result = await plantService.GetAllAsync(page);
         return Ok(result);

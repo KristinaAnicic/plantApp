@@ -3,7 +3,6 @@ using PlantApp.Data;
 using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Interfaces.Repository;
-using System.Xml.Linq;
 
 namespace PlantApp.Domain.Repositories;
 
@@ -41,30 +40,38 @@ public class PlantRepository(AppDbContext context) : Repository<Plant>(context),
                         EF.Functions.TrigramsSimilarity(p.CommonName, name),
                         EF.Functions.TrigramsSimilarity(p.BotanicalName, name)
                     )
-                );
+                )
+                .ThenBy(p => p.Id);
         }
         else
         {
-            query = query.OrderBy(p => p.CommonName);
+            query = query
+                .OrderByDescending(p => p.Images.Any(i => i.Url != null && i.Url != ""))
+                .ThenBy(p => p.CommonName)
+                .ThenBy(p => p.Id);
         }
 
-        var total = query.Count();
+        var total = await query.CountAsync();
 
         return (total, await query
+            .Include(p => p.Images)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync());
     }
-
     public async Task<(int, List<Plant>)> GetAllPlantsAsync(int page)
     {
-        var query = dbSet
-            .Where(q => q.DeletedAt == null)
+        var baseQuery = dbSet.Where(q => q.DeletedAt == null);
+        var total = await baseQuery.CountAsync();
+
+        var plants = await baseQuery
+            .Include(p => p.Images)
+            .OrderByDescending(p => p.Images.Any(i => i.Url != null && i.Url != ""))
+            .ThenBy(p => p.Id)
             .Skip((page - 1) * pageSize)
-            .Take(pageSize);
+            .Take(pageSize)
+            .ToListAsync();
 
-        var total = query.Count();
-
-        return (total, await query.ToListAsync());
+        return (total, plants);
     }
 }
