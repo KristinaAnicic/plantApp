@@ -35,7 +35,7 @@ export class ReminderService {
     if (delayDays !== undefined){
       params = params.set('delay', delayDays.toString());
     }
-    return this.http.put(`${environment.apiUrl}/reminder/${id}/delay`, {params});
+    return this.http.put(`${environment.apiUrl}/reminder/${id}/delay`, null, {params});
   }
 
   doneReminder(id: number, date?: Date) {
@@ -43,6 +43,6 @@ export class ReminderService {
     if (date !== undefined){
       params = params.set('date', date.toISOString());
     }
-    return this.http.put(`${environment.apiUrl}/reminder/${id}/done`, {params});
+    return this.http.put(`${environment.apiUrl}/reminder/${id}/done`, null, {params});
   }
 }
