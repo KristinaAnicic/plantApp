@@ -41,6 +41,10 @@ export class PlantService {
     return this.http.put(`${environment.apiUrl}/plant/${id}`, plant);
   }
 
+  removePlant(id: number){
+    return this.http.delete(`${environment.apiUrl}/plant/${id}`);
+  }
+
   addImage(id: number, images: string[]) {
     return this.http.post(`${environment.apiUrl}/plant/${id}/images`, images);
   }

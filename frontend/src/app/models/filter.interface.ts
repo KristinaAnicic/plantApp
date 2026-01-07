@@ -1,8 +1,8 @@
 export interface PlantFilterDto {
     name?: string;      
-    isLowMaintenance?: boolean;  
+    isLowMaintenance?: boolean;
     isDroughtResistant?: boolean;
-    habits?: number[];        
+    habits?: number[];
     soilType?: number[];
     spread?: number;
     height?: number;
