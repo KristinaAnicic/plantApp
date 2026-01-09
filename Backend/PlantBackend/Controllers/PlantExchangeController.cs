@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Interfaces.Data;
-using PlantApp.Domain.Services.Data;
 
 namespace PlantBackend.Controllers;
 

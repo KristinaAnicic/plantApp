@@ -19,6 +19,18 @@ var config = builder.Configuration;
 
 // Add services to the container.
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowedOrigins", builder =>
+    {
+        builder
+            .WithOrigins("http://localhost:8080")
+            .AllowAnyHeader()
+            .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+            .AllowCredentials();
+    });
+});
+
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

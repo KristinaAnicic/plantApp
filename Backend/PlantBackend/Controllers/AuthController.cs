@@ -12,6 +12,8 @@ public class AuthController(
     
     ) : Controller
 {
+    private const string RefreshTokenCookieName = "refreshToken";
+
     [HttpPost("register")]
     public async Task<ActionResult> Register([FromBody] AddUserDto dto)
     {
@@ -21,22 +23,55 @@ public class AuthController(
 
     [HttpPost("login")]
     public async Task<ActionResult<TokenResponseDto>> Login([FromBody] LoginDto dto) 
-    { 
-        var response = await authService.LoginUser(dto);
+    {
+        var (token, response) = await authService.LoginUser(dto);
+        SetRefreshTokenCookie(token);
+
         return Ok(response);
     }
 
     [HttpPost("refresh-token")]
-    public async Task<ActionResult<TokenResponseDto>> RefreshToken([FromBody] RefreshTokenRequestDto dto)
+    public async Task<ActionResult<TokenResponseDto>> RefreshToken()
     {
-        var response = await authService.RefreshTokens(dto);
-        return Ok(response);
+        if (!(Request.Cookies.TryGetValue(RefreshTokenCookieName, out var refreshToken)))
+            return Unauthorized("Refresh token missing or invalid");
+
+        try
+        {
+            var (token, response) = await authService.RefreshTokens(refreshToken);
+            SetRefreshTokenCookie(token);
+
+            return Ok(response);
+        }
+
+        catch
+        {
+            Response.Cookies.Delete(RefreshTokenCookieName);
+            return Unauthorized("Invalid or expired refresh token");
+        }
     }
 
     [HttpPost("logout")]
-    public async Task<ActionResult<TokenResponseDto>> Logout([FromBody] RefreshTokenRequestDto dto)
+    public async Task<ActionResult<TokenResponseDto>> Logout()
     {
-        await authService.Logout(dto);
+        if (Request.Cookies.TryGetValue(RefreshTokenCookieName, out var refreshToken))
+        {
+            await authService.Logout(refreshToken);
+        }
+
+        Response.Cookies.Delete(RefreshTokenCookieName);
         return NoContent();
+    }
+
+    private void SetRefreshTokenCookie(string refreshToken)
+    {
+        Response.Cookies.Append(RefreshTokenCookieName, refreshToken, new CookieOptions()
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddDays(7),
+            Path = "/api/auth"
+        });
     }
 }

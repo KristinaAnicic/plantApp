@@ -25,7 +25,7 @@ public class AuthService(
     private readonly string _key = config["Jwt:Key"]!;
     private readonly string _issuer = config["Jwt:Issuer"]!;
     private readonly string _audience = config["Jwt:Audience"]!;
-    private static readonly int lifeSpanInMinutes = 15;
+    private readonly int lifeSpanInMinutes = 15;
     private string GenerateToken(User user)
     {
         var claims = new List<Claim>
@@ -52,31 +52,59 @@ public class AuthService(
 
     private string GenerateRefreshToken()
     {
-        var randomNumber = new byte[32];
+        var randomNumber = new byte[64];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
         return Convert.ToBase64String(randomNumber);
     }
 
-    private async Task<string> GenerateAndSaveRefreshTokenAsync(int userId)
+    private static string HashToken(string token)
     {
-        var refreshToken = GenerateRefreshToken();
-        await refreshTokenRepo.AddAsync(new RefreshToken
-        {
-            Token = refreshToken,
-            UserId = userId,
-            ExpiryTime = DateTime.UtcNow.AddDays(7)
-        });
-
-        logger.LogInformation("Refresh token generated for UserId {UserId}", userId);
-        return refreshToken;
+        using var sha = SHA256.Create();
+        var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(token));
+        return Convert.ToBase64String(bytes);
     }
 
-    private async Task<RefreshToken?> ValidateRefreshTokenAsync(int userId, string refreshToken)
+    private async Task<string> GenerateAndSaveRefreshTokenAsync(int userId)
     {
+        int maxRetries = 3;
+
+        for (int attempt = 0; attempt < maxRetries; attempt++)
+        {
+            var refreshToken = GenerateRefreshToken();
+            var tokenHash = HashToken(refreshToken);
+
+            var tokenEntity = new RefreshToken
+            {
+                Token = tokenHash,
+                UserId = userId,
+                ExpiryTime = DateTime.UtcNow.AddDays(7)
+            };
+
+            try
+            {
+                await refreshTokenRepo.AddAsync(tokenEntity);
+                logger.LogInformation("Refresh token generated for UserId {UserId}", userId);
+                return refreshToken;
+            }
+            catch (DbUpdateException ex) {
+                logger.LogWarning(ex, "Refresh token collision detected, retrying (attempt {Attempt})", attempt + 1);
+
+                if (attempt == maxRetries - 1)
+                    throw new InvalidOperationAppException("Could not generate unique refresh token after multiple attempts", null, logger);
+            }
+            
+        }
+
+        throw new InvalidOperationAppException("Failed to generate refresh token", null, logger);
+    }
+
+    private async Task<RefreshToken?> ValidateRefreshTokenAsync(string refreshToken)
+    {
+        var tokenHash = HashToken(refreshToken);
+
         var existingRefreshToken = await refreshTokenRepo.GetByKeyAsync(
-            r => r.UserId == userId &&
-                 r.Token == refreshToken &&
+            r => r.Token == tokenHash &&
                  r.RevokedAt == null &&
                  r.ExpiryTime > DateTime.UtcNow
         );
@@ -84,44 +112,44 @@ public class AuthService(
         return existingRefreshToken;
     }
 
-    public async Task<TokenResponseDto> RefreshTokens(RefreshTokenRequestDto request)
+    public async Task<(string, TokenResponseDto)> RefreshTokens(string token)
     {
-        var refreshToken = await ValidateRefreshTokenAsync(request.UserId, request.RefreshToken);
+        var refreshToken = await ValidateRefreshTokenAsync(token);
 
         if (refreshToken == null)
             throw new InvalidOperationAppException(
                 userMessage: "Refresh token is invalid or expired.",
-                internalMessage: $"Failed refresh token attempt for UserId {request.UserId} with token '{request.RefreshToken}'",
+                internalMessage: $"Failed refresh token attempt with token '{token}'",
                 logger: logger
             );
 
-        var user = await userRepo.GetByIdAsync(request.UserId);
+        var user = await userRepo.GetByIdAsync(refreshToken.UserId);
         if (user == null) {
-            throw new NotFoundException("User", request.UserId, logger);
+            throw new NotFoundException("User", refreshToken.UserId, logger);
         }
 
         refreshToken.RevokedAt = DateTime.UtcNow;
         await refreshTokenRepo.UpdateAsync(refreshToken);
 
-        logger.LogInformation("Refresh token used and revoked for UserId {UserId}", request.UserId);
+        logger.LogInformation("Refresh token used and revoked for UserId {UserId}", refreshToken.UserId);
         return await CreateTokenResponse(user);
     }
 
-    public async Task<TokenResponseDto> CreateTokenResponse(User user)
+    public async Task<(string, TokenResponseDto)> CreateTokenResponse(User user)
     {
-        return new TokenResponseDto
+        var refreshToken = await GenerateAndSaveRefreshTokenAsync(user.Id);
+        return (refreshToken, new TokenResponseDto
         {
             AccessToken = GenerateToken(user),
-            RefreshToken = await GenerateAndSaveRefreshTokenAsync(user.Id),
             User = user.MapUserToUserDto()
-        };
+        });
     }
 
-    public async Task<TokenResponseDto> LoginUser(LoginDto dto)
+    public async Task<(string, TokenResponseDto)> LoginUser(LoginDto dto)
     {
         var user = await userRepo.GetByKeyAsync(u => 
-            EF.Functions.ILike(u.Username.ToLower(), dto.UsernameOrEmail) || 
-            EF.Functions.ILike(u.Email.ToLower(), dto.UsernameOrEmail), true);
+            EF.Functions.ILike(u.Username, dto.UsernameOrEmail) || 
+            EF.Functions.ILike(u.Email, dto.UsernameOrEmail), true);
 
         if (user == null || 
             !BCrypt.Net.BCrypt.EnhancedVerify(dto.Password, user.Password))
@@ -137,24 +165,19 @@ public class AuthService(
         return await CreateTokenResponse(user);
     }
 
-    public async Task Logout(RefreshTokenRequestDto dto)
+    public async Task Logout(string refreshToken)
     {
-        var token = await refreshTokenRepo.GetByKeyAsync(
-            r => r.UserId == dto.UserId &&
-                 r.Token == dto.RefreshToken &&
-                 r.RevokedAt == null &&
-                 r.ExpiryTime > DateTime.UtcNow
-        );
+        var token = await ValidateRefreshTokenAsync(refreshToken);
 
         if (token != null)
         {
             token.RevokedAt = DateTime.UtcNow;
             await refreshTokenRepo.UpdateAsync(token);
-            logger.LogInformation("Refresh token revoked for UserId {UserId}", dto.UserId);
+            logger.LogInformation("Refresh token revoked for UserId {UserId}", token.UserId);
         }
         else
         {
-            logger.LogWarning("Attempt to revoke non-existing or already revoked refresh token for UserId {UserId}", dto.UserId);
+            logger.LogWarning("Attempt to revoke non-existing or already revoked refresh token");
         }
     }
 }
