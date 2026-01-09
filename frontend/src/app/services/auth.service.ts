@@ -3,15 +3,14 @@ import { Injectable } from '@angular/core';
 import { Login } from '../models/auth/login.interface';
 import { Observable, tap, throwError } from 'rxjs';
 import { LoginResponse } from '../models/auth/login-response.interface';
-import { RefreshTokenRequest } from '../models/auth/refresh-token-request.interface';
 import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  router: any;
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   isUserLoggedIn(): boolean {
     return !!localStorage.getItem('accessToken');
@@ -30,12 +29,11 @@ export class AuthService {
 
   login(loginData: Login): Observable<LoginResponse>{
     return this.http
-      .post<LoginResponse>(`${environment.apiUrl}/auth/login`, loginData)
+      .post<LoginResponse>(`${environment.apiUrl}/auth/login`, loginData, { withCredentials: true })
       .pipe(
         tap((response) => {
-          if (response && response.accessToken && response.refreshToken){
+          if (response && response.accessToken){
             localStorage.setItem('accessToken', response.accessToken);
-            localStorage.setItem('refreshToken', response.refreshToken);
             localStorage.setItem('user', JSON.stringify(response.user));
           }
           else {
@@ -62,47 +60,26 @@ export class AuthService {
   }
 
   logout(): Observable<void>{
-    return this.http.post<void>(`${environment.apiUrl}/auth/logout`, {})
+    return this.http.post<void>(`${environment.apiUrl}/auth/logout`, {}, { withCredentials: true })
       .pipe(
         tap({
           next: () => {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            localStorage.removeItem('user');
-            this.router.navigate('[/login]')
+            this.doLogoutCleanup();
           },
           error: (error) => {
             console.error('Error during logout', error);
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            localStorage.removeItem('user');
-            this.router.navigate('[/login]')
+            this.doLogoutCleanup();
           }
         })
       )
   }
 
   refreshToken(): Observable<LoginResponse>{
-    const refreshToken = localStorage.getItem('refreshToken');
-    const user = localStorage.getItem('user');
-
-    if (!refreshToken || !user) {
-      const missing = !refreshToken ? 'Refresh token' : 'User';
-      console.error(`${missing} not found`);
-      return throwError(() => new Error(`${missing} not found`));
-    }
-
-    const request: RefreshTokenRequest = {
-      userId: JSON.parse(user).id,
-      refreshToken
-    }
-
-    return this.http.post<LoginResponse>(`${environment.apiUrl}/refresh-token`, request)
+    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/refresh-token`, {},  { withCredentials: true })
       .pipe(
         tap((response) => {
-          if (response && response.accessToken && response.refreshToken){
+          if (response && response.accessToken){
             localStorage.setItem('accessToken', response.accessToken);
-            localStorage.setItem('refreshToken', response.refreshToken);
             localStorage.setItem('user', JSON.stringify(response.user));
           }
           else {
@@ -110,5 +87,11 @@ export class AuthService {
           }
         })
       )
+  }
+
+  private doLogoutCleanup() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('user');
+    this.router.navigate(['/login']);
   }
 }
