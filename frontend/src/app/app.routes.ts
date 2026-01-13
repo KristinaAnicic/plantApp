@@ -6,4 +6,9 @@ export const routes: Routes = [
         loadComponent: () => 
             import('./pages/plants/plants').then((m) => m.Plants)
     },
+    {
+        path: 'plant/:id',
+        loadComponent: () =>
+            import('./pages/plant/plant').then((m) => m.Plant)
+    }
 ];

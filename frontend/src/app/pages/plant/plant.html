@@ -1,0 +1,161 @@
+<div class="px-10 py-5">
+    @if(plant()){
+        <div class="flex flex-col lg:flex-row gap-x-10 gap-y-8">
+            <!-- Left side -->
+
+            <div class="flex flex-col lg:w-sm gap-y-5 mx-auto">
+                <div class="relative w-sm h-62 isolate flex flex-col justify-end overflow-hidden rounded-xl pb-4 pl-4 mx-auto">
+                    <img [src]="plant()?.image || 'assets/icons/placeholder.svg'" 
+                        class="absolute inset-0 w-full h-full rounded-lg object-cover">
+                    <div class="w-full h-full capitalize absolute inset-0 bg-gradient-to-t from-gray-800 via-gray-800/40"></div>
+                    <h2 class="z-10 text-2xl font-bold text-white capitalize">{{ plant()?.commonName }}</h2>
+                    <div class="z-10 text-sm leading-6 text-gray-300 italic">{{ plant()?.botanicalName }}</div>
+                </div>
+
+                <div class="flex flex-col gap-y-1 pb-2">
+                    <h3 class="text-xl font-semibold">Plant Description</h3>
+                    <p class="text-sm/4">{{ plant()?.entityDescription }}</p>
+                </div>
+
+                @if(plant()?.parentPlant){
+                    <div class="flex items-baseline gap-x-2">
+                        <h3 class="text-lg font-semibold pb-3">Parent plant </h3>
+                        <a href="/plant/{{ plant()?.parentPlant?.id }}" class="font-medium text-fg-brand underline hover:no-underline">{{ plant()?.parentPlant?.name }}</a>
+                    </div>
+                }
+
+                <!-- Image slide-->
+                @if(plant()?.images){               
+                    <div class="relative group w-full mx-auto">
+                            <div class="h-52 w-full overflow-hidden rounded-2xl">
+                                <div #carousel class="w-full h-full flex flex-row overflow-x-auto scroll-smooth snap-x snap-mandatory gap-2 scrollbar-hide rounded-lg"> 
+                                    @for(image of plant()?.images; track image.id){
+                                        <div class="flex-none w-full/2 snap-center h-full items-center justify-center overflow-hidden rounded-lg cursor-pointer">
+                                            <img [src]="image.url" (click)="openImage(image.url)" class="w-full h-full object-cover">
+                                        </div>
+                                    }               
+                                </div>
+                            </div>
+                        @if ((plant()?.images?.length ?? 0) > 1) {
+                            <!-- Previous Slide -->
+                            <button (click)="scroll(carousel, -1)" type="button" class="absolute top-1/2 -translate-y-1/2 -left-3 w-10 h-10 z-20 opacity-95 bg-white rounded-full flex items-center justify-center cursor-pointer">
+                                <svg class="w-6 h-6 text-green-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                            </button>
+                            <!-- Next Slide -->
+                            <button (click)="scroll(carousel, 1)" type="button" class="absolute top-1/2 -translate-y-1/2 -right-3 w-10 h-10 z-20 opacity-95 bg-white items-center flex justify-center rounded-full cursor-pointer">
+                                <svg class="w-6 h-6 text-green-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </button>
+                        }
+                    </div>
+                }
+
+                @if((plant()?.synonyms?.length ?? 0) > 1){
+                    <div>
+                        <h3 class="text-xl font-semibold pb-3">Synonym plants</h3>
+                        @for(synonym of plant()?.synonyms; track synonym.id){
+                            <a href="#" class="font-medium text-fg-brand underline hover:no-underline">{{ synonym.name }}</a>
+                        }
+                    </div>
+                }
+                
+            </div>
+
+            <!-- Right side -->
+            <div class="flex flex-col gap-y-8">
+                <div>
+                    <h3 class="text-xl font-semibold pb-2">Plant Details</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-2">
+                        <div class="flex flex-col gap-y-2">
+                            @for(detail of plantDetails(); track detail.label){
+                                <div class="flex items-baseline gap-x-2">
+                                    <div 
+                                        class="h-5 w-5 bg-green-900 shrink-0 translate-y-1"
+                                        [style.mask]="'url(' + detail.icon + ') no-repeat center / contain'"
+                                        [style.webkit-mask]="'url(' + detail.icon + ') no-repeat center / contain'">
+                                    </div>
+                                    <div class="flex flex-wrap items-baseline gap-x-2">
+                                        <p class="font-semibold text-base">{{ detail.label }}:</p>
+                                        <p class="text-sm">{{ detail.value }}</p>
+                                    </div>                            
+                                </div>
+                            }               
+                        </div>
+
+                        <div class="flex flex-col gap-y-2">
+                            @for(detail of plantSpecs(); track detail.label){
+                                <div class="flex items-baseline gap-x-2">
+                                    <div 
+                                        class="h-5 w-5 bg-green-900 shrink-0 self-center"
+                                        [style.mask]="'url(' + detail.icon + ') no-repeat center / contain'"
+                                        [style.webkit-mask]="'url(' + detail.icon + ') no-repeat center / contain'">
+                                    </div>
+                                    <div class="flex flex-wrap items-baseline gap-x-2">
+                                        <p class="font-semibold text-base">{{ detail.label }}:</p>
+                                        <p class="text-sm">{{ detail.value }}</p>
+                                    </div>                            
+                                </div>
+                            }          
+                        </div>                    
+                    </div>
+                </div>
+
+                @if(plant()?.toxicity){
+                    <div class="bg-red-100 rounded-xl p-3">                    
+                        <div class="flex items-center">
+                            <img src="assets/images/icons/warning.svg" class="w-8 h-8">
+                            <p class="text-base font-semibold">Toxicity</p>
+                        </div>
+                        <p class="text-sm px-2">{{ plant()?.toxicity }}</p>
+                    </div>
+                }
+
+                <div>
+                    <h3 class="text-xl font-semibold pb-3">Cultivation & Care</h3>
+                    <div class="gap-x-1 pb-3 overflow-hidden ">
+                        @for(option of options(); track option){
+                            @if(option === selectedOption()){
+                                <button (click)="clickSelectedOption(option)" type="button" class="mr-1 mb-1 border border-2 border-green-900 text-white bg-green-900 focus:ring-4 focus:ring-neutral-tertiary font-medium rounded-3xl text-sm px-4 py-2 focus:outline-none cursor-pointer">{{ option }}</button>
+                            }
+                            @else{
+                                <button (click)="clickSelectedOption(option)" type="button" class="mr-1 mb-1 border border-2 border-green-900 text-green-900 hover:text-white hover:bg-green-900 hover:opacity-70 focus:ring-4 focus:ring-neutral-tertiary font-medium rounded-3xl text-sm px-4 py-2 focus:outline-none cursor-pointer">{{ option }}</button>
+                            }
+                        }                       
+                    </div>
+                    <p>{{ optionText() }}</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold pb-3">Growth Conditions</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-5 gap-x-5">
+                        @for(condition of growthConditions(); track condition.label){
+                            <div class="flex items-baseline gap-x-2">
+                                <div 
+                                    class="h-6 w-6 bg-green-900 shrink-0 translate-y-2"
+                                    [style.mask]="'url(' + condition.icon + ') no-repeat center / contain'"
+                                    [style.webkit-mask]="'url(' + condition.icon + ') no-repeat center / contain'">
+                                </div>
+                                <div class="flex flex-wrap items-baseline gap-x-2">
+                                    <p class="font-semibold text-base">{{ condition.label }}</p>
+                                    <p class="text-sm">{{ condition.value }}</p>
+                                </div>                            
+                            </div>
+                        }    
+                    </div>   
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if(selectedImage()){
+    <div (click)="closeImage()" class="fixed inset-0 z-50 flex justify-center items-center w-full md:inset-0 max-h-lg bg-black/90 backdrop-blur-sm">
+        <button class="absolute top-5 right-5 text-white hover:text-gray-300 cursor-pointer">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+            <div class="relative bg-white border border-gray-200 rounded-xl shadow-sm" (click)="$event.stopPropagation()">
+                <img [src]="selectedImage()" class="rounded-xl max-h-[80vh]">
+            </div>
+    </div> 
+}
