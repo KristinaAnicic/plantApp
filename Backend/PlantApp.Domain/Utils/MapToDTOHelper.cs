@@ -35,33 +35,41 @@ public static class MapToDTOHelper
             CommonName = plant.CommonName,
             EntityDescription = plant.EntityDescription,
             Image = plant.Images?.FirstOrDefault()?.Url ?? null,
-            Fragrance = plant.Fragrance?.Name ?? "Unknown",
-            HardinessLevel = plant.HardinessLevel != null ? $"{plant.HardinessLevel.Level} ({plant.HardinessLevel.Description})" : "Unknown",
+            Fragrance = plant.Fragrance?.Name ?? "Not specified",
+            HardinessLevel = plant.HardinessLevel != null ? $"{plant.HardinessLevel.Level} ({plant.HardinessLevel.Description})" : "Not specified",
             IsSpecie = plant.IsSpecie,
             IsGenus = plant.IsGenus,
             IsPlantForPollinators = plant.IsPlantForPollinators,
             IsLowMaintenance = plant.IsLowMaintenance,
             IsDroughtResistant = plant.IsDroughtResistant,
-            SpreadType = plant.SpreadType?.Name ?? "Unknown",
-            HeightType = plant.HeightType?.Name ?? "Unknown",
-            TimeToFullHeight = plant.TimeToFullHeight?.Name ?? "Unknown",
+            SpreadType = plant.SpreadType?.Name ?? "Not specified",
+            HeightType = plant.HeightType?.Name ?? "Not specified",
+            TimeToFullHeight = plant.TimeToFullHeight?.Name ?? "Not specified",
             Toxicity = plant.Toxicity,
             Cultivation = plant.Cultivation,
             PestResistance = plant.PestResistance,
             DiseaseResistance = plant.DiseaseResistance,
             Pruning = plant.Pruning,
             Propagation = plant.Propagation,
-            Family = plant.Family?.Name ?? "Unknown",
+            Family = plant.Family?.Name ?? "Not specified",
             GenusDescription = plant.GenusDescription,
-            SoilTypes = string.Join(", ", plant.SoilTypes.Select(s => s.Name)) ?? "Unknown",
+            SoilTypes = string.Join(", ", plant.SoilTypes.Select(s => s.Name)) ?? "Not specified",
             Images = plant.Images?.Select(s => s.MapImageToImageDto()).ToList(),
-            Sunlights = string.Join(", ", plant.Sunlights.Select(s =>s.Name)) ?? "Unknown",
-            Aspects = string.Join(", ", plant.Aspects.Select(a =>a.Name)) ?? "Unknown",
-            Moistures = string.Join(", ", plant.Moistures.Select(m =>m.Name)) ?? "Unknown",
-            Phs = string.Join(", ", plant.Phs.Select(p =>p.Name)) ?? "Unknown",
-            Exposures = string.Join(", ", plant.Exposures.Select(e =>e.Name)) ?? "Unknown",
+            Sunlights = string.Join(", ", plant.Sunlights.Select(s =>s.Name)) ?? "Not specified",
+            Aspects = string.Join(", ", plant.Aspects.Select(a =>a.Name)) ?? "Not specified",
+            Moistures = string.Join(", ", plant.Moistures.Select(m =>m.Name)) ?? "Not specified",
+            Phs = string.Join(", ", plant.Phs.Select(p =>p.Name)) ?? "Not specified",
+            Exposures = string.Join(", ", plant.Exposures.Select(e =>e.Name)) ?? "Not specified",
             Habits = plant.Habits.Select(e =>e.Name).ToList(),
-            Seasons = plant.Seasons.Select(e =>e.Name).ToList()
+            Seasons = plant.Seasons.Select(e =>e.Name).ToList(),
+            Synonyms = plant.Synonyms
+                            .Select( p => new ReferenceDto { Id = p.Id, Name = p.BotanicalName })
+                            .ToList(),
+            ParentPlant = plant.SynonymParentPlant != null ? 
+                          new ReferenceDto { 
+                              Id = plant.SynonymParentPlant.Id, 
+                              Name = plant.SynonymParentPlant.BotanicalName } :
+                          null
         };
     }
 
@@ -148,11 +156,11 @@ public static class MapToDTOHelper
             Id = planted.Id,
             Place = planted.Place != null
                 ? $"{planted.Place.Name} ({planted.Place.Address}, {planted.Place.City})"
-                : "Unknown",
+                : "Not specified",
             PlantName = planted.Plant != null
                 ? $"{planted.Plant.BotanicalName} ({planted.Plant.CommonName})"
-                : "Unknown",
-            PlantStatus = planted.PlantStatus?.Name ?? "Unknown",
+                : "Not specified",
+            PlantStatus = planted.PlantStatus?.Name ?? "Not specified",
             DatePlanted = planted.DatePlanted,
             Image = planted.Image ?? planted.Images?.FirstOrDefault()?.Url,
             Name = planted.Name
@@ -271,7 +279,7 @@ public static class MapToDTOHelper
             Image = exchange.MainImage,
             Price = exchange.Price,
             CreatedAt = exchange.CreatedAt,
-            User = new ReferenceDto { Id = exchange.UserId, Name = exchange.User != null ? exchange.User.Username : "unknown" },
+            User = new ReferenceDto { Id = exchange.UserId, Name = exchange.User != null ? exchange.User.Username : "Not specified" },
             Planted = exchange.Planted != null ? exchange.Planted.MapPlantedToPlantedDto() : null,
             Content = exchange.Content,
             PlantStatus = exchange.PlantStatus,

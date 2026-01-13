@@ -1,4 +1,5 @@
 import { ImageDto } from "./image.interface";
+import { Reference } from "./reference.interface";
 
 export interface PlantListResponse {
     total: number;
@@ -41,6 +42,8 @@ export interface PlantGetDto extends PlantDto {
     exposures?: string;
     habits?: string[];
     seasons?: string[];
+    synonyms?: Reference[];
+    parentPlant?: Reference;
 }
 
 export interface UpsertPlantDto {

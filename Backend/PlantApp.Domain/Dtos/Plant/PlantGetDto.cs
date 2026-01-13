@@ -29,4 +29,6 @@ public class PlantGetDto : PlantDto
     public string? Exposures { get; set; }
     public List<string>? Habits { get; set; }
     public List<string>? Seasons { get; set; }
+    public List<ReferenceDto>? Synonyms { get; set; }
+    public ReferenceDto? ParentPlant { get; set; }
 }
