@@ -1,3 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "tailwindcss";
+
+@source "./app/components/**/*.html";
+@source "./app/pages/**/*.html";
+@source "./app/**/*.{html,ts}";
+
+/*@theme {
+    --color-custom-bg: #f6f3ea;
+    --color-dark-green-button: #3c5736;
+    --color-button-text: #e1e8d9;
+}*/
+
+:root {
+    --background: #f6f7f0;
+    --background-2: #f6f3ea;
+    --button: #3c5736;
+    --button-text: #e1e8d9;
+}
+
+body {
+    background-color: var(--background);
+}
