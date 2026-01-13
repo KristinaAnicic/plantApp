@@ -18,13 +18,13 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 // Add services to the container.
-
+var allowedOrigins = "AllowedOrigins";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowedOrigins", builder =>
+    options.AddPolicy(allowedOrigins, builder =>
     {
         builder
-            .WithOrigins("http://localhost:8080")
+            .WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
             .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH")
             .AllowCredentials();
@@ -123,6 +123,7 @@ using (var scope = app.Services.CreateScope())
     await seedTemp.SeedAllData();
 }
 
+app.UseCors(allowedOrigins);
 app.UseHttpsRedirection();
 
 app.UseExceptionHandler();
