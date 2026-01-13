@@ -32,21 +32,29 @@ public class PlantRepository(AppDbContext context) : Repository<Plant>(context),
 
             query = query
                 .Where(p =>
-                    EF.Functions.TrigramsSimilarity(p.CommonName, name) > 0.2 ||
-                    EF.Functions.TrigramsSimilarity(p.BotanicalName, name) > 0.2
+                    EF.Functions.ILike(p.CommonName, $"%{name}%") ||
+                    EF.Functions.ILike(p.BotanicalName, $"%{name}%") ||
+                    EF.Functions.TrigramsSimilarity(p.CommonName, name) > 0.3 ||
+                    EF.Functions.TrigramsSimilarity(p.BotanicalName, name) > 0.3
+                )             
+                .OrderByDescending(p => p.SynonymParentPlantId != null)
+                .ThenBy(p =>
+                    EF.Functions.ILike(p.CommonName, $"%{name}%") || EF.Functions.ILike(p.BotanicalName, $"%{name}%")
                 )
-                .OrderByDescending(p =>
+                .ThenByDescending(p =>
                     Math.Max(
                         EF.Functions.TrigramsSimilarity(p.CommonName, name),
                         EF.Functions.TrigramsSimilarity(p.BotanicalName, name)
                     )
                 )
+                .ThenBy(p => p.Images.Any(i => i.Url != null && i.Url != ""))
                 .ThenBy(p => p.Id);
         }
         else
         {
             query = query
                 .OrderByDescending(p => p.Images.Any(i => i.Url != null && i.Url != ""))
+                .ThenBy(p => p.SynonymParentPlantId != null)
                 .ThenBy(p => p.CommonName)
                 .ThenBy(p => p.Id);
         }
@@ -66,7 +74,9 @@ public class PlantRepository(AppDbContext context) : Repository<Plant>(context),
 
         var plants = await baseQuery
             .Include(p => p.Images)
-            .OrderByDescending(p => p.Images.Any(i => i.Url != null && i.Url != ""))
+            //.OrderByDescending(p => p.Images.Any(i => i.Url != null && i.Url != ""))
+            .OrderBy(p => p.SynonymParentPlantId != null)
+            .ThenByDescending(p => p.Images.Count())            
             .ThenBy(p => p.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
