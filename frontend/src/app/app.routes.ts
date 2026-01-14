@@ -10,5 +10,15 @@ export const routes: Routes = [
         path: 'plant/:id',
         loadComponent: () =>
             import('./pages/plant/plant').then((m) => m.Plant)
+    },
+    {
+        path: 'login',
+        loadComponent: () =>
+            import('./pages/login/login').then((m) => m.Login)
+    },
+    {
+        path: 'register',
+        loadComponent: () =>
+            import('./pages/register/register').then((m) => m.Register)
     }
 ];

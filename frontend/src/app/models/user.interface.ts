@@ -34,7 +34,7 @@ export interface AddUserDto {
     username: string;
     password: string;
     displayName: string;
-    contact?: string;
+    contact: string | null;
     gender: string;
     dateOfBirth: string;
     roleId?: string;
@@ -43,7 +43,7 @@ export interface AddUserDto {
 export interface UpdateUserDto {
     id: number;
     displayName: string;
-    contact?: string;
+    contact: string | null;
     gender: string;
     dateOfBirth: string;
     roleId?: string;

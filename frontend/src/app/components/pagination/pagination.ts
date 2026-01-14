@@ -41,11 +41,8 @@ export class Pagination {
 
   changePageClick(page: number){
     const total = this.totalPages();
-    if (page < 1)
-      page = 1;
-
-    else if (page > total)
-      page = total;
+    if (page < 1 || page > total)
+      return;
 
     this.newPage.emit(page);
   }

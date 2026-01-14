@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PlantApp.Domain.Dtos.Authentication;
 using PlantApp.Domain.Dtos.User;
 using PlantApp.Domain.Interfaces;
@@ -51,6 +52,7 @@ public class AuthController(
         }
     }
 
+    [AllowAnonymous]
     [HttpPost("logout")]
     public async Task<ActionResult<TokenResponseDto>> Logout()
     {
@@ -68,7 +70,7 @@ public class AuthController(
         Response.Cookies.Append(RefreshTokenCookieName, refreshToken, new CookieOptions()
         {
             HttpOnly = true,
-            Secure = true,
+            Secure = false,
             SameSite = SameSiteMode.Strict,
             Expires = DateTimeOffset.UtcNow.AddDays(7),
             Path = "/api/auth"
