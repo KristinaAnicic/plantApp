@@ -39,6 +39,10 @@ public class UserService(
 
     public async Task AddAsync(AddUserDto dto)
     {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        if (dto.DateOfBirth > today.AddYears(-13))
+            throw new InvalidOperationAppException("You must be at least 13 years old.");
+
         var existingEmail = await repository.ExistsAsync(u => EF.Functions.ILike(u.Email, dto.Email));
         if (existingEmail)
         {
