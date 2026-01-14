@@ -1,16 +1,16 @@
 <div class="flex flex-col w-full px-10">
     
-    <div class="w-full flex justify-center mb-2">
+    <div class="w-full flex pt-3">
         <div class="w-full max-w-md">
             <app-search-component (searchTriggered)="search($event)"></app-search-component>
         </div>
     </div>
 
-    <div class="flex flex-wrap gap-3 sm:gap-5 justify-center">      
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-3 justify-center">      
         @for (plant of plants(); track plant.plantId){
-            <div [routerLink]="['/plant', plant.plantId]" class="flex flex-col w-40 sm:w-56 p-3 border border-green-800 rounded-2xl bg-white shadow-sm overflow-hidden cursor-pointer">
+            <div [routerLink]="['/plant', plant.plantId]" class="flex flex-col transition hover:scale-102 shadow-lg shadow-green-900/50 rounded-2xl overflow-hidden cursor-pointer">
                 
-                <div class="h-40 sm:h-48 w-full overflow-hidden rounded-xl bg-gray-100 flex-shrink-0 content-center">
+                <div class="h-54 sm:h-48 w-full overflow-hidden rounded-t-xl bg-gray-100 flex-shrink-0 content-center">
                     @if (plant.image) {
                         <img [src]="plant.image" (error)="plant.image = 'assets/icons/placeholder.svg'" class="w-full h-full object-cover"/>
                     } @else {
@@ -23,19 +23,30 @@
                     }
                 </div>           
                 
-                <div class="my-2 flex-grow flex flex-col items-center justify-center text-center">
-                    <h2 class="font-bold text-green-900 leading-tight capitalize">{{plant.botanicalName}}</h2>
-                    <h2 class="text-sm italic text-gray-500 mt-1 capitalize">{{plant.commonName}}</h2>
+                <div class="flex flex-col p-3 h-full justify-between">          
+                    <div class="my-2 flex-grow flex-1 flex-col items-center justify-center text-center">
+                        <h2 class="font-bold text-green-900 leading-tight capitalize">{{plant.botanicalName}}</h2>
+                        <h2 class="text-sm italic text-gray-500 mt-1 capitalize">{{plant.commonName}}</h2>
+                    </div>
+                    
+                    <!--
+                    <button class="mt-auto w-full bg-green-900 hover:bg-green-800 text-white text-sm py-2 px-4 rounded-full transition-all cursor-pointer">
+                        More
+                    </button>
+                    -->
+                    <div class="flex justify-end gap-x-1 border-t border-gray-200 pt-2">
+                        <a href="/plant/{{plant.plantId}}" class="font-semibold text-sm text-green-900 opacity-75">View Details</a>
+                        <svg class="w-4 h-5 translate-y-0.5 text-green-900 opacity-75" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="m14.523 18.787s4.501-4.505 6.255-6.26c.146-.146.219-.338.219-.53s-.073-.383-.219-.53c-1.753-1.754-6.255-6.258-6.255-6.258-.144-.145-.334-.217-.524-.217-.193 0-.385.074-.532.221-.293.292-.295.766-.004 1.056l4.978 4.978h-14.692c-.414 0-.75.336-.75.75s.336.75.75.75h14.692l-4.979 4.979c-.289.289-.286.762.006 1.054.148.148.341.222.533.222.19 0 .378-.072.522-.215z" fill="currentColor" fill-rule="nonzero"/>
+                        </svg>
+                    </div>
                 </div>
                 
-                <button class="mt-auto w-full bg-green-900 hover:bg-green-800 text-white text-sm py-2 px-4 rounded-full transition-all cursor-pointer">
-                    More
-                </button>
             </div>
         }
     </div>
 
-    <div class="flex justify-end">
-        <app-pagination [currentPage]="currentPage()" [totalPages]="20" (newPage)="nextPage($event)"></app-pagination>
+    <div class="flex justify-center pt-5">
+        <app-pagination [currentPage]="currentPage()" [totalPages]="totalPages()" (newPage)="nextPage($event)"></app-pagination>
     </div>
 </div>

@@ -73,13 +73,13 @@ export class Plant implements OnInit {
   ]);
 
   growthConditions = computed(() => [
-    { label: 'Seasons', value: this.plant()?.seasons?.join(", "), icon: "assets/images/icons/season.svg" },
-    { label: 'Soil Types', value: this.plant()?.soilTypes, icon: "assets/images/icons/soil.svg" },
+    { label: 'Season', value: this.plant()?.seasons?.join(", "), icon: "assets/images/icons/season.svg" },
+    { label: 'Soil Type', value: this.plant()?.soilTypes, icon: "assets/images/icons/soil.svg" },
     { label: 'Sunlight', value: this.plant()?.sunlights, icon: "assets/images/icons/sun.svg" },
-    { label: 'Aspects', value: this.plant()?.aspects, icon: "assets/images/icons/sunrise.svg" },
+    { label: 'Aspect', value: this.plant()?.aspects, icon: "assets/images/icons/sunrise.svg" },
     { label: 'Moisture', value: this.plant()?.moistures, icon: "assets/images/icons/moisture.svg" },
     { label: 'Exposure', value: this.plant()?.exposures, icon: "assets/images/icons/wind.svg" },
-    { label: 'Habits', value: this.plant()?.habits?.join(", "), icon: "assets/images/icons/forest.svg" },
+    { label: 'Habit', value: this.plant()?.habits?.join(", "), icon: "assets/images/icons/forest.svg" },
     { label: 'Ph', value: this.plant()?.phs, icon: "assets/images/icons/ph-balance.svg" }
   ])
 
