@@ -2,7 +2,7 @@
     
     <div class="w-full flex pt-3">
         <div class="w-full max-w-md">
-            <app-search-component (searchTriggered)="search($event)"></app-search-component>
+            <app-search-component (searchTriggered)="search($event)" [currentText]="currentSearchTerm()"></app-search-component>
         </div>
     </div>
 

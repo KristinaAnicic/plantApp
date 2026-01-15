@@ -1,4 +1,4 @@
-import { Component, EventEmitter, output, Output, signal, ViewEncapsulation } from '@angular/core';
+import { Component, effect, EventEmitter, input, OnInit, output, Output, signal, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-search-component',
@@ -10,9 +10,15 @@ import { Component, EventEmitter, output, Output, signal, ViewEncapsulation } fr
 export class SearchComponent {
   @Output() search = new EventEmitter<void>();
 
-  searchQuery = signal('');
   searchTriggered = output<string>();
+  currentText = input<string>('');
+  searchQuery = signal<string>('');
   
+  constructor() {
+    effect(() => {
+      this.searchQuery.set(this.currentText());
+    }, { allowSignalWrites: true });
+  }
   onTyping(event: Event){
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery.set(value);

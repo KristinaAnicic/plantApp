@@ -3,8 +3,8 @@ import { PlantDto } from '../../models/plant.interface';
 import { PlantService } from '../../services/plant.service';
 import { SearchComponent } from "../../components/search-component/search-component";
 import { PlantFilterDto } from '../../models/filter.interface';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { RouterLink } from "@angular/router";
+import { catchError, debounceTime, distinctUntilChanged, Observable, of, Subject, switchMap } from 'rxjs';
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { Pagination } from "../../components/pagination/pagination";
 
 @Component({
@@ -16,6 +16,8 @@ import { Pagination } from "../../components/pagination/pagination";
 })
 export class Plants implements OnInit {
   private service = inject(PlantService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   
   plants = signal<PlantDto[]>([]);
   total = signal(0);
@@ -26,49 +28,18 @@ export class Plants implements OnInit {
   currentSearchTerm = signal<string>('');
 
   ngOnInit(): void {
-    this.service.getAllPlants().subscribe({
-      next: (response) => {
-        this.plants.set(response.items);
-        this.total.set(response.total);
-      },
-      error: (err) => {
-        console.error("Error while fetching plants: ", err);
-      }
-    })
+    this.route.queryParams.pipe(
+      switchMap(params => {
+        const page = +params['page'] || 1;
+        const searchTerm = params['search'] || '';
+        
+        this.currentSearchTerm.set(searchTerm);
+        this.filter.name = searchTerm;
+        this.currentPage.set(page);
 
-    this.searchSubject.pipe(
-      debounceTime(400),
-      distinctUntilChanged()
-    ).subscribe(searchTerm => {
-      this.executeSearch(searchTerm);
-    })
-  }
-
-  search(searchString: string) {
-    this.searchSubject.next(searchString);
-  }
-
-  isSearching(): boolean {
-    return this.currentSearchTerm().trim().length > 0;
-  }
-
-  totalPages = computed(() =>{
-    return Math.ceil(this.total()/25)
-  })
-  
-  executeSearch(searchString: string, page?: number){
-    this.filter.name = searchString;
-
-    if (page === null)
-      this.currentPage.set(1);
-
-    this.currentSearchTerm.set(searchString); 
-
-    const request$ = searchString.trim() === '' 
-      ? this.service.getAllPlants(page) 
-      : this.service.getAllPlantsFiltered(this.filter, page);
-
-    request$.subscribe({
+        return this.loadData(searchTerm, page);
+      })
+    ).subscribe({
       next: (response) => {
         this.plants.set(response.items);
         this.total.set(response.total);
@@ -77,33 +48,52 @@ export class Plants implements OnInit {
         console.error("Error while fetching searched plants: ", err);
       }
     })
+
+    this.searchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    ).subscribe(searchTerm => {
+        this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { search: searchTerm, page: 1 },
+        queryParamsHandling: 'merge'
+      });
+    })
   }
 
-  nextPage(page: number){
-    this.currentPage.set(page);
+  search(searchString: string) {
+    this.searchSubject.next(searchString);
+  }
 
-    if(this.isSearching()){
-      this.executeSearch(this.currentSearchTerm(), page);
-    }
-    else{
-      this.service.getAllPlants(page).subscribe({
-        next: (response) => {
-          this.plants.set(response.items);
-          this.total.set(response.total);
-        },
-        error: (err) => {
-          console.error("Error while fetching plants: ", err);
-        }
+  totalPages = computed(() =>{
+    return Math.ceil(this.total()/25)
+  })
+  
+  loadData(searchString: string, page?: number): Observable<any>{
+    this.filter.name = searchString;
+
+    const request$ =searchString.trim() === '' 
+      ? this.service.getAllPlants(page) 
+      : this.service.getAllPlantsFiltered(this.filter, page);
+
+    return request$.pipe(
+      catchError(err => {
+        console.log("Error:", err)
+        return of({ items: [], total: 0});
       })
-    }
-    
+    )
+  }
+
+  nextPage(newPage: number){
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { page: newPage },
+      queryParamsHandling: 'merge'
+    })
   }
 
   ngOnDestroy(): void {
     this.searchSubject.complete();
   }
-}
-function compute(arg0: () => number) {
-  throw new Error('Function not implemented.');
 }
 
