@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { guestGuard } from './utils/guest-guard';
 
 export const routes: Routes = [
     {
@@ -28,5 +29,9 @@ export const routes: Routes = [
         loadComponent: () =>
             import('./pages/user-plants/user-plants').then((m) => m.UserPlants)
     },
+    {
+        path: 'place/:id',
+        loadComponent: () =>
+            import('./pages/place-plants/place-plants').then((m) => m.PlacePlants)
     }
 ];
