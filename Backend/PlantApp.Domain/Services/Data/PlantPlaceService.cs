@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using PlantApp.Data.Models;
+using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.PlantPlace;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
@@ -47,7 +48,7 @@ public class PlantPlaceService(
 
     public async Task AddAsync(UpsertPlaceDto dto)
     {
-        var country = countryRepository.GetByIdAsync(dto.CountryId);
+        var country = await countryRepository.GetByIdAsync(dto.CountryId);
         if (country == null) 
             throw new NotFoundException("Country", dto.CountryId, logger);
 
@@ -99,5 +100,11 @@ public class PlantPlaceService(
 
         await repository.DeleteAsync(place, false);
         logger.LogInformation("Place {PlaceId} deleted by user {UserId}", id, CurrentUserId);
+    }
+
+    public async Task<List<ReferenceDto>> getAllCountries()
+    {
+        var countries = await countryRepository.GetAllAsync();
+        return countries.Select(c => c.MapReferenceToDto()).ToList();
     }
 }

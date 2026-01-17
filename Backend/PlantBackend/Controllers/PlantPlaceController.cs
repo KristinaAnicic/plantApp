@@ -44,4 +44,12 @@ public class PlantPlaceController(IPlantPlaceService plantPlaceService) : Contro
         await plantPlaceService.DeleteAsync(id);
         return NoContent();
     }
+
+    [AllowAnonymous]
+    [HttpGet("country")]
+    public async Task<IActionResult> GetCountries()
+    {
+        var result = await plantPlaceService.getAllCountries();
+        return Ok(result);
+    }
 }

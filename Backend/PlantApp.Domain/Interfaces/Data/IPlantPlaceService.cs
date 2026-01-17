@@ -1,4 +1,5 @@
-﻿using PlantApp.Domain.Dtos.PlantPlace;
+﻿using PlantApp.Domain.Dtos.Plant;
+using PlantApp.Domain.Dtos.PlantPlace;
 
 namespace PlantApp.Domain.Interfaces.Data;
 
@@ -9,4 +10,5 @@ public interface IPlantPlaceService
     public Task AddAsync(UpsertPlaceDto dto);
     public Task UpdateAsync(int id, UpsertPlaceDto place);
     public Task DeleteAsync(int id);
+    public Task<List<ReferenceDto>> getAllCountries();
 }
