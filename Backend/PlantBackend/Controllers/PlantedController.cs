@@ -24,6 +24,13 @@ public class PlantedController(IPlantedService plantedService) : Controller
         return Ok(result);
     }
 
+    [HttpGet("place/{id}")]
+    public async Task<IActionResult> GetAllByPlace(int id)
+    {
+        var result = await plantedService.GetAllByPlaceIdAsync(id);
+        return Ok(result);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {

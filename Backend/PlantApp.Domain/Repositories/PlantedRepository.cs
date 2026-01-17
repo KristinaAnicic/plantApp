@@ -15,6 +15,20 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
         return await query.ToListAsync();
     }
 
+    public async Task<List<Planted>> GetPlantedPlantsByPlaceId(int placeId)
+    {
+        var query = dbSet
+            .Include(p => p.Place)
+            .Include(p => p.Plant)
+                .ThenInclude(p => p.Images)
+            .Include(p => p.Images)
+            .Include(p => p.PlantStatus)
+            .Where(p => p.Plant != null && p.Place != null && p.Place.Id == placeId && p.PlantStatusId != 3)
+            .OrderBy(x => x.UpdatedAt);
+
+        return await query.ToListAsync();
+    }
+
     public async Task<Planted?> GetPlantedById(int id)
     {
         var query = dbSet.AsQueryable();
@@ -60,6 +74,7 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
         return dbSet
             .Include(p => p.Place)
             .Include(p => p.Plant)
+                .ThenInclude(p => p.Images)
             .Include(p => p.Images)
             .Include(p => p.PlantStatus)
             .Where(p => p.Plant != null && p.Place != null && p.Place.UserId == userId && p.PlantStatusId != 3);

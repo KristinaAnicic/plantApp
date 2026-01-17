@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos.Planted;
+using PlantApp.Domain.Dtos.PlantPlace;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
@@ -23,6 +24,9 @@ public class PlantedService(
     public async Task<List<PlantedDto>> GetAllByUserIdAsync(int? userId)
     {
         int actualUserId = userId ?? CurrentUserId;
+        if (actualUserId != CurrentUserId && !IsAdmin)
+            throw new UnauthorizedException("fetching plants in", "planted", logger);
+
         logger.LogInformation("Fetching planted plants for user {UserId}", actualUserId);
         var planted = await repository.GetPlantedPlantsByUserId(actualUserId);
         return planted.Select(p => p.MapPlantedToPlantedDto()).ToList();
@@ -31,6 +35,9 @@ public class PlantedService(
     public async Task<List<GroupedPlantedDto>> GetAllByUserIdGroupedByPlaceAsync(int? userId)
     {
         int actualUserId = userId ?? CurrentUserId;
+        if (actualUserId != CurrentUserId && !IsAdmin)
+            throw new UnauthorizedException("fetching plants in", "planted", logger);
+
         logger.LogInformation("Fetching planted plants grouped by place for user {UserId}", actualUserId);
 
         var planted = await repository.GetPlantedPlantsByUserIdGrouped(actualUserId);
@@ -43,6 +50,24 @@ public class PlantedService(
             .ToList();
 
         return groupedDto;
+    }
+
+    public async Task<PlaceGetDto> GetAllByPlaceIdAsync(int placeId)
+    {
+        var place = await placeRepo.GetByIdAsync(placeId);
+        if (place == null)
+            throw new NotFoundException("Place", placeId, logger);
+        
+        if (place.UserId != CurrentUserId && !IsAdmin)
+            throw new UnauthorizedException("fetching plants in", "planted", logger);
+
+        logger.LogInformation("Fetching planted plants by place for user {UserId}", place.UserId);
+
+        var planted = await repository.GetPlantedPlantsByPlaceId(placeId);
+        var dto = place.MapPlaceToPlaceGetDto();
+        dto.Planted = planted.Select(p => p.MapPlantedToPlantedDto()).ToList();
+
+        return dto;
     }
 
     public async Task<PlantedGetDto> GetByIdAsync(int id)
