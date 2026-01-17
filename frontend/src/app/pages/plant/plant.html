@@ -8,7 +8,13 @@
                     <img [src]="plant()?.image || 'assets/icons/placeholder.svg'" 
                         class="absolute inset-0 w-full h-full rounded-lg object-cover">
                     <div class="w-full h-full capitalize absolute inset-0 bg-gradient-to-t from-gray-800 via-gray-800/40"></div>
-                    <h2 class="z-10 text-2xl font-bold text-white capitalize">{{ plant()?.commonName }}</h2>
+                    @if(plant()?.commonName){
+                        <h2 class="z-10 text-2xl font-bold text-white capitalize">{{ plant()?.commonName }}</h2>
+                    }
+                    @else {
+                        <h2 class="z-10 text-2xl font-bold text-white capitalize">{{ plant()?.botanicalName }}</h2>
+                    }
+                    
                     <div class="z-10 text-sm leading-6 text-gray-300 italic">{{ plant()?.botanicalName }}</div>
                 </div>
 

@@ -24,16 +24,12 @@
                 </div>           
                 
                 <div class="flex flex-col p-3 h-full justify-between">          
-                    <div class="my-2 flex-grow flex-1 flex-col items-center justify-center text-center">
+                    <div class="my-2 flex-grow flex-1 flex-col items-center justify-center">
                         <h2 class="font-bold text-green-900 leading-tight capitalize">{{plant.botanicalName}}</h2>
                         <h2 class="text-sm italic text-gray-500 mt-1 capitalize">{{plant.commonName}}</h2>
+                        <p class="text-sm text-gray-700 mt-1 line-clamp-3 pt-3 mb-2">{{plant.entityDescription}}</p>
                     </div>
                     
-                    <!--
-                    <button class="mt-auto w-full bg-green-900 hover:bg-green-800 text-white text-sm py-2 px-4 rounded-full transition-all cursor-pointer">
-                        More
-                    </button>
-                    -->
                     <div class="flex justify-end gap-x-1 border-t border-gray-200 pt-2">
                         <a href="/plant/{{plant.plantId}}" class="font-semibold text-sm text-green-900 opacity-75">View Details</a>
                         <svg class="w-4 h-5 translate-y-0.5 text-green-900 opacity-75" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
