@@ -14,11 +14,14 @@ export const routes: Routes = [
     {
         path: 'login',
         loadComponent: () =>
-            import('./pages/login/login').then((m) => m.Login)
+            import('./pages/login/login').then((m) => m.Login),
+        canActivate: [guestGuard]
     },
     {
         path: 'register',
         loadComponent: () =>
-            import('./pages/register/register').then((m) => m.Register)
+            import('./pages/register/register').then((m) => m.Register),
+        canActivate: [guestGuard]
+    },
     }
 ];
