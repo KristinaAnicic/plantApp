@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { GroupedPlantedDto, PlantedDto, PlantedGetDto, UpsertPlantedDto } from '../models/planted.interface';
 import { environment } from '../../environments/environment';
+import { PlaceGetDto } from '../models/place.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +27,10 @@ export class PlantedService {
     } 
 
     return this.http.get<GroupedPlantedDto[]>(`${environment.apiUrl}/planted/grouped`, { params });
+  }
+
+  getAllPlantedPlantsByPlaceId(placeId: number): Observable<PlaceGetDto> {
+    return this.http.get<PlaceGetDto>(`${environment.apiUrl}/planted/place/${placeId}`);
   }
 
   getPlanted(id: number): Observable<PlantedGetDto> {

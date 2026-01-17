@@ -7,7 +7,7 @@ import { ReminderDto } from "./reminder.interface";
 export interface PlantedDto {
     id: number;
     plantName: string;
-    name?: string;
+    //name?: string;
     place: string;
     datePlanted: string;
     plantStatus: string;
