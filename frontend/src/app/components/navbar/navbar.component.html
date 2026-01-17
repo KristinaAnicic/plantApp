@@ -26,19 +26,16 @@
                 <div class="flex space-x-4">
                     <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
                         <a href="#" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">Plants</a>
-                    </div>   
-                    <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
-                        <a href="#" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">About</a>
-                    </div>  
-                    <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
-                        <a href="#" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">Care</a>
-                    </div>             
+                    </div>                 
                     <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
                         <a href="#" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">Community</a>
                     </div>  
                     @if(authService.isAuthenticated()) {
                     <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
-                        <a href="#" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">My Plants</a>
+                        <a href="/my-plants" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">My Plants</a>
+                    </div>
+                    <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
+                        <a href="#" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">Reminders</a>
                     </div>  
                     }                         
                 </div>
@@ -88,11 +85,12 @@
     <div id="mobile-menu" class="block">
         <div class="space-y-0 px-2 pt-2 pb-3">
         <a href="#" (click)="closeMenu()" aria-current="page" class="block rounded-md bg-green-900 px-3 py-2 text-base font-medium text-white">Plants</a>
-        <a href="#" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">About</a>
-        <a href="#" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">Care</a>
         <a href="#" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">Community</a>
-        <a href="#" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">My Plants</a>
-        </div>
+        @if(authService.isAuthenticated()){
+            <a href="/my-plants" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">My Plants</a>
+            <a href="/my-plants" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">Reminders</a>
+        }    
+    </div>
     </div>
     }
 </nav>

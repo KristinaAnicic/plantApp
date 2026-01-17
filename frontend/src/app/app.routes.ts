@@ -23,5 +23,10 @@ export const routes: Routes = [
             import('./pages/register/register').then((m) => m.Register),
         canActivate: [guestGuard]
     },
+    {
+        path: 'my-plants',
+        loadComponent: () =>
+            import('./pages/user-plants/user-plants').then((m) => m.UserPlants)
+    },
     }
 ];
