@@ -9,6 +9,7 @@ using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Dtos.PlantPlace;
 using PlantApp.Domain.Dtos.Reminder;
 using PlantApp.Domain.Dtos.User;
+using System.Globalization;
 
 namespace PlantApp.Domain.Utils;
 
@@ -93,6 +94,8 @@ public static class MapToDTOHelper
             Id = place.Id,
             Name = place.Name,
             Address = $"{place.Address} ({placeName})",
+            NumOfPlants = place.PlantedList.Count,
+            Note = place.Note
         };
     }
 
@@ -103,7 +106,8 @@ public static class MapToDTOHelper
             Id = place.Id,
             Name = place.Name,
             Address = place.Address,
-            City = $"{place.City}, {place.Country?.Name}",
+            City = place.City,
+            Country = place.Country?.MapReferenceToDto(),
             Note = place.Note,
             Planted = place.PlantedList?.Select(p => p.MapPlantedToPlantedDto()).ToList()
         };
@@ -155,15 +159,19 @@ public static class MapToDTOHelper
         {
             Id = planted.Id,
             Place = planted.Place != null
-                ? $"{planted.Place.Name} ({planted.Place.Address}, {planted.Place.City})"
-                : "Not specified",
-            PlantName = planted.Plant != null
-                ? $"{planted.Plant.BotanicalName} ({planted.Plant.CommonName})"
-                : "Not specified",
+                ? planted.Place.Name : "Not specified",
+            PlantName = planted.Name !=  null ? 
+                        planted.Name :
+                        planted.Plant != null
+                            ? $"{planted.Plant.CommonName}"
+                            : "Not specified",
             PlantStatus = planted.PlantStatus?.Name ?? "Not specified",
-            DatePlanted = planted.DatePlanted,
-            Image = planted.Image ?? planted.Images?.FirstOrDefault()?.Url,
-            Name = planted.Name
+            DatePlanted = planted.DatePlanted.ToString("MMM dd, yyyy", CultureInfo.InvariantCulture),
+            Image = planted.Image
+                ?? planted.Images?.FirstOrDefault()?.Url
+                ?? planted.Plant?.Images?.FirstOrDefault()?.Url
+                ?? null
+
         };
     }
 
