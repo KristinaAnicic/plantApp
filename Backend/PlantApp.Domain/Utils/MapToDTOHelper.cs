@@ -36,33 +36,33 @@ public static class MapToDTOHelper
             CommonName = plant.CommonName,
             EntityDescription = plant.EntityDescription,
             Image = plant.Images?.FirstOrDefault()?.Url ?? null,
-            Fragrance = plant.Fragrance?.Name ?? "Not specified",
-            HardinessLevel = plant.HardinessLevel != null ? $"{plant.HardinessLevel.Level} ({plant.HardinessLevel.Description})" : "Not specified",
+            Fragrance = plant.Fragrance?.MapReferenceToDto(),
+            HardinessLevel = plant.HardinessLevel?.MapReferenceToDto(),
             IsSpecie = plant.IsSpecie,
             IsGenus = plant.IsGenus,
             IsPlantForPollinators = plant.IsPlantForPollinators,
             IsLowMaintenance = plant.IsLowMaintenance,
             IsDroughtResistant = plant.IsDroughtResistant,
-            SpreadType = plant.SpreadType?.Name ?? "Not specified",
-            HeightType = plant.HeightType?.Name ?? "Not specified",
-            TimeToFullHeight = plant.TimeToFullHeight?.Name ?? "Not specified",
+            SpreadType = plant.SpreadType?.MapReferenceToDto(),
+            HeightType = plant.HeightType?.MapReferenceToDto(),
+            TimeToFullHeight = plant.TimeToFullHeight?.MapReferenceToDto(),
             Toxicity = plant.Toxicity,
             Cultivation = plant.Cultivation,
             PestResistance = plant.PestResistance,
             DiseaseResistance = plant.DiseaseResistance,
             Pruning = plant.Pruning,
             Propagation = plant.Propagation,
-            Family = plant.Family?.Name ?? "Not specified",
+            Family = plant.Family?.MapReferenceToDto(),
             GenusDescription = plant.GenusDescription,
-            SoilTypes = string.Join(", ", plant.SoilTypes.Select(s => s.Name)) ?? "Not specified",
+            SoilTypes = plant.SoilTypes.Select(s => s.MapReferenceToDto()).ToList(),
             Images = plant.Images?.Select(s => s.MapImageToImageDto()).ToList(),
-            Sunlights = string.Join(", ", plant.Sunlights.Select(s =>s.Name)) ?? "Not specified",
-            Aspects = string.Join(", ", plant.Aspects.Select(a =>a.Name)) ?? "Not specified",
-            Moistures = string.Join(", ", plant.Moistures.Select(m =>m.Name)) ?? "Not specified",
-            Phs = string.Join(", ", plant.Phs.Select(p =>p.Name)) ?? "Not specified",
-            Exposures = string.Join(", ", plant.Exposures.Select(e =>e.Name)) ?? "Not specified",
-            Habits = plant.Habits.Select(e =>e.Name).ToList(),
-            Seasons = plant.Seasons.Select(e =>e.Name).ToList(),
+            Sunlights = plant.Sunlights.Select(s => s.MapReferenceToDto()).ToList(),
+            Aspects = plant.Aspects.Select(s => s.MapReferenceToDto()).ToList(),
+            Moistures = plant.Moistures.Select(s => s.MapReferenceToDto()).ToList(),
+            Phs = plant.Phs.Select(s => s.MapReferenceToDto()).ToList(),
+            Exposures = plant.Exposures.Select(s => s.MapReferenceToDto()).ToList(),
+            Habits = plant.Habits.Select(s => s.MapReferenceToDto()).ToList(),
+            Seasons = plant.Seasons.Select(s => s.MapReferenceToDto()).ToList(),
             Synonyms = plant.Synonyms
                             .Select( p => new ReferenceDto { Id = p.Id, Name = p.BotanicalName })
                             .ToList(),
@@ -168,9 +168,6 @@ public static class MapToDTOHelper
             PlantStatus = planted.PlantStatus?.Name ?? "Not specified",
             DatePlanted = planted.DatePlanted.ToString("MMM dd, yyyy", CultureInfo.InvariantCulture),
             Image = planted.Image
-                ?? planted.Images?.FirstOrDefault()?.Url
-                ?? planted.Plant?.Images?.FirstOrDefault()?.Url
-                ?? null
 
         };
     }
@@ -183,14 +180,20 @@ public static class MapToDTOHelper
             Plant = planted.Plant?.MapPlantToPlantDto(),
             Place = planted.Place?.MapPlaceToPlaceDto(),
             DatePlanted = planted.DatePlanted,
+            DatePlantedString = planted.DatePlanted.ToString("MMM dd, yyyy", CultureInfo.InvariantCulture),
+            LastUpdate = (planted.UpdatedAt ?? planted.CreatedAt).ToString("MMM dd, yyyy", CultureInfo.InvariantCulture),
             Source = planted.Source,
             Note = planted.Note,
             IsOutside = planted.IsOutside,
-            PlantStatus = planted.PlantStatus?.Name ?? "Not specified",
+            PlantStatus = planted.PlantStatus?.MapReferenceToDto(),
             NextReminders = planted.Reminders?.Select(r => r.MapReminderToReminderDto()).ToList(),
             GrowthLogs = planted.GrowthLogs?.Select(gl => gl.MapGrowthLogToGrowthLogDto()).ToList(),
             Images = planted.Images?.Select(im => im.MapImageToImageDto()).ToList(),
             Name = planted.Name,
+            Image = planted.Image
+                //?? planted.Images?.FirstOrDefault()?.Url
+                ?? planted.Plant?.Images?.FirstOrDefault()?.Url
+                ?? null
         };
     }
 

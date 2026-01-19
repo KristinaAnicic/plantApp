@@ -12,10 +12,13 @@ public class PlantedGetDto
     public PlaceDto? Place { get; set; }
     public PlantDto? Plant { get; set; }
     public required DateTime DatePlanted { get; set; }
+    public required string DatePlantedString { get; set; }
+    public required string LastUpdate { get; set; }
     public string? Source { get; set; }
     public string? Note { get; set; }
     public bool IsOutside { get; set; } = false;
-    public string? PlantStatus { get; set; }
+    public ReferenceDto? PlantStatus { get; set; }
+    public string? Image { get; set; }
     public List<ReminderDto>? NextReminders { get; set; }
     public List<GrowthLogDto>? GrowthLogs { get; set; }
     public List<ImageDto>? Images { get; set; }
