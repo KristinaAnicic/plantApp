@@ -15,33 +15,33 @@ export interface PlantDto {
 }
 
 export interface PlantGetDto extends PlantDto {
-    fragrance?: string;
-    hardinessLevel?: string;
+    fragrance?: Reference;
+    hardinessLevel?: Reference;
     isSpecie?: boolean;
     isGenus?: boolean;
     isPlantForPollinators?: boolean;
     isLowMaintenance?: boolean;
     isDroughtResistant?: boolean;
-    spreadType?: string;
-    heightType?: string;
-    timeToFullHeight?: string;
+    spreadType?: Reference;
+    heightType?: Reference;
+    timeToFullHeight?: Reference;
     toxicity?: string;
     cultivation?: string;
     pestResistance?: string;
     diseaseResistance?: string;
     pruning?: string;
     propagation?: string;
-    family?: string;
+    family?: Reference;
     genusDescription?: string;
-    soilTypes?: string;
+    soilTypes?: Reference[];
     images?: ImageDto[];
-    sunlights?: string;
-    aspects?: string;
-    moistures?: string;
-    phs?: string;
-    exposures?: string;
-    habits?: string[];
-    seasons?: string[];
+    sunlights?: Reference[];
+    aspects?: Reference[];
+    moistures?: Reference[];
+    phs?: Reference[];
+    exposures?: Reference[];
+    habits?: Reference[];
+    seasons?: Reference[];
     synonyms?: Reference[];
     parentPlant?: Reference;
 }

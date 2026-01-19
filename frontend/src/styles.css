@@ -21,7 +21,8 @@
 
 body {
     /*background-color: var(--background);*/
-    background-color: white;
+    /*background-color: white;*/
+    background-color: #f9fafb;
 }
 
 .mat-mdc-snack-bar-container.snackbar-error .mdc-snackbar__surface {

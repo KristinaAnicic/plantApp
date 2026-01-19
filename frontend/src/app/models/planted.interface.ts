@@ -2,6 +2,7 @@ import { GrowthLogDto } from "./growth-log.interface";
 import { ImageDto } from "./image.interface";
 import { PlaceDto } from "./place.interface";
 import { PlantDto } from "./plant.interface";
+import { Reference } from "./reference.interface";
 import { ReminderDto } from "./reminder.interface";
 
 export interface PlantedDto {
@@ -20,13 +21,16 @@ export interface PlantedGetDto {
     place: PlaceDto
     plant: PlantDto
     datePlanted: string;
+    datePlantedString: string;
+    lastUpdate: string,
     source?: string;
     note?: string;
     isOutside: boolean;
-    plantStatus: string;
+    plantStatus?: Reference;
     nextReminders?: ReminderDto[];
     growthLogs?: GrowthLogDto[];
-    images?: ImageDto[]
+    images?: ImageDto[];
+    image?: string;
 }
 
 export interface GroupedPlantedDto {

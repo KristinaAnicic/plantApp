@@ -1,6 +1,7 @@
 import { Component, computed, inject, Input, OnInit, signal } from '@angular/core';
 import { PlantService } from '../../services/plant.service';
 import { PlantGetDto } from '../../models/plant.interface';
+import { Reference } from '../../models/reference.interface';
 
 @Component({
   selector: 'app-plant',
@@ -49,39 +50,54 @@ export class Plant implements OnInit {
     this.selectedImage.set(null);
   }
 
-  plantDetails = computed(() => [
-    { label: 'Family', value: this.plant()?.family, icon: "assets/images/icons/plant.svg" },
-    { label: 'Fragrance', value: this.plant()?.fragrance, icon: "assets/images/icons/flowers.svg" },
-    { label: 'Hardiness', value: this.plant()?.hardinessLevel, icon: "assets/images/icons/snowflake.svg" },
-    { label: 'Pollinator Friendly', value: this.plant()?.isPlantForPollinators ? 'Yes' : 'No', icon: "assets/images/icons/bee.svg" }
-  ]);
+  plantDetails = computed(() => {
+    const plant = this.plant();
 
-  plantSpecs = computed(() => [
-    { label: 'Drought Resistant', value: this.plant()?.isDroughtResistant ? 'Yes' : 'No', icon: "assets/images/icons/drop.svg" },
-    { label: 'Low Maintenace', value: this.plant()?.isLowMaintenance ? 'Yes' : 'No', icon: "assets/images/icons/clean.svg" },
-    { label: 'Spread', value: this.plant()?.spreadType, icon: "assets/images/icons/left-and-right-arrows.svg" },
-    { label: 'Height', value: this.plant()?.heightType, icon: "assets/images/icons/resize.svg" },
-    { label: 'Time to full height', value: this.plant()?.timeToFullHeight, icon: "assets/images/icons/clock.svg" }
-  ]);
+    return [
+      { label: 'Family', value: this.formatName(plant?.family), icon: "assets/images/icons/plant.svg" },
+      { label: 'Fragrance', value: this.formatName(plant?.fragrance), icon: "assets/images/icons/flowers.svg" },
+      { label: 'Hardiness', value: this.formatName(plant?.hardinessLevel), icon: "assets/images/icons/snowflake.svg" },
+      { label: 'Pollinator Friendly', value: plant?.isPlantForPollinators ? 'Yes' : 'No', icon: "assets/images/icons/bee.svg" }
+    ]
+  });
 
-  optionsMapping = computed(() => [
-    { key: "Cultivation", value: this.plant()?.cultivation },
-    { key: "Pest resistance", value: this.plant()?.pestResistance },
-    { key: "Disease resistance", value: this.plant()?.diseaseResistance },
-    { key: "Pruning", value: this.plant()?.pruning },
-    { key: "Propagation", value: this.plant()?.propagation },
-  ]);
+  plantSpecs = computed(() => {
+    const plant = this.plant();
 
-  growthConditions = computed(() => [
-    { label: 'Season', value: this.plant()?.seasons?.join(", "), icon: "assets/images/icons/season.svg" },
-    { label: 'Soil Type', value: this.plant()?.soilTypes, icon: "assets/images/icons/soil.svg" },
-    { label: 'Sunlight', value: this.plant()?.sunlights, icon: "assets/images/icons/sun.svg" },
-    { label: 'Aspect', value: this.plant()?.aspects, icon: "assets/images/icons/sunrise.svg" },
-    { label: 'Moisture', value: this.plant()?.moistures, icon: "assets/images/icons/moisture.svg" },
-    { label: 'Exposure', value: this.plant()?.exposures, icon: "assets/images/icons/wind.svg" },
-    { label: 'Habit', value: this.plant()?.habits?.join(", "), icon: "assets/images/icons/forest.svg" },
-    { label: 'Ph', value: this.plant()?.phs, icon: "assets/images/icons/ph-balance.svg" }
-  ])
+    return [
+      { label: 'Drought Resistant', value: plant?.isDroughtResistant ? 'Yes' : 'No', icon: "assets/images/icons/drop.svg" },
+      { label: 'Low Maintenace', value: plant?.isLowMaintenance ? 'Yes' : 'No', icon: "assets/images/icons/clean.svg" },
+      { label: 'Spread', value: this.formatName(plant?.spreadType), icon: "assets/images/icons/left-and-right-arrows.svg" },
+      { label: 'Height', value: this.formatName(plant?.heightType), icon: "assets/images/icons/resize.svg" },
+      { label: 'Time to full height', value: this.formatName(plant?.timeToFullHeight), icon: "assets/images/icons/clock.svg" }
+    ]
+  });
+
+  optionsMapping = computed(() => {
+    const plant = this.plant()
+  
+    return [
+      { key: "Cultivation", value: plant?.cultivation },
+      { key: "Pest resistance", value: plant?.pestResistance },
+      { key: "Disease resistance", value: plant?.diseaseResistance },
+      { key: "Pruning", value: plant?.pruning },
+      { key: "Propagation", value: plant?.propagation },
+    ]
+  });
+
+  growthConditions = computed(() => {
+    const plant = this.plant()
+    return [
+      { label: 'Season', value: this.formatList(plant?.seasons), icon: "assets/images/icons/season.svg" },
+      { label: 'Soil Type', value: this.formatList(plant?.soilTypes), icon: "assets/images/icons/soil.svg" },
+      { label: 'Sunlight', value: this.formatList(plant?.sunlights), icon: "assets/images/icons/sun.svg" },
+      { label: 'Aspect', value: this.formatList(plant?.aspects), icon: "assets/images/icons/sunrise.svg" },
+      { label: 'Moisture', value: this.formatList(plant?.moistures), icon: "assets/images/icons/moisture.svg" },
+      { label: 'Exposure', value: this.formatList(plant?.exposures), icon: "assets/images/icons/wind.svg" },
+      { label: 'Habit', value: this.formatList(plant?.habits), icon: "assets/images/icons/forest.svg" },
+      { label: 'Ph', value: this.formatList(plant?.phs), icon: "assets/images/icons/ph-balance.svg" }
+    ]
+  })
 
   options = computed(() => {
     const p = this.plant();
@@ -105,5 +121,14 @@ export class Plant implements OnInit {
 
   clickSelectedOption(option: string){
     this.selectedOption.set(option);
+  }
+
+  formatList(items: Reference[] | undefined): string {
+    if (!items || items.length === 0) return 'Not specified';
+    return items.map(i => i.name).join(', ');
+  }
+
+  formatName(item: Reference | undefined): string {
+    return item ? item.name : 'Not Specified';
   }
 }

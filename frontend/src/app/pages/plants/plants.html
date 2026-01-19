@@ -8,7 +8,7 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-3 justify-center">      
         @for (plant of plants(); track plant.plantId){
-            <div [routerLink]="['/plant', plant.plantId]" class="flex flex-col transition hover:scale-102 shadow-lg shadow-green-900/50 rounded-2xl overflow-hidden cursor-pointer">
+            <div [routerLink]="['/plant', plant.plantId]" class="bg-white flex flex-col transition hover:scale-102 shadow-lg shadow-green-900/50 rounded-2xl overflow-hidden cursor-pointer">
                 
                 <div class="h-54 sm:h-48 w-full overflow-hidden rounded-t-xl bg-gray-100 flex-shrink-0 content-center">
                     @if (plant.image) {
