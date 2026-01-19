@@ -9,24 +9,54 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
 {
     public async Task<List<Planted>> GetPlantedPlantsByUserId(int userId, bool filterByName = false)
     {
-        var query = FilterPlanted(userId);
-        query = OrderPlanted(query, filterByName);
 
-        return await query.ToListAsync();
+        var query = dbSet
+            .Where(p => p.PlantStatusId != 3 && p.Place != null && p.Place.UserId == userId)
+            .Select(p => new
+            {
+                Planted = p,
+                LastActivity = p.GrowthLogs.Max(q => (DateTime?)q.CreatedAt) ?? p.UpdatedAt
+            })
+            .OrderByDescending(p => p.LastActivity)
+            .ThenByDescending(p => p.Planted.CreatedAt)
+            .Select(p => p.Planted);
+
+        return await ProjectPlantedForList(query).ToListAsync();
     }
 
     public async Task<List<Planted>> GetPlantedPlantsByPlaceId(int placeId)
     {
         var query = dbSet
-            .Include(p => p.Place)
-            .Include(p => p.Plant)
-                .ThenInclude(p => p.Images)
-            .Include(p => p.Images)
-            .Include(p => p.PlantStatus)
-            .Where(p => p.Plant != null && p.Place != null && p.Place.Id == placeId && p.PlantStatusId != 3)
-            .OrderBy(x => x.UpdatedAt);
+            .Where(p => p.PlaceId == placeId && p.PlantStatusId != 3)
+            .Select(p => new
+            {
+                Planted = p,
+                LastActivity = p.GrowthLogs.Max(q => (DateTime?)q.CreatedAt) ?? p.UpdatedAt
+            })
+            .OrderByDescending(p => p.LastActivity)
+            .ThenByDescending(p => p.Planted.CreatedAt)
+            .Select(p => p.Planted);
 
-        return await query.ToListAsync();
+        return await ProjectPlantedForList(query).ToListAsync();
+    }
+
+    private IQueryable<Planted> ProjectPlantedForList(IQueryable<Planted> query)
+    {
+        return query.Select(q => new Planted
+        {
+            Id = q.Id,
+            PlaceId = q.PlaceId,
+            Place = q.Place,
+            PlantId = q.PlantId,
+            Name = q.Name ?? (q.Plant != null ? q.Plant.CommonName ?? q.Plant.BotanicalName : null),
+            DatePlanted = q.DatePlanted,
+            IsOutside = q.IsOutside,
+            Image = q.Image ??
+                    (q.Images.Any() ? q.Images.Select(i => i.Url).FirstOrDefault() :
+                    q.Plant != null ? q.Plant.Images.Select(i => i.Url).FirstOrDefault() : null),
+            PlantStatus = q.PlantStatus,
+            PlantStatusId = q.PlantStatusId
+        });
     }
 
     public async Task<Planted?> GetPlantedById(int id)
@@ -44,7 +74,7 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
 
     public async Task<Dictionary<Place, List<Planted>>> GetPlantedPlantsByUserIdGrouped(int userId, bool filterByName = false)
     {
-        var query = FilterPlanted(userId)
+        var query = FilterPlantedByUserId(userId)
             .Include(p => p.Reminders)
             .Include(p => p.Place!.Country)
             .AsQueryable();
@@ -69,7 +99,7 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
         await context.SaveChangesAsync();
     }
 
-    private IQueryable<Planted> FilterPlanted(int userId)
+    private IQueryable<Planted> FilterPlantedByUserId(int userId)
     {
         return dbSet
             .Include(p => p.Place)
@@ -98,9 +128,9 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
         return query;
     }*/
 
-    private IQueryable<Planted> OrderPlanted(IQueryable<Planted> query, bool filterByName)
+    private IQueryable<Planted> OrderPlanted(IQueryable<Planted> query, bool orderByName)
     {
-        if (filterByName)
+        if (orderByName)
         {
             return query.OrderBy(p => p.Plant!.CommonName);
         }
