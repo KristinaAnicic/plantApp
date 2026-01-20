@@ -243,6 +243,7 @@ public static class MapToDTOHelper
         {
             Id = log.Id,
             Note = log.Note,
+            Title = log.Title,
             PlantStatus = log.PlantStatus?.Name,
             CreatedAt = log.CreatedAt,
             Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList(),
@@ -257,6 +258,7 @@ public static class MapToDTOHelper
         {
             Id = log.Id,
             Note = log.Note,
+            Title = log.Title,
             PlantStatus = log.PlantStatus != null ? log.PlantStatus.MapReferenceToDto() : null,
             CreatedAt = log.CreatedAt,
             Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList(),

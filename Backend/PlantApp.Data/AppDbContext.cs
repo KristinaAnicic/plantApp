@@ -54,6 +54,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasForeignKey(r => r.RatedId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<Plant>()
+            .HasMany(p => p.Synonyms)
+            .WithOne(p => p.SynonymParentPlant)
+            .HasForeignKey(p => p.SynonymParentPlantId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         foreach (var entity in modelBuilder.Model.GetEntityTypes())
         {
             entity.SetTableName(ToSnakeCase(entity.GetTableName()!));

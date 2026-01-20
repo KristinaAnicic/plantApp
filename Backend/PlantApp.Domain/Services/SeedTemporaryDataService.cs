@@ -207,6 +207,7 @@ public class SeedTemporaryDataService(AppDbContext context)
             {
                 growthLogs.Add(new GrowthLog
                 {
+                    Title = $"Log update for {i + 1}",
                     PlantedId = planted.Id,
                     Note = $"Growth update {i + 1} for {planted.Name}",
                     PlantStatusId = random.Next(1, 12),

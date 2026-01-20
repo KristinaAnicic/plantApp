@@ -117,7 +117,7 @@ public class GrowthLogService(
 
     public async Task AddImages(int logId, List<string> urls)
     {
-        var log = await repository.GetByIdAsync(logId);
+        var log = await repository.GetGrowthLogById(logId);
         EnsureLogExistsAndAuthorized(log);
 
         await imageService.AddImagesToEntityAsync(log!, urls);

@@ -67,7 +67,11 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
             .Include(q => q.Place!.Country)
             .Include(q => q.Plant!.Images)
             .Include(q => q.Reminders)
-                .ThenInclude(r => r.ReminderType);
+                .ThenInclude(r => r.ReminderType)
+            .Include(q => q.GrowthLogs)
+                .ThenInclude(g => g.Images)
+            .Include(q => q.GrowthLogs)
+                .ThenInclude(g => g.PlantStatus);
 
         return await query.FirstOrDefaultAsync(q => q.Id == id);
     }

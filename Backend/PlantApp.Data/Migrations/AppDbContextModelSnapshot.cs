@@ -376,6 +376,11 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("planted_id");
 
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("title");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -1630,7 +1635,8 @@ namespace PlantApp.Data.Migrations
 
                     b.HasOne("PlantApp.Data.Models.Plant", "SynonymParentPlant")
                         .WithMany("Synonyms")
-                        .HasForeignKey("SynonymParentPlantId");
+                        .HasForeignKey("SynonymParentPlantId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("PlantApp.Data.Models.TimeToFullHeight", "TimeToFullHeight")
                         .WithMany("Plants")

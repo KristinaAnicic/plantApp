@@ -8,7 +8,7 @@ public class GrowthLog : BaseEntity, IHasImages
     [ForeignKey(nameof(PlantedId))]
     public Planted? Planted { get; set; }
     public required int PlantedId { get; set; }
-
+    public required string Title { get; set; }
     public string? Note { get; set; }
 
     [ForeignKey(nameof(PlantStatusId))]
