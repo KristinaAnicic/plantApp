@@ -3,10 +3,12 @@ import { PlantedService } from '../../services/planted.service';
 import { PlantedGetDto } from '../../models/planted.interface';
 import { PLANT_STATUS_MAP, PlantStatusCategory } from '../../enums/plant-status.constants';
 import { DatePipe } from '@angular/common';
+import { PlantedGrowthLog } from "../../components/planted-growth-log/planted-growth-log";
+import { PlantedReminders } from "../../components/planted-reminders/planted-reminders";
 
 @Component({
   selector: 'app-user-plant',
-  imports: [DatePipe],
+  imports: [DatePipe, PlantedGrowthLog, PlantedReminders],
   templateUrl: './user-plant.html',
   styleUrl: './user-plant.css',
 })
@@ -15,8 +17,6 @@ export class UserPlant implements OnInit {
 
   service = inject(PlantedService);
   planted = signal<PlantedGetDto | null>(null);
-  openedReminderMenuId = signal<number | null>(null);
-  openedLogMenuId = signal<number | null>(null);
 
   displayImages = computed(() => {
     const all = this.planted()?.images ?? [];
@@ -61,30 +61,4 @@ export class UserPlant implements OnInit {
       color: 'bg-gray-100 text-gray-500 border-gray-200' 
     };
   });
-
-  toggleReminderMenu(id: number, event: Event){
-    event.stopPropagation();
-
-    this.openedReminderMenuId.update(current => current === id ? null : id);
-  }
-
-  toggleLogMenu(id: number, event: Event){
-    event.stopPropagation();
-
-    this.openedLogMenuId.update(current => current === id ? null : id);
-  }
-
-  plantStatusTextColor(statusName?: string){
-    const status = Object.values(PLANT_STATUS_MAP).find(s => s.name === statusName);
-    if (!status)
-      return 'text-gray-500';
-
-    if (status.category === PlantStatusCategory.Healthy)
-      return 'text-green-500'
-
-    if (status.category === PlantStatusCategory.Stressed)
-      return 'text-red-800'
-
-    return 'text-gray-500';
-  }
 }

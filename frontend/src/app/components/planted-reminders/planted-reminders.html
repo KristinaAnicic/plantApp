@@ -1,0 +1,50 @@
+@if((reminders()?.length ?? 0) > 0){
+    @for(reminder of reminders(); track reminder.id){
+        <div class="w-full relative">
+        @if(reminder.isLate){
+            <div class="w-full bg-red-50 border-l-3 border-l-red-800 p-3 rounded-r-md">
+                <div class="w-full flex justify-between pb-2">
+                    <div class="flex flex-wrap-reverse gap-x-2 gap-y-1 items-center">
+                        <p class="font-medium text-red-700 text-base">{{ reminder.reminderType }}</p>  
+                        <p class="text-white text-xs bg-red-700 opacity-60 py-0.5 px-2 rounded-sm">OVERDUE</p>
+                    </div>
+                    <div (click)="toggleReminderMenu(reminder.id, $event)" class="cursor-pointer">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.5 12a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z" clip-rule="evenodd" />
+                        </svg>                                      
+                    </div>
+                </div>                                                                                                                             
+                <p class="font-medium text-sm">Due: {{ reminder.nextDueDate | date:'MMM dd, yyyy'}}</p>
+                <p class="text-gray-600 italic text-sm">{{ reminder.notes}} test notes</p>
+            </div>
+        }
+        @else {
+            <div class="w-full bg-gray-50 border-l-3 border-l-green-800 p-3 rounded-r-md">
+                <div class="flex justify-between">
+                    <p class="font-medium text-green-800 pb-1 text-base">{{ reminder.reminderType }}</p>
+                    <div (click)="toggleReminderMenu(reminder.id, $event)" class="cursor-pointer">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.5 12a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z" clip-rule="evenodd" />
+                        </svg>                                                                          
+                    </div>
+                </div>
+                
+                <p class="font-medium text-sm">Due: {{ reminder.nextDueDate | date:'MMM dd, yyyy'}}</p>
+                <p class="text-gray-600 italic text-sm">{{ reminder.notes}} test notes</p>
+            </div>
+        } 
+        
+        @if(openedReminderMenuId() === reminder.id){
+            <div class="fixed inset-0 z-10" (click)="toggleReminderMenu(reminder.id, $event)"></div> 
+            <div class="absolute top-9 mb-2 right-2 z-20 bg-white flex flex-col justify-start items-center text-sm rounded-md border border-gray-200">
+                <button class="px-2 py-1.5 w-full text-end border-b border-b-gray-100 hover:bg-gray-50 cursor-pointer">Mark as done</button>
+                <button class="px-2 py-1.5 w-full text-end border-b border-b-gray-100 hover:bg-gray-50 cursor-pointer">Delay</button>
+                <button class="px-2 py-1.5 w-full text-end hover:bg-gray-50 cursor-pointer">Edit</button>
+            </div>
+        }                      
+        </div>
+    }    
+}    
+@else {
+
+}       
