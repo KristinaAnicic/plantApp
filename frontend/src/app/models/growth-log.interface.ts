@@ -6,6 +6,7 @@ export interface GrowthLogDto {
     plantedId: number;
     plant?: string;
     note?: string;
+    title: string;
     plantStatus?: string;
     createdAt?: string;
     images?: ImageDto[];
@@ -14,6 +15,7 @@ export interface GrowthLogDto {
 export interface GrowthLogGetDto {
     id: number;
     plantedId: number;
+    title: string;
     plant?: string;
     note?: string;
     plantStatus?: Reference;
@@ -22,8 +24,9 @@ export interface GrowthLogGetDto {
 }
 
 export interface UpsertGrowthLogDto {
-    id?: number;
+    id?: number;  
     plantedId: number;
+    title: string;
     note?: string;
     plantStatusId: number;
     images?: string[];

@@ -33,5 +33,10 @@ export const routes: Routes = [
         path: 'place/:id',
         loadComponent: () =>
             import('./pages/place-plants/place-plants').then((m) => m.PlacePlants)
+    },
+    {
+        path: 'my-plants/:id',
+        loadComponent: () =>
+            import('./pages/user-plant/user-plant').then((m) => m.UserPlant)
     }
 ];
