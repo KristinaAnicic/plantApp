@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PlantGetDto, PlantListResponse, UpsertPlantDto } from '../models/plant.interface';
 import { PlantFilterDto } from '../models/filter.interface';
+import { ManyPlantAttributesDto, OnePlantAttributesDto } from '../models/category.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -51,5 +52,13 @@ export class PlantService {
 
   removeImage(plantId: number, imageId: number) {
     return this.http.delete(`${environment.apiUrl}/plant/${plantId}/images/${imageId}`);
+  }
+
+  getSingleReferenceCategroies(): Observable<OnePlantAttributesDto> {
+    return this.http.get<OnePlantAttributesDto>(`${environment.apiUrl}/plant/single-reference`);
+  }
+
+  getMultiReferenceCategroies(): Observable<ManyPlantAttributesDto> {
+    return this.http.get<ManyPlantAttributesDto>(`${environment.apiUrl}/plant/multi-reference`);
   }
 }

@@ -38,7 +38,7 @@
             <div>
                 <label for="country" class="block text-sm font-medium text-heading px-1 py-1">City*</label>         
                 <div class="block w-full p-2 ps-5 border border-gray-400  rounded-lg">
-                    <select formControlName="countryId" class=" w-full text-heading text-sm">
+                    <select formControlName="countryId" class="w-full text-heading text-sm">
                         @for(country of this.countries(); track country.id){
                             <option [value]="country.id">{{ country.name }}</option>
                         }

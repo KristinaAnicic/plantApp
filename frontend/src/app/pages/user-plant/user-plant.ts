@@ -2,13 +2,12 @@ import { Component, computed, inject, Input, OnInit, signal } from '@angular/cor
 import { PlantedService } from '../../services/planted.service';
 import { PlantedGetDto } from '../../models/planted.interface';
 import { PLANT_STATUS_MAP, PlantStatusCategory } from '../../enums/plant-status.constants';
-import { DatePipe } from '@angular/common';
 import { PlantedGrowthLog } from "../../components/planted-growth-log/planted-growth-log";
 import { PlantedReminders } from "../../components/planted-reminders/planted-reminders";
 
 @Component({
   selector: 'app-user-plant',
-  imports: [DatePipe, PlantedGrowthLog, PlantedReminders],
+  imports: [PlantedGrowthLog, PlantedReminders],
   templateUrl: './user-plant.html',
   styleUrl: './user-plant.css',
 })

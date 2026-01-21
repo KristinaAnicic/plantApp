@@ -2,10 +2,11 @@ import { Component, computed, inject, Input, OnInit, signal } from '@angular/cor
 import { PlantService } from '../../services/plant.service';
 import { PlantGetDto } from '../../models/plant.interface';
 import { Reference } from '../../models/reference.interface';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-plant',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './plant.html',
   styleUrl: './plant.css',
 })

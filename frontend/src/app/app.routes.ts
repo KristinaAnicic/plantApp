@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { guestGuard } from './utils/guest-guard';
+import { UpsertPlantDto } from './models/plant.interface'
+import { plantEditResolver } from './utils/plant-edit-resolver';
 
 export const routes: Routes = [
     {
@@ -38,5 +40,17 @@ export const routes: Routes = [
         path: 'my-plants/:id',
         loadComponent: () =>
             import('./pages/user-plant/user-plant').then((m) => m.UserPlant)
+    },
+    {
+        path: 'plant-form',
+        loadComponent: () =>
+            import('./pages/add-edit-plant/add-edit-plant').then((m) => m.AddEditPlant),
+        resolve: { editPlant: () => null }
+    },
+    {
+        path: 'plant-form/:id',
+        loadComponent: () =>
+            import('./pages/add-edit-plant/add-edit-plant').then((m) => m.AddEditPlant),
+        resolve: { editPlant: plantEditResolver }
     }
 ];

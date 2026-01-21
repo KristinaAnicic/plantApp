@@ -6,6 +6,7 @@ import { PlantFilterDto } from '../../models/filter.interface';
 import { catchError, debounceTime, distinctUntilChanged, Observable, of, Subject, switchMap } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { Pagination } from "../../components/pagination/pagination";
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-plants',
@@ -16,6 +17,7 @@ import { Pagination } from "../../components/pagination/pagination";
 })
 export class Plants implements OnInit {
   private service = inject(PlantService);
+  public authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   
@@ -90,6 +92,10 @@ export class Plants implements OnInit {
       queryParams: { page: newPage },
       queryParamsHandling: 'merge'
     })
+  }
+
+  addNewPlantClick(){
+    this.router.navigate(['/plant-form']/*, { skipLocationChange: true }*/);
   }
 
   ngOnDestroy(): void {
