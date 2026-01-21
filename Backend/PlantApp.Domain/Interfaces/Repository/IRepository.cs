@@ -13,6 +13,7 @@ public interface IRepository<T> where T : class
     public Task AddMultipleAsync(IEnumerable<T> entities);
     public Task UpdateAsync(T entity);
     public Task DeleteAsync(T entity, bool softDelete = true);
+    public Task DeleteRangeAsync(IEnumerable<T> entities, bool softDelete = true);
     public Task<bool> ExistsAsync(Expression<Func<T, bool>> exists);
     public Task<bool> IdExistsAsync(int id);
     public Task<List<T>> GetByIdsAsync(List<int> ids);

@@ -104,6 +104,8 @@ public class PlantExchangeService(
 
         await repository.UpdateAsync(existingExchange);
 
+        await imageService.RemoveUnusedImagesAsync();
+
         logger.LogInformation("Plant exchange {ExchangeId} updated by user {UserId}", id, CurrentUserId);
     }
 
@@ -133,7 +135,7 @@ public class PlantExchangeService(
         await repository.UpdateAsync(exchange);
     }
 
-    public async Task<string?> RemoveImageById(int exchangeId, int imageId)
+    public async Task RemoveImageById(int exchangeId, int imageId)
     {
         var exchange = await repository.GetByIdAsync(exchangeId);
         if (exchange == null) 
@@ -141,10 +143,7 @@ public class PlantExchangeService(
         if (exchange.UserId != CurrentUserId && !IsAdmin) 
             throw new UnauthorizedException("remove images from", "plant exchange", logger);
 
-        var deletedUrl = await imageService.RemoveImageFromEntityAsync(exchange, imageId, repository);
-        //await repository.UpdateAsync(exchange);
-
-        return deletedUrl;
+        await imageService.RemoveImageFromEntityAsync(exchange, imageId, repository);
     }
 
     public async Task<int?> ValidatePlantExchange(UpsertPlantExchangeDto dto)

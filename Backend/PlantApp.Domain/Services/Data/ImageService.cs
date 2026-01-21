@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Appwrite;
+using Appwrite.Services;
+using Microsoft.Extensions.Logging;
 using PlantApp.Data.Models;
 using PlantApp.Data.Models.Interfaces;
 using PlantApp.Domain.Interfaces;
@@ -11,7 +13,8 @@ namespace PlantApp.Domain.Services.Data;
 public class ImageService(
     IRepository<Image> imageRepository,
     ICurrentUserContext userContext,
-    ILogger<ImageService> logger
+    ILogger<ImageService> logger,
+    Client appWriteClient
 ) : IImageService
 {
     private int CurrentUserId => userContext.GetCurrentUserId();
@@ -117,8 +120,51 @@ public class ImageService(
         }
     }
 
+    public async Task RemoveUnusedImagesAsync()
+    {
+        var unusedImages = await imageRepository
+            .GetAllByKeyAsync(im =>
+            !im.Plants.Any() &&
+            !im.Planted.Any() &&
+            !im.GrowthLogs.Any() &&
+            !im.PlantExchanges.Any());
 
-    public async Task<string?> RemoveImageFromEntityAsync<T>(T entity, int imageId, IRepository<T> entityRepository) where T : class, IHasImages
+        if (unusedImages != null && unusedImages.Any()) {
+            var storage = new Storage(appWriteClient);
+            var bucketId = "697113c5003c549608f1";
+
+            foreach (var img in unusedImages) { 
+                try
+                {
+                    if (string.IsNullOrEmpty(img.Url) || !img.Url.Contains("appwrite")) continue;
+
+                    string fileId = GetFileIdFromAppwriteUrl(img.Url);
+                    await storage.DeleteFile(bucketId, fileId);
+                    logger.LogInformation($"Deleted image from Appwrite: {fileId}");
+                }
+                catch (Exception ex){
+                    logger.LogError($"Appwrite delete failed for image {img.Url}: {ex.Message}");
+                }
+            }
+            await imageRepository.DeleteRangeAsync(unusedImages, false);
+        }
+    }
+
+    private string GetFileIdFromAppwriteUrl(string url)
+    {
+        var uri = new Uri(url);
+        var segments = uri.Segments;
+        for (int i = 0; i < segments.Length; i++)
+        {
+            if (segments[i].Contains("files/"))
+            {
+                return segments[i + 1].TrimEnd('/');
+            }
+        }
+        return string.Empty;
+    }
+
+    public async Task RemoveImageFromEntityAsync<T>(T entity, int imageId, IRepository<T> entityRepository) where T : class, IHasImages
     {
         if (entity == null)
         {
@@ -142,21 +188,12 @@ public class ImageService(
             );
         }
 
-        var deletedUrl = image.Url;
         entity.Images.Remove(image);
         await entityRepository.UpdateAsync(entity);
 
-        logger.LogInformation("Image {ImageId} removed from entity {EntityType}", imageId, typeof(T).Name);
+        await RemoveUnusedImagesAsync();
 
-        if (!image.Plants.Any() && !image.GrowthLogs.Any() && !image.Planted.Any() && !image.PlantExchanges.Any())
-        {
-            await imageRepository.DeleteAsync(image, false);
-            logger.LogInformation("Image {ImageId} deleted from repository (no remaining references)",imageId);
-
-            return deletedUrl;
-        }
-
-        return null;
+        logger.LogInformation("Image {ImageId} removed from entity {EntityType}", imageId, typeof(T).Name); 
     }
 
 }

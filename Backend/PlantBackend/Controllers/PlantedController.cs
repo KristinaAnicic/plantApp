@@ -69,16 +69,7 @@ public class PlantedController(IPlantedService plantedService) : Controller
     [HttpDelete("{id}/images/{imageId}")]
     public async Task<IActionResult> DeleteImage(int id, int imageId)
     {
-        var deletedUrl = await plantedService.RemoveImageById(id, imageId);
-        if (deletedUrl != null)
-        {
-            return Ok(new
-            {
-                imageDeleted = true,
-                deletedUrl
-            });
-        }
-
+        await plantedService.RemoveImageById(id, imageId);
         return NoContent();
     }
 }

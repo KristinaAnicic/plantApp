@@ -190,6 +190,25 @@ public class Repository<T> : IRepository<T> where T : class
         await context.SaveChangesAsync();
     }
 
+    public async Task DeleteRangeAsync(IEnumerable<T> entities, bool softDelete = true)
+    {
+        if (entities == null || !entities.Any()) return;
+
+        var deleteProperty = typeof(T).GetProperty("DeletedAt");
+
+        if (deleteProperty != null && softDelete)
+        {
+            context.Entry(entities).State = EntityState.Modified;
+            context.Entry(entities).Property("DeletedAt").CurrentValue = DateTime.UtcNow;
+        }
+        else
+        {
+            dbSet.RemoveRange(entities);
+        }
+
+        await context.SaveChangesAsync();
+    }
+
     public async Task<bool> ExistsAsync(Expression<Func<T, bool>> exists)
     {
         return await dbSet.AnyAsync(exists);

@@ -160,6 +160,8 @@ public class PlantService(
 
         await repository.UpdateAsync(existingPlant);
 
+        await imageService.RemoveUnusedImagesAsync();
+
         logger.LogInformation("Plant {PlantId} updated by user {UserId}", Id, CurrentUserId);
     }
 
@@ -193,18 +195,16 @@ public class PlantService(
         logger.LogInformation("Images added to plant {PlantId} by user {UserId}", plantId, CurrentUserId);
     }
 
-    public async Task<string?> RemoveImageById(int plantId, int imageId)
+    public async Task RemoveImageById(int plantId, int imageId)
     {
         var plant = await repository.GetByIdAsync(plantId);
         if (plant == null) 
             throw new NotFoundException("Plant", plantId, logger);
 
-        var deletedUrl = await imageService.RemoveImageFromEntityAsync(plant, imageId, repository);
+        await imageService.RemoveImageFromEntityAsync(plant, imageId, repository);
         //await repository.UpdateAsync(plant);
 
         logger.LogInformation("Image removed from plant {PlantId} by user {UserId}", plantId, CurrentUserId);
-
-        return deletedUrl;
     }
 
     public async Task<ManyPlantAttributesDto> GetMultiReferenceDataAsync()

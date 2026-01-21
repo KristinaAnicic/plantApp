@@ -11,5 +11,5 @@ public interface IGrowthLogService
     public Task UpdateAsync(int id, UpsertGrowthLogDto dto);
     public Task DeleteAsync(int id);
     public Task AddImages(int logId, List<string> urls);
-    public Task<string?> RemoveImageById(int logId, int imageId);
+    public Task RemoveImageById(int logId, int imageId);
 }

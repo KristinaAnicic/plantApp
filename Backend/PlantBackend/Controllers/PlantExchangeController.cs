@@ -62,16 +62,7 @@ public class PlantExchangeController(IPlantExchangeService plantExchangeService)
     [HttpDelete("{id}/images/{imageId}")]
     public async Task<IActionResult> DeleteImage(int id, int imageId)
     {
-        var deletedUrl = await plantExchangeService.RemoveImageById(id, imageId);
-        if (deletedUrl != null)
-        {
-            return Ok(new
-            {
-                imageDeleted = true,
-                deletedUrl
-            });
-        }
-
+        await plantExchangeService.RemoveImageById(id, imageId);
         return NoContent();
     }
 }

@@ -148,6 +148,9 @@ public class PlantedService(
         }
 
         await repository.UpdateAsync(existingPlanted);
+
+        await imageService.RemoveUnusedImagesAsync();
+
         logger.LogInformation("Planted plant {PlantedId} updated by user {UserId}", id, CurrentUserId);
     }
 
@@ -174,7 +177,7 @@ public class PlantedService(
         logger.LogInformation("Images added to planted plant {PlantedId}", plantedId);
     }
 
-    public async Task<string?> RemoveImageById(int plantedId, int imageId)
+    public async Task RemoveImageById(int plantedId, int imageId)
     {
         var planted = await repository.GetByIdAsync(plantedId);
         if (planted == null) 
@@ -183,9 +186,6 @@ public class PlantedService(
         if (planted.Place != null && planted.Place.UserId != CurrentUserId && !IsAdmin) 
             throw new UnauthorizedException("remove image", "planted plant", logger);
 
-        var deletedUrl = await imageService.RemoveImageFromEntityAsync(planted, imageId, repository);      
-        //await repository.UpdateAsync(planted);
-
-        return deletedUrl;
+        await imageService.RemoveImageFromEntityAsync(planted, imageId, repository);      
     }
 }

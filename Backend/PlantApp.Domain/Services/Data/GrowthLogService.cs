@@ -103,6 +103,9 @@ public class GrowthLogService(
         }
 
         await repository.UpdateAsync(log!);
+
+        await imageService.RemoveUnusedImagesAsync();
+
         logger.LogInformation("Growth log {LogId} updated", id);
     }
 
@@ -124,15 +127,12 @@ public class GrowthLogService(
         await repository.UpdateAsync(log!);
     }
 
-    public async Task<string?> RemoveImageById(int logId, int imageId)
+    public async Task RemoveImageById(int logId, int imageId)
     {
         var log = await repository.GetGrowthLogById(logId);
         EnsureLogExistsAndAuthorized(log);
 
-        var deletedUrl = await imageService.RemoveImageFromEntityAsync(log!, imageId, repository);
-        //await repository.UpdateAsync(log!);
-
-        return deletedUrl;
+        await imageService.RemoveImageFromEntityAsync(log!, imageId, repository);
     }
 
     private void EnsureLogExistsAndAuthorized(GrowthLog? log)
