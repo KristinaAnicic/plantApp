@@ -1,3 +1,6 @@
+using Appwrite;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -13,6 +16,7 @@ using PlantApp.Domain.Services.Data;
 using PlantBackend.ExceptionHandlers;
 using Scalar.AspNetCore;
 using System.Text;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -56,6 +60,20 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//appWrite
+builder.Services.AddSingleton(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var endpoint = "https://fra.cloud.appwrite.io/v1";
+    var projectId = "69711305002eed3e64c0";
+    var apiKey = config["AppWrite:api_key"];
+
+    return new Client()
+        .SetEndpoint(endpoint)
+        .SetProject(projectId)
+        .SetKey(apiKey);
+});
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
