@@ -13,5 +13,5 @@ public class HardinessLevel : IReferenceEntity
     public required string Description { get; set; }
     public ICollection<Plant>? Plants { get; set; }
 
-    public string Name => Level;
+    public string Name => Level + " (" + Description + ")";
 }
