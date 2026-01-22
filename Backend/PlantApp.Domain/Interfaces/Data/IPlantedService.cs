@@ -15,4 +15,5 @@ public interface IPlantedService
     public Task DeleteAsync(int id);
     public Task AddImages(int plantedId, List<string> urls);
     public Task RemoveImageById(int plantedId, int imageId);
+    public Task<PlantedReferences> GetReferences();
 }

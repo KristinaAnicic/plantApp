@@ -190,4 +190,16 @@ public class PlantedService(
 
         await imageService.RemoveImageFromEntityAsync(planted, imageId, repository);      
     }
+
+    public async Task<PlantedReferences> GetReferences()
+    {
+        var places = await placeRepo.GetAllByKeyAsync(p => p.UserId == CurrentUserId);
+        var plantStatuses = await plantStatusRepo.GetAllAsync();
+
+        return new PlantedReferences
+        {
+            Places = places.Select(p => p.MapReferenceToDto()).ToList(),
+            PlantStatuses = plantStatuses.Select(s => s.MapReferenceToDto()).ToList()
+        };
+    }
 }

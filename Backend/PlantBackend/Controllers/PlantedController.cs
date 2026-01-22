@@ -72,4 +72,11 @@ public class PlantedController(IPlantedService plantedService) : Controller
         await plantedService.RemoveImageById(id, imageId);
         return NoContent();
     }
+
+    [HttpGet("references")]
+    public async Task<IActionResult> GetReferences()
+    {
+        var result = await plantedService.GetReferences();
+        return Ok(result);
+    }
 }

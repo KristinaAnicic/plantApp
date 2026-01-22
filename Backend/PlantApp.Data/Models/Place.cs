@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using PlantApp.Data.Models.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlantApp.Data.Models;
 
-public class Place : BaseEntity
+public class Place : BaseEntity, IReferenceEntity
 {
     public required string Name { get; set; }
     public string? Address { get; set; }
