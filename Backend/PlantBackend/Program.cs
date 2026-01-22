@@ -13,6 +13,7 @@ using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Repositories;
 using PlantApp.Domain.Services;
 using PlantApp.Domain.Services.Data;
+using PlantApp.Domain.Utils;
 using PlantBackend.ExceptionHandlers;
 using Scalar.AspNetCore;
 using System.Text;
@@ -56,7 +57,12 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new EmptyStringToNullConverter());
+    });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
