@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using PlantApp.Data.Models;
+using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Dtos.PlantPlace;
 using PlantApp.Domain.Interfaces;
@@ -13,8 +14,9 @@ namespace PlantApp.Domain.Services.Data;
 public class PlantedService(
     IPlantedRepository repository,
     IImageService imageService,
+    IPlantRepository plantRepo,
     IRepository<Place> placeRepo,
-    IRepository<PlantStatus> plantStatus,
+    IRepository<PlantStatus> plantStatusRepo,
     ICurrentUserContext userContext,
     ILogger<PlantedService> logger
 ) : IPlantedService
@@ -93,7 +95,7 @@ public class PlantedService(
             throw new InvalidOperationAppException("Planted data is required.", logger: logger);
 
         if (dto.DatePlanted == null)
-            dto.DatePlanted = DateTime.UtcNow;
+            dto.DatePlanted = DateOnly.FromDateTime(DateTime.UtcNow);
 
         var place = await placeRepo.GetByIdAsync(dto.PlaceId);
 
@@ -101,7 +103,7 @@ public class PlantedService(
             throw new NotFoundException("Place", dto.PlaceId, logger);
         if (place.UserId != CurrentUserId && !IsAdmin) 
             throw new UnauthorizedException("add plant to", "place", logger);
-        if (!await plantStatus.IdExistsAsync(dto.PlantStatusId)) 
+        if (!await plantStatusRepo.IdExistsAsync(dto.PlantStatusId)) 
             throw new NotFoundException("Plant status", dto.PlantStatusId, logger);
 
         var planted = dto.MapUpsertPlantedDtoToPlanted();
@@ -133,7 +135,7 @@ public class PlantedService(
             throw new NotFoundException("Place", dto.PlaceId, logger);
         if (place.UserId != CurrentUserId && !IsAdmin) 
             throw new UnauthorizedException("update plants in", "place", logger);
-        if (!await plantStatus.IdExistsAsync(dto.PlantStatusId)) 
+        if (!await plantStatusRepo.IdExistsAsync(dto.PlantStatusId)) 
             throw new NotFoundException("Plant status", dto.PlantStatusId, logger);
 
         if (dto.DatePlanted == null)

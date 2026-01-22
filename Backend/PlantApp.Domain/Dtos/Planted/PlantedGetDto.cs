@@ -11,7 +11,7 @@ public class PlantedGetDto
     public string? Name { get; set; }
     public PlaceDto? Place { get; set; }
     public PlantDto? Plant { get; set; }
-    public required DateTime DatePlanted { get; set; }
+    public required DateOnly DatePlanted { get; set; }
     public required string DatePlantedString { get; set; }
     public required string LastUpdate { get; set; }
     public string? Source { get; set; }

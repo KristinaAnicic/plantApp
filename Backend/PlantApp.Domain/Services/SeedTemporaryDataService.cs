@@ -131,7 +131,7 @@ public class SeedTemporaryDataService(AppDbContext context)
                     PlaceId = place.Id,
                     PlantId = random.Next(1, 60000),
                     Name = $"Plant {i + 1}",
-                    DatePlanted = DateTime.UtcNow.AddDays(-random.Next(10, 200)),
+                    DatePlanted = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-random.Next(10, 200))),
                     PlantStatusId = random.Next(1, 12),
                     IsOutside = false
                 });

@@ -14,7 +14,7 @@ public class Planted : BaseEntity, IHasImages
     public required int PlantId { get; set; }
 
     public string? Name { get; set; }
-    public required DateTime DatePlanted { get; set; }
+    public required DateOnly DatePlanted { get; set; }
     public string? Source {  get; set; }
     public string? Note { get; set; }
     public bool IsOutside { get; set; } = false;

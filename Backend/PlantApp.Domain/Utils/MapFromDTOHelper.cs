@@ -77,7 +77,7 @@ public static class MapFromDTOHelper
     public static Planted MapUpsertPlantedDtoToPlanted(this UpsertPlantedDto dto, Planted? planted = null)
     {
         if (planted == null)
-            planted = new Planted { PlaceId = dto.PlaceId, PlantId = dto.PlantId, DatePlanted = dto.DatePlanted ?? DateTime.UtcNow };
+            planted = new Planted { PlaceId = dto.PlaceId, PlantId = dto.PlantId, DatePlanted = dto.DatePlanted ?? DateOnly.FromDateTime(DateTime.UtcNow) };
 
         MapValuesUpsertPlantedDtoToPlanted(dto, planted);
         return planted;
@@ -85,9 +85,11 @@ public static class MapFromDTOHelper
 
     public static void MapValuesUpsertPlantedDtoToPlanted(UpsertPlantedDto dto, Planted planted)
     {
+        var dateOnly = dto.DatePlanted ?? DateOnly.FromDateTime(DateTime.UtcNow);
+
         planted.PlantId = dto.PlantId;
         planted.PlaceId = dto.PlaceId;
-        planted.DatePlanted = dto.DatePlanted ?? DateTime.UtcNow;
+        planted.DatePlanted = dto.DatePlanted ?? DateOnly.FromDateTime(DateTime.UtcNow);
         planted.Source = dto.Source;
         planted.Note = dto.Note;
         planted.IsOutside = dto.IsOutside;
