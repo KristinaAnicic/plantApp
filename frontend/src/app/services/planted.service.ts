@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { GroupedPlantedDto, PlantedDto, PlantedGetDto, UpsertPlantedDto } from '../models/planted.interface';
+import { GroupedPlantedDto, PlantedDto, PlantedGetDto, PlantedReference, UpsertPlantedDto } from '../models/planted.interface';
 import { environment } from '../../environments/environment';
 import { PlaceGetDto } from '../models/place.interface';
 
@@ -55,5 +55,9 @@ export class PlantedService {
 
   removeImage(plantedId: number, imageId: number) {
     return this.http.delete(`${environment.apiUrl}/planted/${plantedId}/images/${imageId}`);
+  }
+
+  getReferences(): Observable<PlantedReference> {
+    return this.http.get<PlantedReference>(`${environment.apiUrl}/planted/references`);
   }
 }

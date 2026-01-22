@@ -1,0 +1,136 @@
+<!-- Main modal -->
+<div class="relative px-4 py-2 w-[90vw] max-w-[90vw] max-h-[90vh] mb-10" (click)="$event.stopPropagation()">
+    <!-- Modal content -->
+    <div class="relative bg-white border border-gray-200 rounded-xl shadow-sm p-4 md:p-6">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between border-b border-default pb-2">
+            <h3 class="text-lg font-medium text-heading">
+                {{ headerText() }}
+            </h3>
+            <button (click)="onCloseClick()" type="button" class="text-body bg-transparent hover:bg-neutral-tertiary hover:text-heading rounded-base text-sm w-9 h-9 ms-auto inline-flex justify-center items-center cursor-pointer" data-modal-hide="authentication-modal">
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+        </div>
+        <!-- Modal body -->
+        @if (showWarning()){
+            <div class="p-4 flex items-center bg-red-50 w-full rounded-xl border border-red-200">
+                <p class="text-sm flex-1 text-center">{{ this.errorMessage() }}</p>
+                <button (click)="closeWarningClick()" type="button" class="justify-center items-center cursor-pointer p-1" data-modal-hide="authentication-modal">
+                        <svg class="w-4 h-4 text-red-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
+                        <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+        }
+        <form [formGroup]="plantedForm" (ngSubmit)="addEditPlanted()" ngNativeValidate class="flex flex-col gap-y-2 pt-5">
+            <div class="flex flex-col md:flex-row gap-5">
+                <div class="flex flex-1 flex-col gap-3">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-heading px-1 py-1">Nickname (Optional)</label>
+                        <input type="text" id="name" formControlName="name" placeholder="e.g. Bertha" autocomplete="off" />
+                    </div>   
+                    <div class="flex flex-col lg:flex-row gap-3">
+                        <div class="w-full">
+                            <label for="place" class="block text-sm font-medium text-heading px-1 py-1">Location (Required)</label>         
+                            <div class="block w-full p-2 ps-2 border border-gray-300 rounded-lg bg-gray-50">
+                                <select id="place" formControlName="placeId" class="w-full text-heading text-sm" required>
+                                    <option [value]="''" disabled>Pick a place</option>
+                                    @for(place of this.references()?.places; track place.id){
+                                        <option [value]="place.id">{{ place.name }}</option>
+                                    }
+                                </select>
+                            </div> 
+                        </div>
+                        <div class="w-full lg:w-auto">
+                            <label for="datePlanted" class="block text-sm font-medium text-heading px-1 py-1">Date Planted</label>  
+                            <input type="date" id="datePlanted" formControlName="datePlanted" class="w-full lg:w-auto px-2 py-2 text-sm rounded-lg border border-gray-300 focus:ring-none">
+                        </div>
+                    </div> 
+                    <div class="w-full">
+                        <label for="status" class="block text-sm font-medium text-heading px-1 py-1">Current Status (Required)</label>         
+                        <div class="block w-full p-2 ps-2 border border-gray-300 rounded-lg  bg-gray-50">
+                            <select id="status" formControlName="plantStatusId" class="w-full text-heading text-sm">
+                                @for(status of this.references()?.plantStatuses; track status.id){
+                                    <option [value]="status.id">{{ status.name }}</option>
+                                }
+                            </select>
+                        </div> 
+                    </div>
+                    <div class="flex justify-between items-center p-2 bg-gray-100 rounded-lg border border-gray-300 mt-2">
+                        <p class="flex items-center gap-2">
+                            <svg class="w-6 h-6 text-green-900" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.757a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z" />
+                            </svg>
+                            Is it placed outdoors?</p>
+                        <div class="relative inline-block w-11 h-5">
+                            <input formControlName="isOutside" id="isOutside" type="checkbox" class="peer border border-gray-300 appearance-none w-9 h-5 bg-gray-300 rounded-full checked:bg-blue-600 cursor-pointer transition-colors duration-300" />
+                            <label for="isOutside" class="absolute top-0 left-0 w-5 h-5 bg-white rounded-full border border-gray-300 shadow-sm transition-transform duration-300 peer-checked:translate-x-4 peer-checked:border-blue-600 cursor-pointer">
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="note" class="block text-sm font-medium text-heading px-1 py-1">Note</label>
+                        <textarea id="note" formControlName="note" placeholder="Common pests and level of resistance..." rows="3"></textarea>
+                    </div> 
+                </div> 
+                <div class="flex flex-col flex-1 gap-3">
+                    <div>
+                        <label for="source" class="block text-sm font-medium text-heading px-1 py-1">Source (Optional)</label>
+                        <input type="text" id="source" formControlName="source" placeholder="e.g. Gift, Field Trip" autocomplete="off" />
+                    </div> 
+
+                    <!--Images-->
+                    <div class="flex flex-col bg-white py-3 pb-5 rounded-lg w-full gap-3">
+                        <div class="flex">
+                            <div class="flex-1">
+                                <label for="imageUrl" class="font-medium">Image url</label>
+                                <div class="flex gap-2">
+                                    <input type="text" #imageUrlInput id="imageUrl" placeholder="Paste image url here..." autocomplete="off"/>
+                                    <button type="button" (click)="addImageUrl(imageUrlInput.value); imageUrlInput.value = ''" class="bg-gray-50 border border-gray-300 shadow-sm rounded-lg whitespace-nowrap px-2 py-2">Add Image</button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <label class="flex flex-col w-full gap-x-5 gap-y-1 bg-gray-100 text-gray-500 rounded-lg border-2 border-dashed border-gray-300 items-center justify-center h-[150px] cursor-pointer">
+                            <svg class="h-8 w-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 9a3.75 3.75 0 1 0 0 7.5A3.75 3.75 0 0 0 12 9Z" />
+                                <path fill-rule="evenodd" d="M9.344 3.071a49.52 49.52 0 0 1 5.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 0 1-3 3h-15a3 3 0 0 1-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 0 0 1.11-.71l.822-1.315a2.942 2.942 0 0 1 2.332-1.39ZM6.75 12.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Zm12-1.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+                            </svg>
+                            <p>Add photos</p>
+                            <p class="text-xs text-gray-400">PNG, JPG or HEIC up to 10MB</p>          
+                            <input type="file" multiple accept="image/*" class="hidden" (change)="onFilesSelected($event)"/>
+                        </label>
+                        <div class="flex flex-wrap gap-3">
+                            @for (image of images(); track $index){
+                                <div class="relative h-24 w-24 border border-gray-300 rounded-lg">
+                                    <img [src]="image.url" class="w-full h-full object-cover rounded-lg"/>
+                                    <button type="button" (click)="removeImage($index)" class="absolute top-1 text-base flex items-center justify-center right-1 cursor-pointer w-6 h-6 rounded-full bg-black text-white opacity-70">
+                                        x
+                                    </button>
+
+                                    <button (click)="changeMainImage(image.url)" type="button" class="absolute top-1 left-1 cursor-pointer rounded-full bg-black/80 p-1 w-6 h-6">
+                                        <svg [class.text-yellow-400]="image.url === plantedForm.get('image')?.value"
+                                            [class.text-gray-400]="image.url !== plantedForm.get('image')?.value"
+                                            class="w-full h-ful" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <!--End of images-->
+                </div>
+            </div>    
+            <div class="self-end w-full md:w-auto flex">
+                <button type="button" class="flex-1 mt-4 text-sm py-2 px-10 cursor-pointer">
+                    Cancel
+                </button>
+                <button type="submit" class="whitespace-nowrap flex-1 mt-4 bg-green-900 hover:bg-green-800 text-white text-sm py-2 px-10 rounded-full transition-all cursor-pointer">
+                    {{ buttonText() }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+

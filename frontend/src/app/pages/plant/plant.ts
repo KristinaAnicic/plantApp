@@ -3,10 +3,12 @@ import { PlantService } from '../../services/plant.service';
 import { PlantGetDto } from '../../models/plant.interface';
 import { Reference } from '../../models/reference.interface';
 import { RouterLink } from "@angular/router";
+import { AuthService } from '../../services/auth.service';
+import { AddEditPlantedModal } from "../../components/add-edit-planted-modal/add-edit-planted-modal";
 
 @Component({
   selector: 'app-plant',
-  imports: [RouterLink],
+  imports: [RouterLink, AddEditPlantedModal],
   templateUrl: './plant.html',
   styleUrl: './plant.css',
 })
@@ -14,9 +16,11 @@ export class Plant implements OnInit {
   @Input() id!: string;
   
   private service = inject(PlantService);
+  public authService = inject(AuthService);
   plant = signal<PlantGetDto | null>(null);
   selectedImage = signal<string | null>(null);
   selectedOption = signal<string | null>(null);
+  isAddPlantedModalOpen = signal(false);
 
   ngOnInit(): void {
     this.service.getPlant(parseInt(this.id)).subscribe({
@@ -131,5 +135,15 @@ export class Plant implements OnInit {
 
   formatName(item: Reference | undefined): string {
     return item ? item.name : 'Not Specified';
+  }
+
+  toggleAddPlantedModal(){
+    this.isAddPlantedModalOpen.update(val => !val);
+
+    if (this.isAddPlantedModalOpen()) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
   }
 }

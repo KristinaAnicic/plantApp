@@ -4,12 +4,9 @@ import { PlantService } from '../../services/plant.service';
 import { ManyPlantAttributesDto, OnePlantAttributesDto } from '../../models/category.interface';
 import { UpsertPlantDto } from '../../models/plant.interface';
 import { ImageForm } from '../../models/image.interface';
-//import { storage } from '../../firebase-config';
-//import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { environment } from '../../../environments/environment';
-import { Client, Storage, ID } from 'appwrite';
 import { Router } from '@angular/router';
+import { ImageUploadService } from '../../services/image-upload.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-add-edit-plant',
@@ -19,9 +16,10 @@ import { Router } from '@angular/router';
 })
 
 export class AddEditPlant implements OnInit{
-  service = inject(PlantService);
-  router = inject(Router);
-  private snackBar = inject(MatSnackBar);
+  private service = inject(PlantService);
+  private imageService = inject(ImageUploadService);
+  private notificationService = inject(NotificationService);
+  private router = inject(Router);
 
   singleReference = signal<OnePlantAttributesDto | null>(null);
   multiReference = signal<ManyPlantAttributesDto | null>(null);
@@ -40,8 +38,10 @@ export class AddEditPlant implements OnInit{
     this.service.getSingleReferenceCategroies()
       .subscribe((response) => {
         this.singleReference.set(response);
-        const firstId = response.timeToFullHeights?.[0]?.id ?? null;
-        this.plantForm.get('timeToFullHeightId')?.setValue(firstId);
+        if (!this.isEditing()){
+          const firstId = response.timeToFullHeights?.[0]?.id ?? null;
+          this.plantForm.get('timeToFullHeightId')?.setValue(firstId);
+        }
     });
 
     this.service.getMultiReferenceCategroies()
@@ -155,16 +155,23 @@ export class AddEditPlant implements OnInit{
     const data: UpsertPlantDto = this.plantForm.getRawValue();
 
     const imageUrls: string[] = this.images().filter(im => !im.file).map(im => im.url);
-    const uploadedImages: string[] = await this.uploadImages();
-    const allImageUrls = imageUrls.concat(uploadedImages);
+
+    const imagesToUpload = this.images()
+      .filter(img => !!img.file);
+    const uploadedImages: string[] = (await this.imageService.uploadImages(imagesToUpload))
+      .map(im => im.serverUrl);
+
+    const allImageUrls = [...imageUrls, ...uploadedImages];
 
     const cleanData: UpsertPlantDto = {
       ...data,
-      entityDescription: data.entityDescription?.trim(),
-      cultivation: data.cultivation?.trim(),
-      propagation: data.propagation?.trim(),
-      pestResistance: data.pestResistance?.trim(),
-      diseaseResistance: data.diseaseResistance?.trim(),
+      entityDescription: data.entityDescription?.trim() || undefined,
+      cultivation: data.cultivation?.trim() || undefined,
+      propagation: data.propagation?.trim() || undefined,
+      pruning: data.pruning?.trim() || undefined,
+      pestResistance: data.pestResistance?.trim() || undefined,
+      diseaseResistance: data.diseaseResistance?.trim() || undefined,
+      toxicity: data.toxicity?.trim() || undefined,
       hardinessLevelId: data.hardinessLevelId ?? undefined,
       familyId: data.familyId ?? undefined,
       synonymParentPlantId: data.synonymParentPlantId ?? undefined,
@@ -172,7 +179,7 @@ export class AddEditPlant implements OnInit{
       spreadTypeId: data.spreadTypeId ?? undefined,
       heightTypeId: data.heightTypeId ?? undefined,
 
-      images: allImageUrls
+      images: allImageUrls ?? undefined
     };
 
     if (this.isEditing()){
@@ -186,7 +193,7 @@ export class AddEditPlant implements OnInit{
       
       this.service.updatePlant(id, cleanData).subscribe({
         next:() => {
-          this.handleSuccess('Successfully saved changes');   
+          this.notificationService.showSuccess('Successfully saved changes');   
           this.router.navigate(['/plant', id]);
         },
         error:(err:any) => {
@@ -198,7 +205,7 @@ export class AddEditPlant implements OnInit{
     else {
       this.service.addPlant(cleanData).subscribe({
         next:() => {
-          this.handleSuccess('Successfully added plant');
+          this.notificationService.showSuccess('Successfully added plant');
           this.router.navigate(['']);
         },
         error:(err:any) => {
@@ -206,48 +213,6 @@ export class AddEditPlant implements OnInit{
         }
       })
     }
-  }
-
-  async uploadImages(): Promise<string[]>{
-    const files = this.images()
-      .filter(img => !!img.file)
-      .map(img => img.file as File);
-
-    const client = new Client()
-      .setEndpoint(environment.appwriteEndpoint)
-      .setProject(environment.appwriteProjectId);
-    const storage = new Storage(client);
-
-    const inputUrls: string[] = []
-
-    for (const file of files) {
-      try{
-        const response = await storage.createFile({
-          bucketId: environment.appwriteBucketId,
-          fileId: ID.unique(),              
-          file: file
-        });
-        const fileUrl = storage.getFileView({
-          bucketId: environment.appwriteBucketId,
-          fileId: response.$id
-      });
-
-        inputUrls.push(fileUrl);
-      }
-      catch (error) {
-        console.error("Error while uploading files to firebase", error);
-      }
-    }
-    return inputUrls;
-  }
-
-  private handleSuccess(message: string) {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-      horizontalPosition: 'right',
-      verticalPosition: 'bottom',
-      panelClass: ['snackbar-success']
-    });
   }
 
   private handleError(err: any, logMessage: string) {

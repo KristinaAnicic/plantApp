@@ -52,7 +52,7 @@
                     </svg>
                     Set reminder
                 </button>
-                <button type="button" class="flex flex-1 lg:flex-none items-center justify-center gap-x-1 bg-gray-200 text-gray-500 cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">
+                <button (click)="editPlanted()" type="button" class="flex flex-1 lg:flex-none items-center justify-center gap-x-1 bg-gray-200 text-gray-500 cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
                     </svg>
@@ -80,7 +80,7 @@
 
                 </div>
                 @if((planted()?.images?.length ?? 0) > 0){
-                    <div class="grid grid-cols-4 gap-3">
+                    <div class="grid grid-cols-4 gap-1.5">
                     @for(image of displayImages(); track image.id){
                         <img [src]="image.url" class="w-full h-full object-cover rounded-md">
                     }
@@ -157,3 +157,11 @@
         </div>
     </div>
 </div>
+
+@if (isEditPlantedModalOpen()) {
+    <div class="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity" (click)="toggleAddPlantedModal()">
+        <div class="fixed inset-0 z-50 flex justify-center items-center h-full max-h-full content-center overflow-y-auto">
+            <app-add-edit-planted-modal (close)="toggleAddPlantedModal()" (plantedEdited)="loadPlanted()" [editPlanted]="plantedToEdit()"></app-add-edit-planted-modal>
+        </div>
+    </div>
+}

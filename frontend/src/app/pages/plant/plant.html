@@ -1,10 +1,12 @@
-<div class="px-10 py-5">
+<div class="px-10 py-5 relative">
     @if(plant()){
+        <div class="z-40 fixed bottom-10 right-30 rounded-full w-8 h-8 m-0 p-0">
+            <button (click)="toggleAddPlantedModal()" class="px-5 whitespace-nowrap text-base mx-auto rounded-lg hover:bg-green-50/70 hover:text-black text-white bg-green-900/90 border-1 shadow-md shadow-green-900/30 border-green-900 px-3 py-2 cursor-pointer">Add Plant</button>
+        </div>
         <div class="flex flex-col lg:flex-row gap-x-5 gap-y-3">
             <!-- Left side -->
-
             <div class="flex flex-col lg:w-sm gap-y-3 mx-auto">
-                <div class="relative w-sm h-62 isolate flex flex-col justify-end overflow-hidden rounded-xl pb-4 pl-4 mx-auto">
+                <div class="relative w-full sm:w-sm h-62 isolate flex flex-col justify-end overflow-hidden rounded-xl pb-4 pl-4 mx-auto">
                     <img [src]="plant()?.image || 'assets/icons/placeholder.svg'" 
                         class="absolute inset-0 w-full h-full rounded-lg object-cover">
                     <div class="w-full h-full capitalize absolute inset-0 bg-gradient-to-t from-gray-800 via-gray-800/40"></div>
@@ -18,6 +20,7 @@
                     <div class="z-10 text-sm leading-6 text-gray-300 italic">{{ plant()?.botanicalName }}</div>
                 </div>
 
+                <button (click)="toggleAddPlantedModal()" class="w-full sm:w-sm text-base mx-auto rounded-lg hover:bg-green-50/70 hover:text-black text-white bg-green-900/90 border-1 shadow-md shadow-green-900/30 border-green-900 px-3 py-2 cursor-pointer">Add Plant</button>
                 <div class="flex flex-col gap-y-1 bg-white rounded-lg px-3 py-5 border border-gray-100 shadow-sm shadow-gray-200">
                     <h3 class="text-xl font-semibold">Plant Description</h3>
                     @if(plant()?.entityDescription){
@@ -75,14 +78,21 @@
             <div class="flex flex-col gap-y-3">
                 <div class="bg-white rounded-lg px-8 py-6 border border-gray-100 shadow-sm shadow-gray-200">
                     <div class="flex justify-between">
-                        <h3 class="text-xl font-semibold pb-2">Plant Details</h3>
-                        <div [routerLink]="['/plant-form', id]" class="cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                                
-                                <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
-                                <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
-                            </svg>
-                        </div>
+                
+                            <h3 class="text-xl font-semibold pb-2">Plant Details</h3>
+                            
+                    
+                        
+                
+                            @if (authService.isAdmin()){
+                            <div [routerLink]="['/plant-form', id]" class="cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">                 
+                                    <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+                                    <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
+                                </svg>
+                            </div>
+                            }
+                    
                     </div>                   
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-2">
                         <div class="flex flex-col gap-y-2">
@@ -183,4 +193,12 @@
                 <img [src]="selectedImage()" class="rounded-xl max-h-[80vh]">
             </div>
     </div> 
+}
+
+@if (isAddPlantedModalOpen()) {
+    <div class="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity w-full" (click)="toggleAddPlantedModal()">
+        <div class="fixed inset-0 z-50 flex justify-center items-center h-full max-h-full content-center overflow-y-auto w-full">
+            <app-add-edit-planted-modal (close)="toggleAddPlantedModal()" [plantId]="+id"></app-add-edit-planted-modal>
+        </div>
+    </div>
 }

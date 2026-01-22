@@ -8,3 +8,8 @@ export interface ImageForm {
     url: string;
     file?: File;
 }
+
+export interface UploadMapping {
+    tempUrl: string;
+    serverUrl: string;
+}

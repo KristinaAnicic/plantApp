@@ -49,5 +49,10 @@ export interface UpsertPlantedDto {
     isOutside?: boolean;   
     image?: string;
     plantStatusId: number;
-    images?: string[];
+    images: string[];
+}
+
+export interface PlantedReference {
+    places: Reference[],
+    plantStatuses: Reference[]
 }

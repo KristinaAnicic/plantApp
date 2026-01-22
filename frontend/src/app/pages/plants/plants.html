@@ -1,6 +1,6 @@
 <div class="flex flex-col w-full px-10">
-    
-    <div class="w-full flex pt-3 justify-between items-center">
+    <h2 class="pt-3 font-bold text-2xl">Find your plant</h2>
+    <div class="w-full flex justify-between items-center">
         <div class="w-full max-w-md">
             <app-search-component (searchTriggered)="search($event)" [currentText]="currentSearchTerm()"></app-search-component>
         </div>
@@ -35,7 +35,7 @@
                         <p class="text-sm text-gray-700 mt-1 line-clamp-3 pt-3 mb-2">{{plant.entityDescription}}</p>
                     </div>
                     
-                    <div class="flex justify-end gap-x-1 border-t border-gray-200 pt-2">
+                    <div class="flex justify-end items-center gap-x-1 border-t border-gray-200 pt-2">
                         <a href="/plant/{{plant.plantId}}" class="font-semibold text-sm text-green-900 opacity-75">View Details</a>
                         <svg class="w-4 h-5 translate-y-0.5 text-green-900 opacity-75" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path d="m14.523 18.787s4.501-4.505 6.255-6.26c.146-.146.219-.338.219-.53s-.073-.383-.219-.53c-1.753-1.754-6.255-6.258-6.255-6.258-.144-.145-.334-.217-.524-.217-.193 0-.385.074-.532.221-.293.292-.295.766-.004 1.056l4.978 4.978h-14.692c-.414 0-.75.336-.75.75s.336.75.75.75h14.692l-4.979 4.979c-.289.289-.286.762.006 1.054.148.148.341.222.533.222.19 0 .378-.072.522-.215z" fill="currentColor" fill-rule="nonzero"/>
