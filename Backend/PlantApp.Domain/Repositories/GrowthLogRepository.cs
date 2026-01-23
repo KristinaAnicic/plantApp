@@ -14,7 +14,8 @@ public class GrowthLogRepository(AppDbContext context) : Repository<GrowthLog>(c
             .Where(q => q.Planted != null && 
                         q.Planted.Place != null && 
                         q.Planted.Place.UserId == userId)
-            .OrderByDescending(q => q.CreatedAt);
+            .OrderByDescending(q => q.ObservationDate)
+            .ThenByDescending(q => q.CreatedAt);
 
         return await query.ToListAsync();
     }
@@ -24,7 +25,8 @@ public class GrowthLogRepository(AppDbContext context) : Repository<GrowthLog>(c
         var query = AddIncludes(dbSet.AsQueryable());
         query = query
             .Where(q => q.PlantedId == plantedId)
-            .OrderByDescending(q => q.CreatedAt);
+            .OrderByDescending(q => q.ObservationDate)
+            .ThenByDescending(q => q.CreatedAt);
 
         return await query.ToListAsync();
     }

@@ -186,8 +186,8 @@ public static class MapToDTOHelper
             Note = planted.Note,
             IsOutside = planted.IsOutside,
             PlantStatus = planted.PlantStatus?.MapReferenceToDto(),
-            NextReminders = planted.Reminders?.Select(r => r.MapReminderToReminderDto()).ToList(),
-            GrowthLogs = planted.GrowthLogs?.Select(gl => gl.MapGrowthLogToGrowthLogDto()).ToList(),
+            NextReminders = planted.Reminders?.Select(r => r.MapReminderToReminderGetDto()).ToList(),
+            GrowthLogs = planted.GrowthLogs?.Select(gl => gl.MapGrowthLogToGrowthLogGetDto()).ToList(),
             Images = planted.Images?.Select(im => im.MapImageToImageDto()).ToList(),
             Name = planted.Name,
             Image = planted.Image
@@ -245,7 +245,7 @@ public static class MapToDTOHelper
             Note = log.Note,
             Title = log.Title,
             PlantStatus = log.PlantStatus?.Name,
-            CreatedAt = log.CreatedAt,
+            ObservationDate = log.ObservationDate,
             Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList(),
             PlantedId = log.PlantedId,
             Plant = log.Planted != null ? log.Planted.Name : null
@@ -260,7 +260,7 @@ public static class MapToDTOHelper
             Note = log.Note,
             Title = log.Title,
             PlantStatus = log.PlantStatus != null ? log.PlantStatus.MapReferenceToDto() : null,
-            CreatedAt = log.CreatedAt,
+            ObservationDate = log.ObservationDate,
             Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList(),
             PlantedId = log.PlantedId,
             Plant = log.Planted != null ? log.Planted.Name : null,

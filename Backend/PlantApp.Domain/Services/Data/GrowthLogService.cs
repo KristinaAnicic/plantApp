@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos.GrowthLog;
+using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
@@ -100,6 +101,10 @@ public class GrowthLogService(
         {
             log!.Images.Clear();
             await imageService.AddImagesSafeAsync(log, dto.Images);
+        }
+        else
+        {
+            log!.Images.Clear();
         }
 
         await repository.UpdateAsync(log!);

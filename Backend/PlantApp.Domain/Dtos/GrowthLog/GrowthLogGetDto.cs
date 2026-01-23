@@ -10,6 +10,6 @@ public class GrowthLogGetDto
     public required string Title { get; set; }
     public string? Note { get; set; }
     public ReferenceDto? PlantStatus { get; set; }
-    public DateTime? CreatedAt { get; set; }
+    public DateOnly? ObservationDate { get; set; }
     public List<ImageDto>? Images { get; set; }
 }

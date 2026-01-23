@@ -12,4 +12,5 @@ public class UpsertGrowthLogDto
     [Required]
     public int PlantStatusId { get; set; }
     public List<string>? Images { get; set; }
+    public DateOnly ObservationDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
 }
