@@ -14,6 +14,6 @@ public class UpsertReminderDto
     [Required]
     public required int FrequencyNum { get; set; }
     [Required]
-    public DateTime NextDueDate { get; set; }
+    public DateTime OriginalDueDate { get; set; }
     public string? Note { get; set; }
 }

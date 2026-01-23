@@ -213,7 +213,7 @@ public static class MapToDTOHelper
             Plant = reminder.Planted.Name,
             PlantedId = reminder.PlantedId,
             ReminderType = reminder.ReminderType?.Name,
-            NextDueDate = reminder.NextDueDate.AddDays(reminder.DelayDays),
+            NextDueDate = reminder.NextDueDate,
             Notes = reminder.Note,
             IsLate = (reminder.NextDueDate - DateTime.UtcNow).TotalDays < 0
         };
@@ -226,9 +226,9 @@ public static class MapToDTOHelper
             Id = reminder.Id,
             PlantedId = reminder.PlantedId,
             ReminderType = reminder.ReminderType.MapReferenceToDto(),
-            NextDueDate = reminder.NextDueDate.AddDays(reminder.DelayDays),
-            DaysDelayed = reminder.DelayDays,
-            Notes = reminder.Note,
+            NextDueDate = reminder.NextDueDate,
+            OriginalDueDate = reminder.OriginalDueDate,
+            Note = reminder.Note,
             PlantedName = reminder.Planted.Name ?? $"{reminder.Planted.Plant?.BotanicalName} ({reminder.Planted.Plant?.CommonName})",
             //Frequency = $"every {reminder.FrequencyNum} {reminder.FrequencyType.Name}"
             FrequencyType = reminder.FrequencyType.MapReferenceToDto(),

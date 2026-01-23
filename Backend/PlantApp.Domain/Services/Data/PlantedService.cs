@@ -82,7 +82,10 @@ public class PlantedService(
         if (planted.Reminders != null && planted.Reminders.Any()) 
         { 
             planted.Reminders = planted.Reminders
-                .OrderBy(r => (r.NextDueDate.AddDays(r.DelayDays) - DateTime.UtcNow).TotalDays)
+                .OrderBy(r => r.NextDueDate)
+                .ToList();
+        }
+
         if (planted.GrowthLogs != null && planted.GrowthLogs.Any())
         {
             planted.GrowthLogs = planted.GrowthLogs

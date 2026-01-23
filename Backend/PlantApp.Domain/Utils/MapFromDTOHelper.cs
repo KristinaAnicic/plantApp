@@ -122,8 +122,9 @@ public static class MapFromDTOHelper
         reminder.ReminderTypeId = dto.ReminderTypeId;
         reminder.FrequencyTypeId = dto.FrequencyTypeId;
         reminder.FrequencyNum = dto.FrequencyNum;
-        reminder.NextDueDate = dto.NextDueDate;
+        reminder.OriginalDueDate = dto.OriginalDueDate;
         reminder.Note = dto.Note;
+        reminder.NextDueDate = dto.OriginalDueDate;
     }
 
     public static Reminder MapUpsertReminderDtoToReminder(this UpsertReminderDto dto, Reminder? reminder = null)

@@ -16,7 +16,7 @@ public class ReminderRepository(AppDbContext context) : Repository<Reminder>(con
                 .ThenInclude(p => p.Plant)
             .Include(r => r.ReminderType)
             .Where(q => q.Planted != null && q.Planted.Place != null && q.Planted.Place.UserId == userId)
-            .OrderBy(q => (q.NextDueDate.AddDays(q.DelayDays) - DateTime.UtcNow).TotalDays);
+            .OrderBy(q => q.NextDueDate);
 
         return await query.ToListAsync();
     }

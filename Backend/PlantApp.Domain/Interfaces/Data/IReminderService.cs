@@ -11,4 +11,5 @@ public interface IReminderService
     public Task AddAsync(UpsertReminderDto dto);
     public Task UpdateAsync(int id, UpsertReminderDto dto);
     public Task DeleteAsync(int id);
+    public Task<ReminderReferences> GetReferences();
 }

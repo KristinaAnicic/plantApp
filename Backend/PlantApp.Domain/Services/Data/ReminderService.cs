@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using PlantApp.Data.Models;
 using PlantApp.Data.Models.Categories;
+using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Dtos.Reminder;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
@@ -46,11 +47,20 @@ public class ReminderService(
         var reminder = await repository.GetReminderAsync(id);
         CheckReminderAndAuthorization(reminder);
 
-        DateTime dateDoneVar = dateDone ?? DateTime.UtcNow;
-
-        var delayDays = Math.Max(
+        DateTime baseDate = dateDone ?? DateTime.UtcNow;
+        DateTime dateDoneVar = new DateTime(
+            baseDate.Year,
+            baseDate.Month,
+            baseDate.Day,
+            reminder!.NextDueDate.Hour,
+            reminder.NextDueDate.Minute,
             0,
-            (int)(dateDoneVar.Date - reminder!.NextDueDate.Date).TotalDays
+            DateTimeKind.Utc
+        );
+
+        var totalDelay = Math.Max(
+            0,
+            (int)(dateDoneVar.Date - reminder!.OriginalDueDate.Date).TotalDays
         );
 
         var reminderHistory = new ReminderHistory
@@ -59,9 +69,9 @@ public class ReminderService(
             ReminderTypeId = reminder.ReminderTypeId,
             FrequencyTypeId = reminder.FrequencyTypeId,
             FrequencyNum = reminder.FrequencyNum,
-            DueDate = reminder.NextDueDate,
+            DueDate = reminder.OriginalDueDate,
             DateDone = dateDoneVar,
-            delay = delayDays
+            delay = totalDelay
         };
 
         await reminderHistoryRepo.AddAsync(reminderHistory);
@@ -78,8 +88,8 @@ public class ReminderService(
                     logger: logger)
         };
 
-        reminder.NextDueDate = newDueDate;
-        reminder.DelayDays = 0;
+        reminder.OriginalDueDate = DateTime.SpecifyKind(newDueDate, DateTimeKind.Utc);
+        reminder.NextDueDate = reminder.OriginalDueDate;
 
         await repository.UpdateAsync(reminder);
         logger.LogInformation("Reminder {ReminderId} marked as done by user {UserId}", id, CurrentUserId);
@@ -91,7 +101,18 @@ public class ReminderService(
 
         CheckReminderAndAuthorization(reminder);
 
-        reminder!.DelayDays = delay;
+        DateTime baseDate = DateTime.UtcNow;
+        DateTime today = new DateTime(
+            baseDate.Year,
+            baseDate.Month,
+            baseDate.Day,
+            reminder!.OriginalDueDate.Hour,
+            reminder.OriginalDueDate.Minute,
+            0,
+            DateTimeKind.Utc
+        );
+
+        reminder!.NextDueDate = DateTime.SpecifyKind(today.AddDays(delay), DateTimeKind.Utc);
         reminder.UpdatedAt = DateTime.UtcNow;
 
         await repository.UpdateAsync(reminder);
@@ -108,6 +129,7 @@ public class ReminderService(
             throw new UnauthorizedException("add", "reminder", logger);
         
         var reminder = dto.MapUpsertReminderDtoToReminder();
+
         await repository.AddAsync(reminder);
 
         logger.LogInformation("Reminder {ReminderId} added for planted {PlantedId} by user {UserId}", reminder.Id, dto.PlantedId, CurrentUserId);
@@ -145,6 +167,18 @@ public class ReminderService(
         await repository.DeleteAsync(reminder!, false);
 
         logger.LogInformation("Reminder {ReminderId} deleted by user {UserId}", id, CurrentUserId);
+    }
+
+    public async Task<ReminderReferences> GetReferences()
+    {
+        var reminderTypes = await reminderTypeRepo.GetAllAsync();
+        var frequencyTypes = await frequencyRepo.GetAllAsync();
+
+        return new ReminderReferences
+        {
+            ReminderTypes = reminderTypes.Select(p => p.MapReferenceToDto()).ToList(),
+            FrequencyTypes = frequencyTypes.Select(s => s.MapReferenceToDto()).ToList()
+        };
     }
 
     private async Task ValidateReferences(UpsertReminderDto dto)

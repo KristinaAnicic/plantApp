@@ -68,6 +68,8 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
             .Include(q => q.Plant!.Images)
             .Include(q => q.Reminders)
                 .ThenInclude(r => r.ReminderType)
+            .Include(q => q.Reminders)
+                .ThenInclude(r => r.FrequencyType)
             .Include(q => q.GrowthLogs)
                 .ThenInclude(g => g.Images)
             .Include(q => q.GrowthLogs)
@@ -145,8 +147,8 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
                 {
                     Planted = p,
                     MinReminderDate = p.Reminders
-                        .OrderBy(r => r.NextDueDate.AddDays(r.DelayDays))
-                        .Select(r => (DateTime?)r.NextDueDate.AddDays(r.DelayDays))
+                        .OrderBy(r => r.NextDueDate)
+                        .Select(r => (DateTime?)r.NextDueDate)
                         .FirstOrDefault() ?? DateTime.MaxValue
                 })
                 .OrderBy(x => x.MinReminderDate)

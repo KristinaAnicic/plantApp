@@ -58,4 +58,11 @@ public class ReminderController(IReminderService reminderService) : Controller
         await reminderService.DeleteAsync(id);
         return NoContent();
     }
+
+    [HttpGet("references")]
+    public async Task<IActionResult> GetReferences()
+    {
+        var result = await reminderService.GetReferences();
+        return Ok(result);
+    }
 }
