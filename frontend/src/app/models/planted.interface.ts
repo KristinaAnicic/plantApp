@@ -1,9 +1,9 @@
-import { GrowthLogDto } from "./growth-log.interface";
+import { GrowthLogDto, GrowthLogGetDto } from "./growth-log.interface";
 import { ImageDto } from "./image.interface";
 import { PlaceDto } from "./place.interface";
 import { PlantDto } from "./plant.interface";
 import { Reference } from "./reference.interface";
-import { ReminderDto } from "./reminder.interface";
+import { ReminderDto, ReminderGetDto } from "./reminder.interface";
 
 export interface PlantedDto {
     id: number;
@@ -27,8 +27,8 @@ export interface PlantedGetDto {
     note?: string;
     isOutside: boolean;
     plantStatus?: Reference;
-    nextReminders?: ReminderDto[];
-    growthLogs?: GrowthLogDto[];
+    nextReminders?: ReminderGetDto[];
+    growthLogs?: GrowthLogGetDto[];
     images?: ImageDto[];
     image?: string;
 }

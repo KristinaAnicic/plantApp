@@ -46,4 +46,25 @@ export class ImageUploadService {
     }
     return results;
   }
+
+  public async prepareImages(data: any, images: ImageForm[]): Promise<{images: string[], mainImage?: string}> { 
+    const imagesToUpload = images.filter(img => !!img.file);
+    const uploadResults: UploadMapping[] = await this.uploadImages(imagesToUpload);
+
+    const newImageUrls: string[] = uploadResults.map(im => im.serverUrl);
+    const existingUrls: string[] = images.filter(im => !im.file).map(im => im.url);
+
+    const allImageUrls = [...existingUrls, ...newImageUrls];
+
+    let finalMainImage = data.image;
+    const match = uploadResults.find(res => res.tempUrl === data.image);
+    if(match) {
+      finalMainImage = match.serverUrl;
+    }
+
+    return {
+      images: allImageUrls,
+      mainImage: finalMainImage || undefined
+    }
+  }
 }

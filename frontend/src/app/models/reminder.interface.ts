@@ -17,9 +17,10 @@ export interface ReminderGetDto {
     reminderType?: Reference;
     frequencyType?: Reference;
     nextDueDate: string;
+    originalDueDate: string;
     daysDelayed: number;
     frequencyNum: number;
-    notes?: string;
+    note?: string;
     isLate: boolean;
 }
 
@@ -29,6 +30,11 @@ export interface UpsertReminderDto {
     reminderTypeId: number;
     frequencyTypeId: number;
     frequencyNum: number;
-    nextDueDate: string;
-    notes?: string;
+    originalDueDate: string;
+    note?: string;
+}
+
+export interface ReminderReference {
+    reminderTypes: Reference[],
+    frequencyTypes: Reference[]
 }

@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, OnInit, output, signal, untracked } from '@angular/core';
 import { PlantedReference, UpsertPlantedDto } from '../../models/planted.interface';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PlantedService } from '../../services/planted.service';
@@ -22,10 +22,9 @@ export class AddEditPlantedModal implements OnInit {
   plantedEdited = output<void>();
   close = output<void>();
 
-  references = signal<PlantedReference | null>(null);
+  references = this.service.references;
   showWarning = signal(false);
   errorMessage = signal('');
-  searchTerm = signal('');
   images = signal<ImageForm[]>([]);
 
   isEditing = computed(() => !!this.editPlanted());
@@ -36,10 +35,6 @@ export class AddEditPlantedModal implements OnInit {
     if (!this.editPlanted() && !this.plantId()) {
       throw new Error('AddEditPlantedModal requires [editPlanted] for editing or [plantId] for adding.');
     }
-
-    this.service.getReferences().subscribe((result) => {
-      this.references.set(result);
-  });
   }
 
   constructor() {
@@ -51,16 +46,19 @@ export class AddEditPlantedModal implements OnInit {
         if (planted) {
           this.plantedForm.patchValue(planted);
           const currentImages: ImageForm[] = planted.images.map(image => ({ url: image }))
-          this.images.set(currentImages);
+          untracked(() => {
+            this.images.set(currentImages);
+          });
         }
         else {
           this.plantedForm.reset();
+          untracked(() => this.images.set([]));
           const currentStatus = this.plantedForm.get('plantStatusId')?.value;
           if (!currentStatus || currentStatus === 0) {
             this.plantedForm.patchValue({ 
               plantStatusId: refs.plantStatuses[0].id,
               plantId: this.plantId()
-            });
+            }, { emitEvent: false });
           }
         }
       }
@@ -82,11 +80,6 @@ export class AddEditPlantedModal implements OnInit {
     images: new FormControl<string[]>([])
   })
 
-  updateSearch(event: Event){
-    const element = event.target as HTMLInputElement;
-    this.searchTerm.set(element.value);
-  }
-
   onCloseClick(){
     this.close.emit();
   }
@@ -97,7 +90,7 @@ export class AddEditPlantedModal implements OnInit {
 
   async addEditPlanted(){
     const data = this.plantedForm.getRawValue();   
-    const finalImages = await this.prepareImages(data);
+    const finalImages = await this.imageService.prepareImages(data, this.images());
 
     const cleanData: UpsertPlantedDto = {
       ...data, 
@@ -145,27 +138,6 @@ export class AddEditPlantedModal implements OnInit {
           console.log("Error on adding planted: ", err);
         }
       })
-    }
-  }
-
-  private async prepareImages(data: any): Promise<{images: string[], mainImage?: string}> { 
-    const imagesToUpload = this.images().filter(img => !!img.file);
-    const uploadResults: UploadMapping[] = await this.imageService.uploadImages(imagesToUpload);
-
-    const newImageUrls: string[] = uploadResults.map(im => im.serverUrl);
-    const existingUrls: string[] = this.images().filter(im => !im.file).map(im => im.url);
-
-    const allImageUrls = [...existingUrls, ...newImageUrls];
-
-    let finalMainImage = data.image;
-    const match = uploadResults.find(res => res.tempUrl === data.image);
-    if(match) {
-      finalMainImage = match.serverUrl;
-    }
-
-    return {
-      images: allImageUrls,
-      mainImage: finalMainImage || undefined
     }
   }
 

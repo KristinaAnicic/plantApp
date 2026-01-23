@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { GroupedPlantedDto, PlantedDto, PlantedGetDto, PlantedReference, UpsertPlantedDto } from '../models/planted.interface';
 import { environment } from '../../environments/environment';
@@ -9,7 +9,14 @@ import { PlaceGetDto } from '../models/place.interface';
   providedIn: 'root',
 })
 export class PlantedService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.getReferences().subscribe(data => {
+      this.referencesSignal.set(data);
+    })
+  }
+
+  private referencesSignal = signal<PlantedReference| null>(null);
+  references = this.referencesSignal.asReadonly();
 
   getAllPlantedPlants(userId?: number): Observable<PlantedDto[]> {
     let params = new HttpParams();

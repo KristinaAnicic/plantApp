@@ -5,10 +5,14 @@ import { PLANT_STATUS_MAP, PlantStatusCategory } from '../../enums/plant-status.
 import { PlantedGrowthLog } from "../../components/planted-growth-log/planted-growth-log";
 import { PlantedReminders } from "../../components/planted-reminders/planted-reminders";
 import { AddEditPlantedModal } from "../../components/add-edit-planted-modal/add-edit-planted-modal";
+import { AddEditLogModal } from "../../components/add-edit-log-modal/add-edit-log-modal";
+import { GrowthLogGetDto, UpsertGrowthLogDto } from '../../models/growth-log.interface';
+import { UpsertReminderDto } from '../../models/reminder.interface';
+import { AddEditReminderModal } from "../../components/add-edit-reminder-modal/add-edit-reminder-modal";
 
 @Component({
   selector: 'app-user-plant',
-  imports: [PlantedGrowthLog, PlantedReminders, AddEditPlantedModal],
+  imports: [PlantedGrowthLog, PlantedReminders, AddEditPlantedModal, AddEditLogModal, AddEditReminderModal],
   templateUrl: './user-plant.html',
   styleUrl: './user-plant.css',
 })
@@ -18,7 +22,11 @@ export class UserPlant implements OnInit {
   service = inject(PlantedService);
   planted = signal<PlantedGetDto | null>(null);
   isEditPlantedModalOpen = signal(false);
+  isLogModalOpen = signal(false);
+  isReminderModalOpen = signal(false);
   plantedToEdit = signal<UpsertPlantedDto | null>(null);
+  logToEdit = signal<UpsertGrowthLogDto | null>(null);
+  reminderToEdit = signal<UpsertReminderDto | null>(null);
 
   displayImages = computed(() => {
     const all = this.planted()?.images?.filter(im => im.url !== this.planted()?.image) ?? [];
@@ -72,6 +80,14 @@ export class UserPlant implements OnInit {
     this.isEditPlantedModalOpen.update(val => !val);
   }
 
+  toggleLogModal(){
+    this.isLogModalOpen.update(val => !val);
+  }
+
+  toggleReminderModal(){
+    this.isReminderModalOpen.update(val => !val);
+  }
+
   editPlanted(){
     const currentPlanted = this.planted();
     if (!currentPlanted) return;
@@ -86,5 +102,41 @@ export class UserPlant implements OnInit {
     }
     this.plantedToEdit.set(plant);
     this.isEditPlantedModalOpen.set(true);
+  }
+
+  editLog(id: number){
+    const log = this.planted()?.growthLogs?.find(g => g.id === id);
+    if (!log) return;
+
+    const editLog: UpsertGrowthLogDto = {
+      ...log,
+      plantStatusId: log.plantStatus?.id ?? 0,
+      images: log.images?.map(im => im.url) ?? []
+    }
+    this.logToEdit.set(editLog);
+    this.isLogModalOpen.set(true);
+  }
+
+  addLog(){
+    this.logToEdit.set(null);
+    this.isLogModalOpen.set(true);
+  }
+
+  editReminder(id: number){
+    const reminder = this.planted()?.nextReminders?.find(g => g.id === id);
+    if (!reminder) return;
+
+    const editReminder: UpsertReminderDto = {
+      ...reminder,
+      frequencyTypeId: reminder.frequencyType?.id ?? 0,
+      reminderTypeId: reminder.reminderType?.id ?? 0
+    }
+    this.reminderToEdit.set(editReminder);
+    this.isReminderModalOpen.set(true);
+  }
+
+  addReminder(){
+    this.reminderToEdit.set(null);
+    this.isReminderModalOpen.set(true);
   }
 }

@@ -8,7 +8,7 @@ export interface GrowthLogDto {
     note?: string;
     title: string;
     plantStatus?: string;
-    createdAt?: string;
+    observationDate?: string;
     images?: ImageDto[];
 }
 
@@ -19,7 +19,7 @@ export interface GrowthLogGetDto {
     plant?: string;
     note?: string;
     plantStatus?: Reference;
-    createdAt?: string;
+    observationDate?: string;
     images?: ImageDto[];
 }
 
@@ -29,5 +29,6 @@ export interface UpsertGrowthLogDto {
     title: string;
     note?: string;
     plantStatusId: number;
-    images?: string[];
+    images: string[];
+    observationDate?: string;
 }

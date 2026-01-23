@@ -45,8 +45,8 @@
                 </div>
             </div>
             <div class="flex flex-col md:flex-row gap-2">
-                <button type="button" class="flex-1 lg:flex-none bg-green-900 text-white cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">Add Growth Log</button>
-                <button type="button" class="flex flex-1 md:flex-none items-center gap-x-1 justify-center border border-green-900 cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">
+                <button (click)="addLog()" type="button" class="flex-1 lg:flex-none bg-green-900 text-white cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">Add Growth Log</button>
+                <button (click)="addReminder()" type="button" class="flex flex-1 md:flex-none items-center gap-x-1 justify-center border border-green-900 cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">
                     <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
                     </svg>
@@ -138,7 +138,7 @@
                     <h2 class="font-medium text-lg">Upcoming reminders</h2>                   
                 </div>  
                 <div>
-                    <app-planted-reminders [reminders]="planted()?.nextReminders"></app-planted-reminders>
+                    <app-planted-reminders [reminders]="planted()?.nextReminders" (editReminder)="editReminder($event)" (reminderEdited)="loadPlanted()"></app-planted-reminders>
                 </div>
             </div>
         </div>
@@ -152,7 +152,7 @@
                 <h2 class="font-medium text-lg">Growth History</h2>                   
             </div>  
             <div class="w-full">
-                <app-planted-growth-log [logs]="planted()?.growthLogs"></app-planted-growth-log>
+                <app-planted-growth-log [logs]="planted()?.growthLogs" (editLog)="editLog($event)" (logEdited)="loadPlanted()"></app-planted-growth-log>
             </div>          
         </div>
     </div>
@@ -162,6 +162,22 @@
     <div class="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity" (click)="toggleAddPlantedModal()">
         <div class="fixed inset-0 z-50 flex justify-center items-center h-full max-h-full content-center overflow-y-auto">
             <app-add-edit-planted-modal (close)="toggleAddPlantedModal()" (plantedEdited)="loadPlanted()" [editPlanted]="plantedToEdit()"></app-add-edit-planted-modal>
+        </div>
+    </div>
+}
+
+@if (isLogModalOpen()) {
+    <div class="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity" (click)="toggleLogModal()">
+        <div class="fixed inset-0 z-50 flex justify-center items-center h-full max-h-full content-center overflow-y-auto">
+            <app-add-edit-log-modal (close)="toggleLogModal()" (logEdited)="loadPlanted()" [editLog]="logToEdit()" [plantedId]="+id"></app-add-edit-log-modal>
+        </div>
+    </div>
+}
+
+@if (isReminderModalOpen()) {
+    <div class="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity" (click)="toggleReminderModal()">
+        <div class="fixed inset-0 z-50 flex justify-center items-center h-full max-h-full content-center overflow-y-auto">
+            <app-add-edit-reminder-modal (close)="toggleReminderModal()" (reminderEdited)="loadPlanted()" [editReminder]="reminderToEdit()" [plantedId]="+id"></app-add-edit-reminder-modal>
         </div>
     </div>
 }
