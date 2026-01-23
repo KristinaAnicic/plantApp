@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PlantApp.Data;
@@ -11,9 +12,11 @@ using PlantApp.Data;
 namespace PlantApp.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260113130847_AddSynonymPlantReference")]
+    partial class AddSynonymPlantReference
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -368,10 +371,6 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("note");
 
-                    b.Property<DateOnly>("ObservationDate")
-                        .HasColumnType("date")
-                        .HasColumnName("observation_date");
-
                     b.Property<int>("PlantStatusId")
                         .HasColumnType("integer")
                         .HasColumnName("plant_status_id");
@@ -379,11 +378,6 @@ namespace PlantApp.Data.Migrations
                     b.Property<int>("PlantedId")
                         .HasColumnType("integer")
                         .HasColumnName("planted_id");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("title");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -885,8 +879,8 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<DateOnly>("DatePlanted")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("DatePlanted")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_planted");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -1018,6 +1012,10 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
+                    b.Property<int>("DelayDays")
+                        .HasColumnType("integer")
+                        .HasColumnName("delay_days");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
@@ -1037,10 +1035,6 @@ namespace PlantApp.Data.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("text")
                         .HasColumnName("note");
-
-                    b.Property<DateTime>("OriginalDueDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("original_due_date");
 
                     b.Property<int>("PlantedId")
                         .HasColumnType("integer")

@@ -14,6 +14,7 @@ public class GrowthLog : BaseEntity, IHasImages
     [ForeignKey(nameof(PlantStatusId))]
     public PlantStatus? PlantStatus { get; set; }
     public int PlantStatusId { get; set; }
+    public DateOnly ObservationDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
 
     public ICollection<Image> Images { get; set; } = new List<Image>();
 }

@@ -17,7 +17,7 @@ public class Reminder : BaseEntity
     public Frequency? FrequencyType { get; set; }
     public required int FrequencyTypeId { get; set; }
     public required int FrequencyNum { get; set; }
+    public DateTime OriginalDueDate { get; set; }
     public DateTime NextDueDate { get; set; }
-    public int DelayDays {  get; set; } = 0;
     public string? Note { get; set; }
 }
