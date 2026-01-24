@@ -58,4 +58,10 @@ export const routes: Routes = [
         loadComponent: () =>
             import('./pages/plant-exchange-list/plant-exchange-list').then((m) => m.PlantExchangeList)
     }
+    ,
+    {
+        path: 'trade/:id',
+        loadComponent: () =>
+            import('./pages/plant-exchange/plant-exchange').then((m) => m.PlantExchange)
+    }
 ];

@@ -1,6 +1,7 @@
 import { Reference } from "./reference.interface";
 
 export interface UserRatingDto {
+    id: number;
     rater: Reference;
     rated: Reference;
     rating: number;

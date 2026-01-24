@@ -1,6 +1,7 @@
 import { ImageDto } from "./image.interface";
 import { PlantedDto } from "./planted.interface";
 import { Reference } from "./reference.interface";
+import { UserRatingDto } from "./user-rating.interface";
 
 export interface PlantExchangeResponse {
     total: number;
@@ -18,15 +19,24 @@ export interface PlantExchangeDto {
 }
 
 export interface PlantExchangeGetDto {
+    id: number;
+    title: string;
+    exchangeType?: Reference;
+    country?: Reference;
+    city: string;
+    image: string;
+    contact: string;
+    price?: number;
+    createdAt: string;
     user: Reference;
     planted?: PlantedDto;
-    title: string;
     content: string;
     plantStatus: string;
     exchangeFor?: string;
     shipping: string;
     userRating?: number;
     images?: ImageDto[];
+    userRatings?: UserRatingDto[];
 }
 
 export interface UpsertPlantExchangeDto {

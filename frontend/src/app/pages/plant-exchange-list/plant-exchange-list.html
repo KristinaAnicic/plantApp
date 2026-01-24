@@ -18,7 +18,7 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-3 justify-center">      
         @for (exchange of exchanges(); track exchange.id){
-            <div [routerLink]="['/plant', exchange.id]" class="bg-white flex flex-col transition hover:scale-102 shadow-lg shadow-green-900/50 rounded-2xl overflow-hidden cursor-pointer">     
+            <div [routerLink]="['/trade', exchange.id]" class="bg-white flex flex-col transition hover:scale-102 shadow-lg shadow-green-900/50 rounded-2xl overflow-hidden cursor-pointer">     
                 <div class="relative h-54 sm:h-48 w-full overflow-hidden rounded-t-xl bg-gray-100 flex-shrink-0 content-center">
                     @if (exchange.image) {
                         <img [src]="exchange.image" (error)="exchange.image = 'assets/icons/placeholder.svg'" class="w-full h-full object-cover"/>
