@@ -17,7 +17,7 @@ public class PlantExchangeController(IPlantExchangeService plantExchangeService)
         return Ok(result);
     }
 
-    [HttpGet("search")]
+    [HttpPost("search")]
     public async Task<IActionResult> GetAll([FromBody] PlantExchangeFilterDto filter, [FromQuery] int page = 1)
     {
         var result = await plantExchangeService.GetActiveFilteredAsync(filter, page);

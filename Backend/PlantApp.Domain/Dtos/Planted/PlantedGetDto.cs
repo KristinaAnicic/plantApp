@@ -17,6 +17,7 @@ public class PlantedGetDto
     public string? Source { get; set; }
     public string? Note { get; set; }
     public bool IsOutside { get; set; } = false;
+    public int? UserId { get; set; }
     public ReferenceDto? PlantStatus { get; set; }
     public string? Image { get; set; }
     public List<ReminderGetDto>? NextReminders { get; set; }

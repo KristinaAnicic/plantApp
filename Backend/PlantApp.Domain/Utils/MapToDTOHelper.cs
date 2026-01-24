@@ -193,7 +193,8 @@ public static class MapToDTOHelper
             Image = planted.Image
                 //?? planted.Images?.FirstOrDefault()?.Url
                 ?? planted.Plant?.Images?.FirstOrDefault()?.Url
-                ?? null
+                ?? null,
+            UserId = planted.Place?.UserId
         };
     }
 

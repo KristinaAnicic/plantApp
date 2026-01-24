@@ -26,7 +26,7 @@ public class PlantExchangeService(
     private bool IsAdmin => userContext.GetCurrentUserRoleId() == 1;
     public async Task<ListResponse<PlantExchangeDto>> GetActiveAsync(int page = 1)
     {
-        var exchanges = await repository.GetAllByKeyAsync(e => e.IsActive == true, false, page);        
+        var exchanges = await repository.GetAllByKeyAsync(e => e.IsActive == true, true, page);        
         exchanges = exchanges.OrderByDescending(e => e.CreatedAt).ToList();
 
         var dto = exchanges.Select(e => e.MapPlantExchangeToPlantExchangeDto()).ToList();
@@ -43,11 +43,13 @@ public class PlantExchangeService(
                 (string.IsNullOrWhiteSpace(filter.Name) ||
                     EF.Functions.ILike(e.Title, $"%{filter.Name}%") ||
                     EF.Functions.ILike(e.Content, $"%{filter.Name}%")) &&
-                (string.IsNullOrWhiteSpace(filter.City) || EF.Functions.ILike(e.City, $"%{filter.City}%")) &&
+                (string.IsNullOrWhiteSpace(filter.City) || 
+                    EF.Functions.ILike(e.City, $"%{filter.City}%") ||
+                    (e.Country != null && EF.Functions.ILike(e.Country.Name, $"%{filter.City}%"))) &&
                 (filter.PriceFrom == null || e.Price == null || e.Price > filter.PriceFrom) &&
                 (filter.PriceTo == null || e.Price == null || e.Price < filter.PriceTo) &&
                 (filter.ExchangeType == null || e.ExchangeTypeId == filter.ExchangeType),   
-            false, page);
+            true, page);
 
         exchanges = exchanges.OrderByDescending(e => e.CreatedAt).ToList();
 
