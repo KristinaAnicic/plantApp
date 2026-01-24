@@ -52,5 +52,10 @@ export const routes: Routes = [
         loadComponent: () =>
             import('./pages/add-edit-plant/add-edit-plant').then((m) => m.AddEditPlant),
         resolve: { editPlant: plantEditResolver }
+    },
+    {
+        path: 'trade',
+        loadComponent: () =>
+            import('./pages/plant-exchange-list/plant-exchange-list').then((m) => m.PlantExchangeList)
     }
 ];

@@ -66,7 +66,7 @@ export class UserPlant implements OnInit {
     const statusId = this.planted()?.plantStatus?.id;
 
     if (statusId && PLANT_STATUS_MAP[statusId]) {
-    return PLANT_STATUS_MAP[statusId];
+      return PLANT_STATUS_MAP[statusId];
     }
 
     return { 

@@ -1,7 +1,7 @@
 <div class="flex flex-col w-full px-10">
     <h2 class="pt-3 font-bold text-2xl">Find your plant</h2>
     <div class="w-full flex justify-between items-center">
-        <div class="w-full max-w-md">
+        <div class="w-full max-w-md py-5">
             <app-search-component (searchTriggered)="search($event)" [currentText]="currentSearchTerm()"></app-search-component>
         </div>
         @if (authService.isAdmin()) {
