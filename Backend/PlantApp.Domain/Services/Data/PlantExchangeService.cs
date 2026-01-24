@@ -12,7 +12,7 @@ using PlantApp.Domain.Utils.Exceptions;
 namespace PlantApp.Domain.Services.Data;
 
 public class PlantExchangeService(
-    IRepository<PlantExchange> repository,   
+    IPlantExchangeRepository repository,   
     IRepository<Country> countryRepo,
     IRepository<Planted> plantedRepo,
     IImageService imageService,
@@ -26,42 +26,23 @@ public class PlantExchangeService(
     private bool IsAdmin => userContext.GetCurrentUserRoleId() == 1;
     public async Task<ListResponse<PlantExchangeDto>> GetActiveAsync(int page = 1)
     {
-        var exchanges = await repository.GetAllByKeyAsync(e => e.IsActive == true, true, page);        
-        exchanges = exchanges.OrderByDescending(e => e.CreatedAt).ToList();
-
+        var (total, exchanges) = await repository.GetActivePlantExchanges(page);        
         var dto = exchanges.Select(e => e.MapPlantExchangeToPlantExchangeDto()).ToList();
-        var total = await repository.CountAsync();
 
         return new ListResponse<PlantExchangeDto> { Total = total, Items = dto };
     }
 
     public async Task<ListResponse<PlantExchangeDto>> GetActiveFilteredAsync(PlantExchangeFilterDto filter, int page = 1)
     {
-        var exchanges = await repository.GetAllByKeyAsync(
-            e =>
-                e.IsActive == true &&
-                (string.IsNullOrWhiteSpace(filter.Name) ||
-                    EF.Functions.ILike(e.Title, $"%{filter.Name}%") ||
-                    EF.Functions.ILike(e.Content, $"%{filter.Name}%")) &&
-                (string.IsNullOrWhiteSpace(filter.City) || 
-                    EF.Functions.ILike(e.City, $"%{filter.City}%") ||
-                    (e.Country != null && EF.Functions.ILike(e.Country.Name, $"%{filter.City}%"))) &&
-                (filter.PriceFrom == null || e.Price == null || e.Price > filter.PriceFrom) &&
-                (filter.PriceTo == null || e.Price == null || e.Price < filter.PriceTo) &&
-                (filter.ExchangeType == null || e.ExchangeTypeId == filter.ExchangeType),   
-            true, page);
-
-        exchanges = exchanges.OrderByDescending(e => e.CreatedAt).ToList();
-
+        var (total, exchanges) = await repository.GetPlantExchangesFiltered(filter, page);
         var dto = exchanges.Select(e => e.MapPlantExchangeToPlantExchangeDto()).ToList();
-        var total = await repository.CountAsync();
 
         return new ListResponse<PlantExchangeDto> { Total = total, Items = dto };
     }
 
     public async Task<PlantExchangeGetDto> GetByIdAsync(int id)
     {
-        var exchange = await repository.GetByIdAsync(id);
+        var exchange = await repository.GetPlantExchangeById(id);
 
         if (exchange == null) 
             throw new NotFoundException("Plant exchange", id, logger);

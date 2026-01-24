@@ -12,6 +12,7 @@ public class PlantRepository(AppDbContext context) : Repository<Plant>(context),
     public async Task<(int, List<Plant>)> GetPlantsFiltered(FilterByDto filter, int page)
     {
         var query = dbSet.Where(p =>
+            p.DeletedAt == null &&
             (filter.IsLowMaintenance == null || p.IsLowMaintenance == filter.IsLowMaintenance) &&
             (filter.IsDroughtResistant == null || p.IsDroughtResistant == filter.IsDroughtResistant) &&
             (filter.Habits == null || p.Habits.Any(h => filter.Habits.Contains(h.Id))) &&
@@ -19,11 +20,7 @@ public class PlantRepository(AppDbContext context) : Repository<Plant>(context),
             (filter.Spread == null || p.SpreadTypeId == filter.Spread) &&
             (filter.Height == null || p.HeightTypeId == filter.Height) &&
             (filter.TimeToFullHeight == null || p.TimeToFullHeightId == filter.TimeToFullHeight) &&
-            (filter.Exposure == null || p.Exposures.Any(e => e.Id == filter.Exposure)) &&
-            /*(string.IsNullOrEmpty(filter.Name) ||
-                EF.Functions.ILike(p.CommonName, $"%{filter.Name}%") ||
-                EF.Functions.ILike(p.BotanicalName, $"%{filter.Name}%")
-            ) &&*/ p.DeletedAt == null
+            (filter.Exposure == null || p.Exposures.Any(e => e.Id == filter.Exposure))
         );
 
         if (!string.IsNullOrWhiteSpace(filter.Name))
@@ -38,7 +35,7 @@ public class PlantRepository(AppDbContext context) : Repository<Plant>(context),
                     EF.Functions.TrigramsSimilarity(p.BotanicalName, name) > 0.3
                 )             
                 .OrderByDescending(p => p.SynonymParentPlantId != null)
-                .ThenBy(p =>
+                .ThenByDescending(p =>
                     EF.Functions.ILike(p.CommonName, $"%{name}%") || EF.Functions.ILike(p.BotanicalName, $"%{name}%")
                 )
                 .ThenByDescending(p =>

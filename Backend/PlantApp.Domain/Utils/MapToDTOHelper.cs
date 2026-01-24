@@ -289,9 +289,11 @@ public static class MapToDTOHelper
             Id = exchange.Id,
             Title = exchange.Title,
             ExchangeType = exchange.ExchangeType != null ? exchange.ExchangeType.MapReferenceToDto() : null,
-            Place = $"{exchange.City}, {exchange.Country?.Name}",
+            Country = exchange.Country != null ? exchange.Country.MapReferenceToDto() : null,
+            City = exchange.City,
             Image = exchange.MainImage,
             Price = exchange.Price,
+            Contact = exchange.Contact,
             CreatedAt = exchange.CreatedAt,
             User = new ReferenceDto { Id = exchange.UserId, Name = exchange.User != null ? exchange.User.Username : "Not specified" },
             Planted = exchange.Planted != null ? exchange.Planted.MapPlantedToPlantedDto() : null,
@@ -300,17 +302,20 @@ public static class MapToDTOHelper
             ExchangeFor = exchange.ExchangeFor,
             Shipping = exchange.Shipping,
             Images = exchange.Images.Select(img => img.MapImageToImageDto()).ToList(),
-            UserRating = exchange.User.RatingsReceived != null && exchange.User.RatingsReceived.Any()
-                        ? exchange.User.RatingsReceived.Average(r => r.Rating)
+            UserRating = exchange.User != null && exchange.User.RatingsReceived != null && exchange.User.RatingsReceived.Any()
+                        ? Math.Round(exchange.User.RatingsReceived.Average(r => (double)r.Rating), 1)
                         : 0,
+            UserRatings = exchange.User != null && exchange.User.RatingsReceived != null ? 
+                             exchange.User.RatingsReceived.Select(r  => r.MapUserRatingToUserRatingGetDto()).ToList() : null,
         };
     }
 
 
-     public static UserRatingDto MapUserRatingToUserRatingDto(this UserRating userRating)
+     public static UserRatingGetDto MapUserRatingToUserRatingGetDto(this UserRating userRating)
      {
-        return new UserRatingDto
+        return new UserRatingGetDto
         {
+            Id = userRating.Id,
             Rater = new ReferenceDto { Id = userRating.RaterId, Name = userRating.Rater != null ? userRating.Rater.Username : "Unknown" },
             Rated = new ReferenceDto { Id = userRating.RatedId, Name = userRating.Rated != null? userRating.Rated.Username : "Unknown" },
             Rating = userRating.Rating,

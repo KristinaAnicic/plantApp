@@ -34,9 +34,5 @@ public class PlantExchange : BaseEntity, IHasImages
     public decimal? Price { get; set; }
     public required string Shipping {  get; set; }
 
-   /* [ForeignKey(nameof(ExchangeStatusId))]
-    public ExchangeStatus? ExchangeStatus {  get; set; }
-    public required int ExchangeStatusId { get; set; }*/
-
     public ICollection<Image> Images { get; set; } = new List<Image>();
 }

@@ -10,6 +10,7 @@ namespace PlantBackend.Controllers;
 [Authorize]
 public class PlantExchangeController(IPlantExchangeService plantExchangeService) : Controller
 {
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int page = 1)
     {
@@ -17,6 +18,7 @@ public class PlantExchangeController(IPlantExchangeService plantExchangeService)
         return Ok(result);
     }
 
+    [AllowAnonymous]
     [HttpPost("search")]
     public async Task<IActionResult> GetAll([FromBody] PlantExchangeFilterDto filter, [FromQuery] int page = 1)
     {
@@ -24,6 +26,7 @@ public class PlantExchangeController(IPlantExchangeService plantExchangeService)
         return Ok(result);
     }
 
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {

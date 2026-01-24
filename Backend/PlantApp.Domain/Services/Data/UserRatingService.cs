@@ -19,7 +19,7 @@ public class UserRatingService(
     private int CurrentUserId => userContext.GetCurrentUserId();
     private bool IsAdmin => userContext.GetCurrentUserRoleId() == 1;
 
-    public async Task<List<UserRatingDto>> GetAllForUserIdAsync(int ratedUserId)
+    public async Task<List<UserRatingGetDto>> GetAllForUserIdAsync(int ratedUserId)
     {
         var ratings = await repository.GetAllByKeyAsync(u => u.RatedId == ratedUserId, true);
 
@@ -31,7 +31,7 @@ public class UserRatingService(
         logger.LogInformation("Retrieved {Count} ratings for user {RatedUserId}", ratings.Count, ratedUserId);
 
 
-        return ratings.Select(r => r.MapUserRatingToUserRatingDto()).ToList();
+        return ratings.Select(r => r.MapUserRatingToUserRatingGetDto()).ToList();
     }
 
     public async Task AddAsync(AddUserRatingDto dto)

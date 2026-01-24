@@ -1,5 +1,4 @@
-﻿using PlantApp.Data.Models;
-using PlantApp.Domain.Dtos.Plant;
+﻿using PlantApp.Domain.Dtos.Plant;
 using System.Text.Json.Serialization;
 
 namespace PlantApp.Domain.Dtos.PlantExchange;

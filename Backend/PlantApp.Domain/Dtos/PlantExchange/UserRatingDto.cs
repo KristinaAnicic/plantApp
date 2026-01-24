@@ -3,8 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PlantApp.Domain.Dtos.PlantExchange;
 
-public class UserRatingDto
+public class UserRatingGetDto
 {
+    public int Id { get; set; }
     public required ReferenceDto Rater { get; set; }
     public required ReferenceDto Rated { get; set; }
 

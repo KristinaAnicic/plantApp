@@ -1,6 +1,4 @@
 using Appwrite;
-using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -17,7 +15,6 @@ using PlantApp.Domain.Utils;
 using PlantBackend.ExceptionHandlers;
 using Scalar.AspNetCore;
 using System.Text;
-using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -103,6 +100,7 @@ builder.Services.AddScoped<IPlantedRepository, PlantedRepository>();
 builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
 builder.Services.AddScoped<IGrowthLogRepository, GrowthLogRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPlantExchangeRepository, PlantExchangeRepository>();
 
 builder.Services.AddScoped<IPlantService, PlantService>();
 builder.Services.AddScoped<IUserService, UserService>();
