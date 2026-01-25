@@ -48,7 +48,17 @@ public class PlantExchangeService(
         if (exchange == null) 
             throw new NotFoundException("Plant exchange", id, logger);
 
-        return exchange.MapPlantExchangeToPlantExchangeGetDto();
+        var dto = exchange.MapPlantExchangeToPlantExchangeGetDto();
+
+        if (dto.UserRatings != null && dto.UserRatings.Any())
+        {
+            dto.UserRatings = dto.UserRatings
+                .OrderByDescending(r => r.Rater.Id == CurrentUserId)
+                .ThenByDescending(r => r.CreatedAt)
+                .ToList();
+        }
+
+        return dto;
     }
 
     public async Task AddAsync(UpsertPlantExchangeDto dto)
@@ -62,7 +72,6 @@ public class PlantExchangeService(
             exchange.Images.Clear();
             await imageService.AddImagesSafeAsync(exchange, dto.Images);
         }
-        exchange.IsActive = true;
         exchange.UserId = CurrentUserId;
         await repository.AddAsync(exchange);
 
