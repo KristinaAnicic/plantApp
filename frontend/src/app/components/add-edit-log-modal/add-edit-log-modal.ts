@@ -117,7 +117,6 @@ export class AddEditLogModal implements OnInit{
     if (this.isEditing()){
       const id = this.editLog()?.id;
 
-      console.log(id);
       if (id === undefined) {
         console.error("Cannot save changes for plant without providing id.");
         return;

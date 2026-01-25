@@ -127,8 +127,12 @@
         <h2 class="text-xl font-semibold">Reviews for {{ exchange()?.user?.name }}</h2>
         <p class=" text-gray-400">Sharing your experience with this member helps build trusted commuity.</p>
         <div class="flex flex-col gap-3 pt-5">
+            @if(showAddReviewButton()){
+                <button (click)="addReview()" class="w-fit px-5 py-2 bg-green-900/70 text-white rounded-lg cursor-pointer">Add Review</button>
+            }
+            
             @for(review of exchange()?.userRatings; track review.id){
-                <div class="px-5 py-7 bg-white shadow shadow-sm rounded-lg w-full sm:w-xl">
+                <div class="relative px-5 py-7 bg-white shadow shadow-sm rounded-lg w-full sm:w-xl">
                     <div class="flex items-center gap-1 justify-between">
                         <div class="flex items-center gap-1">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-gray-400">
@@ -148,8 +152,32 @@
                     </div>
                     <p class="pt-2">"{{ review.comment }}"</p>
                     
+                    @if (review.rater.id === authService.currentUser()?.id || authService.isAdmin()) {
+                        <div (click)="toggleReviewMenu(review.id, $event)" class="absolute top-2 right-4 cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                                <path fill-rule="evenodd" d="M4.5 12a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    }
+                
+                    @if(openedReviewMenuId() === review.id){
+                        <div class="fixed inset-0 z-10" (click)="toggleReviewMenu(review.id, $event)"></div> 
+                        <div class="absolute top-7 mb-2 right-3 z-20 bg-white flex flex-col justify-start items-center text-sm rounded-md border border-gray-200">
+                            <button (click)="editReview(review.id)" class="px-8 py-1.5 w-full text-end border-b border-b-gray-100 hover:bg-gray-50 cursor-pointer">Edit</button>
+                            <button (click)="deleteReview(review.id)" class="px-8 py-1.5 w-full text-end hover:bg-gray-50 cursor-pointer">Delete</button>
+                        </div>
+                    }
+                    
                 </div>
             }
         </div>
     </div>
 </div>
+
+@if (isReviewModalOpen()) {
+    <div class="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity w-full" (click)="toggleReviewModal()">
+        <div class="fixed inset-0 z-50 flex justify-center items-center h-full max-h-full content-center overflow-y-auto w-full">
+            <app-add-edit-review-modal (close)="toggleReviewModal()" [user]="exchange()?.user" (updateList)="loadExchange()" [editReview]="reviewToEdit()"></app-add-edit-review-modal>
+        </div>
+    </div>
+}

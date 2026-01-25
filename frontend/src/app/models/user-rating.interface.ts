@@ -17,6 +17,7 @@ export interface AddUserRatingDto {
 }
 
 export interface UpdateUserRatingDto {
+    id?: number;
     rating: number;
     comment: string;
 }
