@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos;
+using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
@@ -14,7 +14,8 @@ namespace PlantApp.Domain.Services.Data;
 public class PlantExchangeService(
     IPlantExchangeRepository repository,   
     IRepository<Country> countryRepo,
-    IRepository<Planted> plantedRepo,
+    IPlantedRepository plantedRepo,
+    IRepository<ExchangeType> exchangeTypeRepo,
     IImageService imageService,
     ICurrentUserContext userContext,
     ILogger<PlantExchangeService> logger
@@ -61,7 +62,8 @@ public class PlantExchangeService(
             exchange.Images.Clear();
             await imageService.AddImagesSafeAsync(exchange, dto.Images);
         }
-
+        exchange.IsActive = true;
+        exchange.UserId = CurrentUserId;
         await repository.AddAsync(exchange);
 
         logger.LogInformation("Plant exchange added by user {UserId}", CurrentUserId);
@@ -127,6 +129,24 @@ public class PlantExchangeService(
             throw new UnauthorizedException("remove images from", "plant exchange", logger);
 
         await imageService.RemoveImageFromEntityAsync(exchange, imageId, repository);
+    }
+
+    public async Task<PlantExchangeReferences> GetReferences()
+    {
+        var exchangeTypes = await exchangeTypeRepo.GetAllAsync();
+        var planted = await plantedRepo.GetPlantedPlantsByUserId(CurrentUserId);
+
+        return new PlantExchangeReferences
+        {
+            Planted = planted.Select(p => new ReferenceDto
+            {
+                Id = p.Id,
+                Name = p.Name ?? (p.Plant != null 
+                                    ? (p.Plant.CommonName ?? p.Plant.BotanicalName) 
+                                    : "Unknown")
+            }).ToList(),
+            ExchangeTypes = exchangeTypes.Select(t => t.MapReferenceToDto()).ToList()
+        };
     }
 
     public async Task<int?> ValidatePlantExchange(UpsertPlantExchangeDto dto)

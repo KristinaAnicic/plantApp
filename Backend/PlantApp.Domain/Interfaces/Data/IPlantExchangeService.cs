@@ -13,4 +13,5 @@ public interface IPlantExchangeService
     public Task DeleteAsync(int id);
     public Task AddImages(int exchangeId, List<string> urls);
     public Task RemoveImageById(int exchangeId, int imageId);
+    public Task<PlantExchangeReferences> GetReferences();
 }

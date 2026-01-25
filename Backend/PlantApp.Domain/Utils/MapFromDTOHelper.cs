@@ -147,6 +147,7 @@ public static class MapFromDTOHelper
         log.Note = dto.Note;
         log.PlantStatusId = dto.PlantStatusId;
         log.ObservationDate = dto.ObservationDate;
+        log.Title = dto.Title;
     }
 
     public static GrowthLog MapUpsertGrowthLogDtoToGrowthLog(this UpsertGrowthLogDto dto, GrowthLog? log = null)

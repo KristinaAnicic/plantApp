@@ -15,7 +15,7 @@ public class UpsertPlantExchangeDto
     public required string Contact { get; set; }
     [Required]
     public required string MainImage { get; set; }
-    public bool IsActive { get; set; }
+    public bool IsActive { get; set; } = true;
     [Required]
     public required int ExchangeTypeId { get; set; }
     [Required]

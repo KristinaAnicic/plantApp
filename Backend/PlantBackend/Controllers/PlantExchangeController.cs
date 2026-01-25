@@ -68,4 +68,11 @@ public class PlantExchangeController(IPlantExchangeService plantExchangeService)
         await plantExchangeService.RemoveImageById(id, imageId);
         return NoContent();
     }
+
+    [HttpGet("references")]
+    public async Task<IActionResult> GetReferences()
+    {
+        var result = await plantExchangeService.GetReferences();
+        return Ok(result);
+    }
 }
