@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { guestGuard } from './utils/guest-guard';
 import { UpsertPlantDto } from './models/plant.interface'
 import { plantEditResolver } from './utils/plant-edit-resolver';
+import { plantTradeEditResolver } from './utils/plant-trade-edit-resolver';
 
 export const routes: Routes = [
     {
@@ -57,11 +58,21 @@ export const routes: Routes = [
         path: 'trade',
         loadComponent: () =>
             import('./pages/plant-exchange-list/plant-exchange-list').then((m) => m.PlantExchangeList)
-    }
-    ,
+    },
     {
         path: 'trade/:id',
         loadComponent: () =>
             import('./pages/plant-exchange/plant-exchange').then((m) => m.PlantExchange)
+    },
+    {
+        path: 'trade-form',
+        loadComponent: () =>
+            import('./pages/add-edit-exchange/add-edit-exchange').then((m) => m.AddEditExchange)
+    },
+    {
+        path: 'trade-form/:id',
+        loadComponent: () =>
+            import('./pages/add-edit-exchange/add-edit-exchange').then((m) => m.AddEditExchange),
+        resolve: { editTrade: plantTradeEditResolver }
     }
 ];

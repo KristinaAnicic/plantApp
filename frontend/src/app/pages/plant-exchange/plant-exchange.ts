@@ -2,8 +2,10 @@ import { Component, computed, inject, Input, OnInit, signal } from '@angular/cor
 import { PlantExchangeService } from '../../services/plant-exchange.service';
 import { PlantExchangeGetDto } from '../../models/plant-exchange.interface';
 import { DecimalPipe } from '@angular/common';
-import { Dir } from "../../../../node_modules/@angular/cdk/types/_bidi-module-chunk";
 import { TimeAgoPipe } from "../../utils/time-ago.pipe";
+import { Router } from "@angular/router";
+import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-plant-exchange',
@@ -15,7 +17,11 @@ export class PlantExchange implements OnInit {
   @Input() id!: string;
   
   service = inject(PlantExchangeService);
+  notif = inject(NotificationService);
+  authService = inject(AuthService);
+  router = inject(Router);
   exchange = signal<PlantExchangeGetDto | null>(null);
+  isMenuOpened = signal(false);
 
   ngOnInit(): void {
     this.loadExchange();
@@ -38,4 +44,23 @@ export class PlantExchange implements OnInit {
   })
 
   hasMoreImages = computed(() => (this.exchange()?.images?.length ?? 0) > 4);
+
+  toggleMenu() {
+    this.isMenuOpened.update(val => !val);
+  }
+
+  editExchange(){
+    this.router.navigate(['/trade-form', +this.id]);
+  }
+
+  deleteExchange(){
+    this.service.removePlantExchange(parseInt(this.id)).subscribe({
+      next: () => {
+        this.notif.showSuccess("Successfully removed trade listing");
+        this.router.navigate(['/trade']);
+      },
+      error: () => this.notif.showError("Couldn't remove trade listing, try again later!")
+    });
+    this.isMenuOpened.set(false);
+  }
 }

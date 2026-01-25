@@ -1,0 +1,138 @@
+<div class="flex flex-col w-full px-10 max-w-[90vw] sm:w-5xl mx-auto pt-5 gap-5">
+    <h1 class="text-xl font-bold">{{headerText()}}</h1>
+    <form [formGroup]="tradeForm" ngNativeValidate (ngSubmit)="addEditExchange()" class="flex flex-col gap-y-8">
+        <!--Start of section 1-->
+        <div class="border border-gray-200 rounded-lg shadow-md bg-white pb-5">
+            <h2 class="text-base font-medium py-5 px-5 bg-gray-100/70 rounded-t-lg">Basic Information</h2>
+            <div class="flex flex-col bg-white px-5 py-3 pb-5 rounded-lg w-full gap-3">
+                <div class="w-full">
+                    <label for="title">Title*</label>
+                    <input type="text" id="title" formControlName="title" placeholder="Title" autocomplete="off" required />
+                </div>
+                <div class="w-full">
+                    <label for="content">Description*</label>
+                    <textarea type="text" id="content" formControlName="content" rows="4" placeholder="Decribe your plant's condition, size, and care needs..." autocomplete="off" required></textarea>
+                </div>
+                <div class="flex flex-col sm:flex-row w-full gap-2">
+                    <div class="flex-1 min-w-[250px] w-full">
+                        <label for="plantStatus">Plant Status*</label>
+                        <input type="text" id="plantStatus" formControlName="plantStatus" placeholder="e.g. Well-rooted, Flowering" autocomplete="off" required/>
+                    </div>
+                    <div class="w-full">
+                        <label for="planted">Select Associated Plant (Optional)</label>
+                        <div class="border border-gray-300 rounded-md w-full p-2 bg-gray-50">
+                            <select id="planted" formControlName="plantedId" class="w-full">
+                                <option [ngValue]="null">None / Not Specified</option>
+                                @for(planted of references()?.planted; track planted.id){                           
+                                    <option [ngValue]="planted.id">{{ planted.name }}</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>              
+            </div>
+        </div>
+        <!--End of section 1-->
+        <!--Start of Section 2-->
+        <div class="border border-gray-200 rounded-lg shadow-md bg-white pb-5">
+            <h2 class="text-base font-medium py-5 px-5 bg-gray-100/70 rounded-t-lg">Location & Type</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 bg-white px-5 py-3 pb-5 rounded-lg w-full gap-4">
+                <div class="w-full">
+                    <label for="title">ExchangeType*</label>
+                    <div class="border border-gray-300 rounded-md p-2 bg-gray-50">
+                        <select id="planted" formControlName="exchangeTypeId" class="w-full">
+                            @for(exchange of references()?.exchangeTypes; track exchange.id){                           
+                                <option [ngValue]="exchange.id">{{ exchange.name }}</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="w-full">
+                    @if (tradeForm.get('exchangeTypeId')?.value === 1){
+                        <label for="price">Price*</label>
+                        <input type="number" id="price" formControlName="price" autocomplete="off" required/>
+                    }
+                    @else if (tradeForm.get('exchangeTypeId')?.value === 2){
+                        <label for="exchangeFor">Exchange For*</label>
+                        <input id="exchangeFor" formControlName="exchangeFor" autocomplete="off" required/>
+                    }  
+                </div>
+                <div>
+                    <label for="country">Country*</label>
+                    <div class="border border-gray-300 rounded-md p-2 bg-gray-50">
+                        <select formControlName="countryId" class="w-full text-heading text-sm">
+                            @for(country of this.countries(); track country.id){
+                                <option [value]="country.id">{{ country.name }}</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label for="city">City*</label>
+                    <input type="text" id="city" formControlName="city" placeholder="Enter your city" autocomplete="off" required/>
+                </div>    
+                <div>
+                    <label for="contact">Contact Method*</label>
+                    <input type="text" id="contact" formControlName="contact" placeholder="Email, phone or social handle" autocomplete="off" required/>
+                </div>  
+                <div>
+                    <label for="shipping">Shipping Options*</label>
+                    <input type="text" id="shipping" formControlName="shipping" placeholder="e.g. Local pickup only, $5 shipping" autocomplete="off" required/>
+                </div>            
+            </div>  
+        </div>
+        <!--End of section 2-->
+        <!--Start of Section 3-->
+        <div class="border border-gray-200 rounded-lg shadow-md bg-white pb-5">
+            <h2 class="text-base font-medium py-5 px-5 bg-gray-100/70 rounded-t-lg">Media</h2>
+            <!--Images-->
+            <div class="flex flex-col bg-white py-3 pb-5 rounded-lg w-full gap-3 px-5">
+                <div class="flex">
+                    <div class="flex-1">
+                        <label for="imageUrl" class="font-medium">Image url</label>
+                        <div class="flex gap-2">
+                            <input type="text" #imageUrlInput id="imageUrl" placeholder="Paste image url here..." autocomplete="off"/>
+                            <button type="button" (click)="addImageUrl(imageUrlInput.value); imageUrlInput.value = ''" class="bg-gray-50 border border-gray-300 shadow-sm rounded-lg whitespace-nowrap px-2 py-2">Add Image</button>
+                        </div>
+                    </div>
+
+                </div>
+                <label class="flex flex-col w-full gap-x-5 gap-y-1 bg-gray-100 text-gray-500 rounded-lg border-2 border-dashed border-gray-300 items-center justify-center h-[150px] cursor-pointer">
+                    <svg class="h-8 w-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 9a3.75 3.75 0 1 0 0 7.5A3.75 3.75 0 0 0 12 9Z" />
+                        <path fill-rule="evenodd" d="M9.344 3.071a49.52 49.52 0 0 1 5.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 0 1-3 3h-15a3 3 0 0 1-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 0 0 1.11-.71l.822-1.315a2.942 2.942 0 0 1 2.332-1.39ZM6.75 12.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Zm12-1.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+                    </svg>
+                    <p>Add photos</p>
+                    <p class="text-xs text-gray-400">PNG, JPG or HEIC up to 10MB</p>          
+                    <input type="file" multiple accept="image/*" class="hidden" (change)="onFilesSelected($event)"/>
+                </label>
+                <div class="flex flex-wrap gap-3">
+                    @for (image of images(); track $index){
+                        <div class="relative h-24 w-24 border border-gray-300 rounded-lg">
+                            <img [src]="image.url" class="w-full h-full object-cover rounded-lg"/>
+                            <button type="button" (click)="removeImage($index)" class="absolute top-1 text-base flex items-center justify-center right-1 cursor-pointer w-6 h-6 rounded-full bg-black text-white opacity-70">
+                                x
+                            </button>
+
+                            <button (click)="changeMainImage(image.url)" type="button" class="absolute top-1 left-1 cursor-pointer rounded-full bg-black/80 p-1 w-6 h-6">
+                                <svg [class.text-yellow-400]="image.url === tradeForm.get('mainImage')?.value"
+                                    [class.text-gray-400]="image.url !== tradeForm.get('mainImage')?.value"
+                                    class="w-full h-ful" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    }
+                </div>
+                @if(tradeForm.get('mainImage')?.errors?.['required']){
+                    <small class="text-red-800">Please select at least one image as the main photo using the star icon.</small>
+                }
+            </div>
+            <!--End of images-->
+        </div>
+        <!--End of section 3-->
+        <div class="flex items-center justify-end mb-5">
+            <button type="submit" class="bg-green-900 text-white cursor-pointer font-medium rounded text-sm px-8 py-2 focus:outline-none">{{buttonText()}}</button>
+        </div>
+    </form>
+</div>

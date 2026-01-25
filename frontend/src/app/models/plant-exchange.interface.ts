@@ -40,6 +40,7 @@ export interface PlantExchangeGetDto {
 }
 
 export interface UpsertPlantExchangeDto {
+    id?: number;
     plantedId?: number;
     title: string;
     content: string;
@@ -53,5 +54,10 @@ export interface UpsertPlantExchangeDto {
     exchangeFor?: string;
     price?: number;
     shipping: string;
-    images?: string[];
+    images: string[];
+}
+
+export interface PlantExchangeReference {
+    planted: Reference[];
+    exchangeTypes: Reference[]
 }

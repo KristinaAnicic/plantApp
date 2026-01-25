@@ -9,11 +9,10 @@
                 <app-search-component (searchTriggered)="searchCity($event)" [currentText]="currentCitySearchTerm()" [placeholder]="'Search cities...'" [iconType]="'location'"></app-search-component>
             </div>
         </div>
-        @if (authService.isAdmin()) {
+
         <div class="flex-none">
-            <button (click)="addNewPlantExchangeClick()" type="button" class="bg-green-900 text-white cursor-pointer font-medium rounded text-xs px-5 py-3 focus:outline-none">Add Plant</button>
+            <button [routerLink]="['/trade-form']" type="button" class="bg-green-900 text-white cursor-pointer font-medium rounded text-xs px-5 py-3 focus:outline-none">Add Trade</button>
         </div>
-        }
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-3 justify-center">      
