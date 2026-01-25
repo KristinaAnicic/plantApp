@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, output, signal, untracked } from '@angular/core';
+import { Component, computed, effect, inject, input, OnInit, output, signal, untracked } from '@angular/core';
 import { GrowthLogService } from '../../services/growth-log.service';
 import { ImageUploadService } from '../../services/image-upload.service';
 import { NotificationService } from '../../services/notification.service';
@@ -13,7 +13,7 @@ import { PlantedService } from '../../services/planted.service';
   templateUrl: './add-edit-log-modal.html',
   styleUrl: './add-edit-log-modal.css',
 })
-export class AddEditLogModal {
+export class AddEditLogModal implements OnInit{
   private service = inject(GrowthLogService);
   private plantedService = inject(PlantedService);
   private imageService = inject(ImageUploadService);
@@ -43,33 +43,24 @@ export class AddEditLogModal {
     images: new FormControl<string[]>([])
   })
 
-  constructor() {
-    effect(() => {
-      const log = this.editLog();
-      const refs = this.references();
+  ngOnInit(): void {
+    const refs = this.plantedService.references();
+    const log = this.editLog();
 
-      if (refs && refs.plantStatuses.length > 0){
-        if (log) {
-          this.logForm.patchValue(log, { emitEvent: false });
-          const currentImages: ImageForm[] = log.images.map(image => ({ url: image }))
-          untracked(() => {
-            this.images.set(currentImages);
-          });
-        }
-        else {
-          this.logForm.reset();
-          untracked(() => this.images.set([]));
-          const currentStatus = this.logForm.get('plantStatusId')?.value;
-          if (!currentStatus || currentStatus === 0) {
-            this.logForm.patchValue({ 
-              plantStatusId: refs.plantStatuses[0].id,
-              plantedId: this.plantedId() ?? 0
-            }, { emitEvent: false });
-          }
-        }
+    if (refs) {
+      if (log) {
+        this.logForm.patchValue(log, { emitEvent: false });
+        const currentImages: ImageForm[] = log.images.map(image => ({ url: image }))
+        untracked(() => this.images.set(currentImages));
       }
-      
-    })
+      else {
+        this.logForm.patchValue({
+          plantStatusId: refs.plantStatuses[0]?.id,
+          plantedId: this.plantedId() ?? 0
+        }, { emitEvent: false });      
+        this.images.set([]);
+      }
+    }
   }
 
   onFilesSelected(event: any){
@@ -111,7 +102,7 @@ export class AddEditLogModal {
     if (this.logForm.invalid) return;
 
     const data = this.logForm.getRawValue();   
-    const finalImages = await this.imageService.prepareImages(data, this.images());
+    const finalImages = await this.imageService.prepareImages(undefined, this.images());
 
     const cleanData: UpsertGrowthLogDto = {
       ...data, 

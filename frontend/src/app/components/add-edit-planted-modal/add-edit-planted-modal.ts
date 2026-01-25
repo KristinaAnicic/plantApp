@@ -22,7 +22,7 @@ export class AddEditPlantedModal implements OnInit {
   plantedEdited = output<void>();
   close = output<void>();
 
-  references = this.service.references;
+  references = signal<PlantedReference | null>(null);
   showWarning = signal(false);
   errorMessage = signal('');
   images = signal<ImageForm[]>([]);
@@ -35,35 +35,25 @@ export class AddEditPlantedModal implements OnInit {
     if (!this.editPlanted() && !this.plantId()) {
       throw new Error('AddEditPlantedModal requires [editPlanted] for editing or [plantId] for adding.');
     }
-  }
 
-  constructor() {
-    effect(() => {
+    this.service.getReferences().subscribe((response) => {
+      this.references?.set(response)
       const planted = this.editPlanted();
-      const refs = this.references();
 
-      if (refs && refs.plantStatuses.length > 0){
-        if (planted) {
-          this.plantedForm.patchValue(planted);
-          const currentImages: ImageForm[] = planted.images.map(image => ({ url: image }))
-          untracked(() => {
-            this.images.set(currentImages);
-          });
-        }
-        else {
-          this.plantedForm.reset();
-          untracked(() => this.images.set([]));
-          const currentStatus = this.plantedForm.get('plantStatusId')?.value;
-          if (!currentStatus || currentStatus === 0) {
-            this.plantedForm.patchValue({ 
-              plantStatusId: refs.plantStatuses[0].id,
-              plantId: this.plantId()
-            }, { emitEvent: false });
-          }
-        }
+      if (planted) {
+        this.plantedForm.patchValue(planted);
+        const currentImages: ImageForm[] = planted.images.map(image => ({ url: image }));
+        this.images.set(currentImages);
       }
-      
-    })
+      else {
+        this.plantedForm.patchValue({ 
+          plantStatusId: response.plantStatuses[0]?.id,
+          plantId: this.plantId()
+        });
+
+        this.images.set([]);
+      }
+    });
   }
 
   plantedForm = new FormGroup({
@@ -90,7 +80,7 @@ export class AddEditPlantedModal implements OnInit {
 
   async addEditPlanted(){
     const data = this.plantedForm.getRawValue();   
-    const finalImages = await this.imageService.prepareImages(data, this.images());
+    const finalImages = await this.imageService.prepareImages(data.image, this.images());
 
     const cleanData: UpsertPlantedDto = {
       ...data, 

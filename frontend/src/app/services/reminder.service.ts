@@ -1,19 +1,22 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import { Observable, shareReplay } from 'rxjs';
 import { ReminderDto, ReminderGetDto, ReminderReference, UpsertReminderDto } from '../models/reminder.interface';
 import { environment } from '../../environments/environment';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReminderService {
-  constructor(private http: HttpClient) {
-    this.getReferences().subscribe(res => this.referencesSignal.set(res));
-  }
-  
-  private referencesSignal = signal<ReminderReference | null>(null);
-  references = this.referencesSignal.asReadonly()
+  private http = inject(HttpClient)
+
+  constructor() {}
+
+  private references$ = this.getReferences().pipe(shareReplay(1));
+  readonly references = toSignal<ReminderReference | null>(this.references$, { 
+    initialValue: null 
+  });
 
   getAllReminders(): Observable<ReminderDto[]> {
     return this.http.get<ReminderDto[]>(`${environment.apiUrl}/reminder`);

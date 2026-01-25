@@ -1,7 +1,7 @@
-<div class="px-10 py-5 relative">
+<div class="px-10 py-5 relative pb-10">
     @if(plant()){
-        <div class="z-40 fixed bottom-10 right-30 rounded-full w-8 h-8 m-0 p-0">
-            <button (click)="toggleAddPlantedModal()" class="px-5 whitespace-nowrap text-base mx-auto rounded-lg hover:bg-green-50/70 hover:text-black text-white bg-green-900/90 border-1 shadow-md shadow-green-900/30 border-green-900 px-3 py-2 cursor-pointer">Add Plant</button>
+        <div class="z-40 fixed bottom-5 right-30 rounded-full w-8 h-8 m-0 p-0">
+            <button (click)="toggleAddPlantedModal()" class="px-5 whitespace-nowrap text-base mx-auto rounded-lg hover:bg-green-800/90 text-white bg-green-900/90 border-1 shadow-md shadow-green-900/30 border-green-900 px-3 py-2 cursor-pointer">Add Plant</button>
         </div>
         <div class="flex flex-col lg:flex-row gap-x-5 gap-y-3">
             <!-- Left side -->
@@ -20,7 +20,8 @@
                     <div class="z-10 text-sm leading-6 text-gray-300 italic">{{ plant()?.botanicalName }}</div>
                 </div>
 
-                <button (click)="toggleAddPlantedModal()" class="w-full sm:w-sm text-base mx-auto rounded-lg hover:bg-green-50/70 hover:text-black text-white bg-green-900/90 border-1 shadow-md shadow-green-900/30 border-green-900 px-3 py-2 cursor-pointer">Add Plant</button>
+                <!--<button (click)="toggleAddPlantedModal()" class="w-full sm:w-sm text-base mx-auto rounded-lg hover:bg-green-50/70 hover:text-black text-white bg-green-900/90 border-1 shadow-md shadow-green-900/30 border-green-900 px-3 py-2 cursor-pointer">Add Plant</button>
+            -->
                 <div class="flex flex-col gap-y-1 bg-white rounded-lg px-3 py-5 border border-gray-100 shadow-sm shadow-gray-200">
                     <h3 class="text-xl font-semibold">Plant Description</h3>
                     @if(plant()?.entityDescription){

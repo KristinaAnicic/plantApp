@@ -11,7 +11,9 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+  
+  constructor() {}
 
   currentUser = signal<UserDto | null>(this.getUser());
   isAuthenticated = signal<boolean>(!!localStorage.getItem('accessToken'));

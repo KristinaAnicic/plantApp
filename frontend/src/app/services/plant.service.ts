@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PlantGetDto, PlantListResponse, UpsertPlantDto } from '../models/plant.interface';
@@ -10,7 +10,9 @@ import { ManyPlantAttributesDto, OnePlantAttributesDto } from '../models/categor
   providedIn: 'root',
 })
 export class PlantService {
-  constructor(private http: HttpClient) {};
+  private http = inject(HttpClient);
+  
+  constructor() {}
 
   getAllPlants(page?: number): Observable<PlantListResponse> {
     let params = new HttpParams();

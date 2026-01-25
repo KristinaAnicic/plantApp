@@ -22,7 +22,7 @@ export class UserPlants implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadUserPlants();
     this.loadPlaces();
-    this.placeService.loadCountries();
+    //this.placeService.loadCountries();
   }
 
   toggleAddPlaceModal(){

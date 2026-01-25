@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { PlantExchangeDto, PlantExchangeGetDto, PlantExchangeResponse, UpsertPlantExchangeDto } from '../models/plant-exchange.interface';
+import { PlantExchangeGetDto, PlantExchangeReference, PlantExchangeResponse, UpsertPlantExchangeDto } from '../models/plant-exchange.interface';
 import { environment } from '../../environments/environment';
 import { PlantExchangeFilterDto } from '../models/filter.interface';
 
@@ -9,7 +9,9 @@ import { PlantExchangeFilterDto } from '../models/filter.interface';
   providedIn: 'root',
 })
 export class PlantExchangeService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+  
+  constructor() {}
 
   getAllActivePlantExchanges(page?: number): Observable<PlantExchangeResponse> {
     let params = new HttpParams();
@@ -51,5 +53,9 @@ export class PlantExchangeService {
 
   removeImage(exchangeId: number, imageId: number): Observable<void> {
     return this.http.delete<void>(`${environment.apiUrl}/exchange/${exchangeId}/images/${imageId}`);
+  }
+
+  getReferences(): Observable<PlantExchangeReference> {
+    return this.http.get<PlantExchangeReference>(`${environment.apiUrl}/exchange/references`);
   }
 }

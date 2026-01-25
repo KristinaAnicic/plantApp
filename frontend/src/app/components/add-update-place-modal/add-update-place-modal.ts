@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PlaceService } from '../../services/place.service';
 import { UpsertPlaceDto } from '../../models/place.interface';
@@ -9,7 +9,7 @@ import { UpsertPlaceDto } from '../../models/place.interface';
   templateUrl: './add-update-place-modal.html',
   styleUrl: './add-update-place-modal.css',
 })
-export class AddUpdatePlaceModal {
+export class AddUpdatePlaceModal implements OnInit {
   close = output<void>();
   placeAdded = output<void>();
   editPlace = input<UpsertPlaceDto | null>(null);
@@ -29,19 +29,23 @@ export class AddUpdatePlaceModal {
     address: new FormControl('', { nonNullable: true }),
     city: new FormControl('', { nonNullable: true }),
     note: new FormControl('', { nonNullable: true }),
-    countryId: new FormControl(this.countries()[0].id, { nonNullable: true })
+    countryId: new FormControl(0, { nonNullable: true })
   });
 
-  constructor() {
-    effect(() => {
-      const place = this.editPlace();
-      if (place) {
-        this.placeForm.patchValue(place);
+  ngOnInit(): void {
+    const place = this.editPlace();
+    const countries = this.countries();
+
+    if (place) {
+      this.placeForm.patchValue(place);
+    }
+    else {
+      if (countries.length > 0) {
+        this.placeForm.patchValue({ 
+          countryId: countries[0].id 
+        });
       }
-      else {
-        this.placeForm.reset();
-      }
-    })
+    }
   }
 
   onCloseClick(){

@@ -1,19 +1,19 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { PlaceDto, PlaceGetDto, UpsertPlaceDto } from '../models/place.interface';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Reference } from '../models/reference.interface';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlaceService {
-  private countriesSignal = signal<Reference[]>([]);
-  countries = this.countriesSignal.asReadonly();
-
-  constructor(private http: HttpClient) {}
-
+  private http = inject(HttpClient);
+  
+  constructor() {}
+  
   getAllPlaces(): Observable<PlaceDto[]> {
     return this.http.get<PlaceDto[]>(`${environment.apiUrl}/place`);
   }
@@ -38,11 +38,8 @@ export class PlaceService {
     return this.http.get<Reference[]>(`${environment.apiUrl}/place/country`);
   }
 
-  loadCountries() {
-    if (this.countries().length === 0) {
-      this.http.get<Reference[]>(`${environment.apiUrl}/place/country`).subscribe(data => {
-        this.countriesSignal.set(data);
-      });
-    }
-  }
+  private countries$ = this.getCountries().pipe(
+    shareReplay(1) 
+  );
+  readonly countries = toSignal(this.countries$, { initialValue: [] as Reference[] });
 }

@@ -1,22 +1,23 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import { Observable, shareReplay } from 'rxjs';
 import { GroupedPlantedDto, PlantedDto, PlantedGetDto, PlantedReference, UpsertPlantedDto } from '../models/planted.interface';
 import { environment } from '../../environments/environment';
 import { PlaceGetDto } from '../models/place.interface';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlantedService {
-  constructor(private http: HttpClient) {
-    this.getReferences().subscribe(data => {
-      this.referencesSignal.set(data);
-    })
-  }
+  private http = inject(HttpClient)
 
-  private referencesSignal = signal<PlantedReference| null>(null);
-  references = this.referencesSignal.asReadonly();
+  constructor() {}
+
+  private references$ = this.getReferences().pipe(shareReplay(1));
+  readonly references = toSignal<PlantedReference | null>(this.references$, { 
+    initialValue: null 
+  });
 
   getAllPlantedPlants(userId?: number): Observable<PlantedDto[]> {
     let params = new HttpParams();

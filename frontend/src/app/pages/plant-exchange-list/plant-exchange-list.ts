@@ -24,6 +24,7 @@ export class PlantExchangeList implements OnInit {
   exchanges = signal<PlantExchangeDto[]>([]);
   total = signal(0);
   currentPage = signal(1);
+  isAddModalOpen = signal(false);
   filter: PlantExchangeFilterDto = {};
 
   private searchSubject = new Subject<string>();
@@ -113,10 +114,6 @@ export class PlantExchangeList implements OnInit {
     })
   }
 
-  addNewPlantExchangeClick(){
-    this.router.navigate(['/plant-form']);
-  }
-
   ngOnDestroy(): void {
     this.searchSubject.complete();
     this.searchCitySubject.complete();
@@ -130,4 +127,8 @@ export class PlantExchangeList implements OnInit {
       default: return 'bg-gray-200';
     }
   }
+
+  /*toggleAddModal(){
+    this.isAddModalOpen.update(val => !val)
+  }*/
 }

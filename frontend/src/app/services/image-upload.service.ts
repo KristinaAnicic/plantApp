@@ -47,7 +47,7 @@ export class ImageUploadService {
     return results;
   }
 
-  public async prepareImages(data: any, images: ImageForm[]): Promise<{images: string[], mainImage?: string}> { 
+  public async prepareImages(mainImageTempUrl: string | undefined, images: ImageForm[]): Promise<{images: string[], mainImage?: string}> { 
     const imagesToUpload = images.filter(img => !!img.file);
     const uploadResults: UploadMapping[] = await this.uploadImages(imagesToUpload);
 
@@ -56,8 +56,8 @@ export class ImageUploadService {
 
     const allImageUrls = [...existingUrls, ...newImageUrls];
 
-    let finalMainImage = data.image;
-    const match = uploadResults.find(res => res.tempUrl === data.image);
+    let finalMainImage = mainImageTempUrl;
+    const match = uploadResults.find(res => res.tempUrl === mainImageTempUrl);
     if(match) {
       finalMainImage = match.serverUrl;
     }

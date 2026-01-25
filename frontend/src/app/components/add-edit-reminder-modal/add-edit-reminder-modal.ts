@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, OnInit, output, signal } from '@angular/core';
 import { ReminderService } from '../../services/reminder.service';
 import { NotificationService } from '../../services/notification.service';
 import { UpsertReminderDto } from '../../models/reminder.interface';
@@ -12,7 +12,7 @@ import { DateUtils } from '../../utils/date-utils';
   templateUrl: './add-edit-reminder-modal.html',
   styleUrl: './add-edit-reminder-modal.css',
 })
-export class AddEditReminderModal {
+export class AddEditReminderModal implements OnInit{
   private service = inject(ReminderService);
   private notificationService = inject(NotificationService);
 
@@ -39,34 +39,26 @@ export class AddEditReminderModal {
     note: new FormControl('', { nonNullable: true })
   })
 
-  constructor() {
-    effect(() => {
-      const reminder = this.editReminder();
-      const refs = this.references();
+  ngOnInit(): void {
+    const reminder = this.editReminder();
+    const refs = this.references();
 
-      if (refs && refs.reminderTypes.length > 0 && refs.frequencyTypes.length > 0){
-        if (reminder) {
-          this.reminderForm.patchValue({ 
-              ...reminder,
-              originalDueDate: DateUtils.formatDateForInput(reminder.originalDueDate)
-            }, { emitEvent: false });
-        }
-        else {
-          this.reminderForm.reset();
-          const currentReminderType = this.reminderForm.get('reminderTypeId')?.value;
-          const currentFrequencyType = this.reminderForm.get('frequencyTypeId')?.value;
-          if (!currentReminderType || currentReminderType === 0 || !currentFrequencyType || currentFrequencyType === 0) {
-            this.reminderForm.patchValue({ 
-              reminderTypeId: refs.reminderTypes[0].id,
-              frequencyTypeId: refs.frequencyTypes[0].id,
-              plantedId: this.plantedId() ?? 0,
-              originalDueDate: DateUtils.formatDateForInput(new Date().toISOString())
-            }, { emitEvent: false });
-          }
-        }
+    if (refs && refs.reminderTypes.length > 0 && refs.frequencyTypes.length > 0){
+      if (reminder) {
+        this.reminderForm.patchValue({ 
+            ...reminder,
+            originalDueDate: DateUtils.formatDateForInput(reminder.originalDueDate)
+          }, { emitEvent: false });
       }
-      
-    })
+      else {
+        this.reminderForm.patchValue({ 
+          reminderTypeId: refs.reminderTypes[0].id,
+          frequencyTypeId: refs.frequencyTypes[0].id,
+          plantedId: this.plantedId() ?? 0,
+          originalDueDate: DateUtils.formatDateForInput(new Date().toISOString())
+        }, { emitEvent: false });
+      }
+    }
   }
 
   addEditReminder(){

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { AddUserDto, UpdateUserDto, UserDto, UserGetDto } from '../models/user.interface';
@@ -8,7 +8,9 @@ import { AddUserDto, UpdateUserDto, UserDto, UserGetDto } from '../models/user.i
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private http: HttpClient) {};
+  private http = inject(HttpClient);
+  
+  constructor() {}
 
   getAllUsers(): Observable<UserDto[]>{
     return this.http.get<UserDto[]>(`${environment.apiUrl}/user`);

@@ -1,6 +1,6 @@
 <div class="flex flex-col w-full px-10 pt-5 gap-5">
     <h1 class="text-xl font-bold">{{headerText()}}</h1>
-    <form [formGroup]="plantForm" (ngSubmit)="addEditPlant()" class="flex flex-col gap-y-8">
+    <form [formGroup]="plantForm" ngNativeValidate (ngSubmit)="addEditPlant()" class="flex flex-col gap-y-8">
         <!--Start of section 1-->
         <div class="border border-gray-200 rounded-lg shadow-md bg-white">
             <h2 class="text-base font-medium py-5 px-5 bg-green-900/70 text-white rounded-t-lg">Section 1: Basic Information</h2>

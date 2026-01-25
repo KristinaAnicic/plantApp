@@ -38,7 +38,13 @@ export class AddEditPlant implements OnInit{
     this.service.getSingleReferenceCategroies()
       .subscribe((response) => {
         this.singleReference.set(response);
-        if (!this.isEditing()){
+        const plant = this.editPlant();
+        if (plant){
+          this.plantForm.patchValue(plant);
+          const currentImages: ImageForm[] = plant.images.map(image => ({ url: image }))
+          this.images.set(currentImages);
+        }
+        else{
           const firstId = response.timeToFullHeights?.[0]?.id ?? null;
           this.plantForm.get('timeToFullHeightId')?.setValue(firstId);
         }
@@ -46,21 +52,6 @@ export class AddEditPlant implements OnInit{
 
     this.service.getMultiReferenceCategroies()
       .subscribe((response) => this.multiReference.set(response));
-  }
-
-  // update form if existing plant is loaded
-  constructor(){
-    effect(() => {
-      const plant = this.editPlant();
-      if (plant) {
-        this.plantForm.patchValue(plant);
-        const currentImages: ImageForm[] = plant.images.map(image => ({ url: image }))
-        this.images.set(currentImages);
-      }
-      else {
-        this.plantForm.reset();
-      }
-    })
   }
 
   plantForm = new FormGroup({

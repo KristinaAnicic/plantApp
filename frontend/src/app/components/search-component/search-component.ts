@@ -18,7 +18,7 @@ export class SearchComponent {
   constructor() {
     effect(() => {
       this.searchQuery.set(this.currentText());
-    }, { allowSignalWrites: true });
+    });
   }
   onTyping(event: Event){
     const value = (event.target as HTMLInputElement).value;

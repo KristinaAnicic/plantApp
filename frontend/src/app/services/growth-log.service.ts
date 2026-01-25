@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { GrowthLogDto, GrowthLogGetDto, UpsertGrowthLogDto } from '../models/growth-log.interface';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -8,7 +8,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class GrowthLogService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+  
+  constructor() {}
 
   //for current user using tokens
   getAllLogs(): Observable<GrowthLogDto[]> {
