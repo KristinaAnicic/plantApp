@@ -3,6 +3,7 @@ import { guestGuard } from './utils/guest-guard';
 import { UpsertPlantDto } from './models/plant.interface'
 import { plantEditResolver } from './utils/plant-edit-resolver';
 import { plantTradeEditResolver } from './utils/plant-trade-edit-resolver';
+import { authGuard } from './utils/auth-guard';
 
 export const routes: Routes = [
     {
@@ -30,28 +31,33 @@ export const routes: Routes = [
     {
         path: 'my-plants',
         loadComponent: () =>
-            import('./pages/user-plants/user-plants').then((m) => m.UserPlants)
+            import('./pages/user-plants/user-plants').then((m) => m.UserPlants),
+        canActivate: [authGuard]
     },
     {
         path: 'place/:id',
         loadComponent: () =>
-            import('./pages/place-plants/place-plants').then((m) => m.PlacePlants)
+            import('./pages/place-plants/place-plants').then((m) => m.PlacePlants),
+        canActivate: [authGuard]
     },
     {
         path: 'my-plants/:id',
         loadComponent: () =>
-            import('./pages/user-plant/user-plant').then((m) => m.UserPlant)
+            import('./pages/user-plant/user-plant').then((m) => m.UserPlant),
+        canActivate: [authGuard]
     },
     {
         path: 'plant-form',
         loadComponent: () =>
             import('./pages/add-edit-plant/add-edit-plant').then((m) => m.AddEditPlant),
+        canActivate: [authGuard],
         resolve: { editPlant: () => null }
     },
     {
         path: 'plant-form/:id',
         loadComponent: () =>
             import('./pages/add-edit-plant/add-edit-plant').then((m) => m.AddEditPlant),
+        canActivate: [authGuard],
         resolve: { editPlant: plantEditResolver }
     },
     {
@@ -67,22 +73,26 @@ export const routes: Routes = [
     {
         path: 'trade-form',
         loadComponent: () =>
-            import('./pages/add-edit-exchange/add-edit-exchange').then((m) => m.AddEditExchange)
+            import('./pages/add-edit-exchange/add-edit-exchange').then((m) => m.AddEditExchange),
+        canActivate: [authGuard]
     },
     {
         path: 'trade-form/:id',
         loadComponent: () =>
             import('./pages/add-edit-exchange/add-edit-exchange').then((m) => m.AddEditExchange),
+        canActivate: [authGuard],
         resolve: { editTrade: plantTradeEditResolver }
     },
     {
         path: 'plant-graveyard',
         loadComponent: () =>
-            import('./pages/plant-graveyard/plant-graveyard').then((m) => m.PlantGraveyard)
+            import('./pages/plant-graveyard/plant-graveyard').then((m) => m.PlantGraveyard),
+        canActivate: [authGuard]
     },
     {
         path: 'my-analytics',
         loadComponent: () =>
-            import('./pages/analytics/analytics').then((m) => m.Analytics)
+            import('./pages/analytics/analytics').then((m) => m.Analytics),
+        canActivate: [authGuard]
     }
 ];
