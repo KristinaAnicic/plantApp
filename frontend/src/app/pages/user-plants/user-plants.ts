@@ -17,6 +17,7 @@ export class UserPlants implements OnInit, OnDestroy {
   private placeService = inject(PlaceService);
   userPlants = signal<PlantedDto[]>([]);
   places = signal<PlaceDto[]>([]);
+  numOfDeadPlants = signal<number>(0);
   isAddPlaceOpen = signal(false);
 
   ngOnInit(): void {
@@ -50,7 +51,8 @@ export class UserPlants implements OnInit, OnDestroy {
   loadUserPlants(){
     this.plantedService.getAllPlantedPlants().subscribe({
       next: (response) => {
-        this.userPlants.set(response);
+        this.userPlants.set(response.planted);
+        this.numOfDeadPlants.set(response.numOfDeadPlants);
       },
       error: (err:any) => {
         this.userPlants.set([]);

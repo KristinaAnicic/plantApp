@@ -23,7 +23,7 @@ public class PlantedService(
 {
     private int CurrentUserId => userContext.GetCurrentUserId();
     private bool IsAdmin => userContext.GetCurrentUserRoleId() == 1;
-    public async Task<List<PlantedDto>> GetAllByUserIdAsync(int? userId)
+    public async Task<PlantedWithAnyDeadBoolDto> GetAllByUserIdAsync(int? userId)
     {
         int actualUserId = userId ?? CurrentUserId;
         if (actualUserId != CurrentUserId && !IsAdmin)
@@ -31,7 +31,9 @@ public class PlantedService(
 
         logger.LogInformation("Fetching planted plants for user {UserId}", actualUserId);
         var planted = await repository.GetPlantedPlantsByUserId(actualUserId);
-        return planted.Select(p => p.MapPlantedToPlantedDto()).ToList();
+        var numOfDeadPlants = await repository.GetNumOfDeadPlants(actualUserId);
+
+        return new PlantedWithAnyDeadBoolDto { NumOfDeadPlants = numOfDeadPlants, Planted = planted.Select(p => p.MapPlantedToPlantedDto()).ToList() };
     }
 
     public async Task<List<GroupedPlantedDto>> GetAllByUserIdGroupedByPlaceAsync(int? userId)
@@ -52,6 +54,17 @@ public class PlantedService(
             .ToList();
 
         return groupedDto;
+    }
+
+    public async Task<List<PlantedDto>> GetAllDeadPlantsAsync(int? userId)
+    {
+        int actualUserId = userId ?? CurrentUserId;
+        if (actualUserId != CurrentUserId && !IsAdmin)
+            throw new UnauthorizedException("fetching dead plants in", "planted", logger);
+
+        logger.LogInformation("Fetching dead plants for user {UserId}", actualUserId);
+        var planted = await repository.GetAllDeadPlantsAsync(actualUserId);
+        return planted.Select(p => p.MapPlantedToPlantedDto()).ToList();
     }
 
     public async Task<PlaceGetDto> GetAllByPlaceIdAsync(int placeId)

@@ -17,7 +17,7 @@
                             <div class="flex justify-end pb-2">
                                 <p class="rounded-full bg-gray-100 text-sm px-3 py-1">{{ place.numOfPlants }} Plants</p>
                             </div>
-                            <h2 class="font-bold text-green-900 leading-tight capitalize break-all line-clamp-1 text-ellipsis">{{place.name}}</h2>
+                            <h2 class="text-base font-bold text-green-900 leading-tight capitalize break-all line-clamp-1 text-ellipsis">{{place.name}}</h2>
                             @if(place.address){
                                 <h2 class="text-sm italic text-gray-500 mt-1 capitalize break-all line-clamp-1 text-ellipsis">{{place.address}}</h2>
                             }
@@ -30,6 +30,16 @@
                     
                 </div>
             }
+
+            @if (numOfDeadPlants() > 0){
+                <div [routerLink]="['/plant-graveyard']" class="relative bg-white flex flex-col transition hover:scale-102 shadow-lg shadow-gray-400/50 border border-gray-200 rounded-2xl overflow-hidden cursor-pointer">                        
+                    <div class="flex-grow flex flex-col p-10 w-full items-center justify-center">
+                        <p class="absolute top-5 right-5 rounded-full bg-gray-100 text-sm px-3 py-1 justify-self-end self-baseline justify-self-end">{{ numOfDeadPlants() }} Plants</p>
+                        <h2 class="text-lg font-bold text-green-900 leading-tight capitalize break-all line-clamp-1 text-ellipsis">Graveyard</h2>
+                        <h2 class="text-sm italic text-gray-500 mt-1 capitalize break-all line-clamp-1 text-ellipsis">In our memories</h2>  
+                    </div>              
+                </div>
+            }     
         </div>
     </div>
 

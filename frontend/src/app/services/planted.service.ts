@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
-import { GroupedPlantedDto, PlantedDto, PlantedGetDto, PlantedReference, UpsertPlantedDto } from '../models/planted.interface';
+import { GroupedPlantedDto, PlantedDto, PlantedGetDto, PlantedReference, PlantedWithAnyDeadBoolDto, UpsertPlantedDto } from '../models/planted.interface';
 import { environment } from '../../environments/environment';
 import { PlaceGetDto } from '../models/place.interface';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -19,13 +19,13 @@ export class PlantedService {
     initialValue: null 
   });
 
-  getAllPlantedPlants(userId?: number): Observable<PlantedDto[]> {
+  getAllPlantedPlants(userId?: number): Observable<PlantedWithAnyDeadBoolDto> {
     let params = new HttpParams();
     if (userId !== undefined){
       params = params.set('userId', userId.toString());   
     } 
 
-    return this.http.get<PlantedDto[]>(`${environment.apiUrl}/planted`, { params });
+    return this.http.get<PlantedWithAnyDeadBoolDto>(`${environment.apiUrl}/planted`, { params });
   }
 
   getAllPlantedPlantsGroupedByPlace(userId?: number): Observable<GroupedPlantedDto[]> {
@@ -39,6 +39,10 @@ export class PlantedService {
 
   getAllPlantedPlantsByPlaceId(placeId: number): Observable<PlaceGetDto> {
     return this.http.get<PlaceGetDto>(`${environment.apiUrl}/planted/place/${placeId}`);
+  }
+
+  getAllDeadPlants(): Observable<PlantedDto[]> {
+    return this.http.get<PlantedDto[]>(`${environment.apiUrl}/planted/dead`);
   }
 
   getPlanted(id: number): Observable<PlantedGetDto> {

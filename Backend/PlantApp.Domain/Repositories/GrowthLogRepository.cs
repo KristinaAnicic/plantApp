@@ -13,7 +13,8 @@ public class GrowthLogRepository(AppDbContext context) : Repository<GrowthLog>(c
         query = query
             .Where(q => q.Planted != null && 
                         q.Planted.Place != null && 
-                        q.Planted.Place.UserId == userId)
+                        q.Planted.Place.UserId == userId && 
+                        q.DeletedAt == null)
             .OrderByDescending(q => q.ObservationDate)
             .ThenByDescending(q => q.CreatedAt);
 
@@ -24,7 +25,7 @@ public class GrowthLogRepository(AppDbContext context) : Repository<GrowthLog>(c
     {
         var query = AddIncludes(dbSet.AsQueryable());
         query = query
-            .Where(q => q.PlantedId == plantedId)
+            .Where(q => q.PlantedId == plantedId && q.DeletedAt == null)
             .OrderByDescending(q => q.ObservationDate)
             .ThenByDescending(q => q.CreatedAt);
 
@@ -34,7 +35,9 @@ public class GrowthLogRepository(AppDbContext context) : Repository<GrowthLog>(c
     public async Task<GrowthLog?> GetGrowthLogById(int id)
     {
         var query = AddIncludes(dbSet.AsQueryable());
-        return await query.FirstOrDefaultAsync(q => q.Id == id);
+        return await query
+            .Where(q => q.DeletedAt == null)
+            .FirstOrDefaultAsync(q => q.Id == id);
     }
 
     public async Task DeleteGrowthLog(GrowthLog log)

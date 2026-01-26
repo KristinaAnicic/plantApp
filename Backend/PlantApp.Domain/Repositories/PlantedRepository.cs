@@ -11,7 +11,7 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
     {
 
         var query = dbSet
-            .Where(p => p.PlantStatusId != 3 && p.Place != null && p.Place.UserId == userId)
+            .Where(p => p.PlantStatusId != 3 && p.Place != null && p.Place.UserId == userId && p.DeletedAt == null)
             .Select(p => new
             {
                 Planted = p,
@@ -24,6 +24,15 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
         return await ProjectPlantedForList(query).ToListAsync();
     }
 
+    public async Task<int> GetNumOfDeadPlants(int userId)
+    {
+
+        var query = dbSet
+            .Where(p => p.PlantStatusId == 3 && p.Place != null && p.Place.UserId == userId && p.DeletedAt == null);
+
+        return await query.CountAsync();
+    }
+
     public async Task<List<Planted>> GetPlantedPlantsByPlaceId(int placeId)
     {
         var query = dbSet
@@ -34,6 +43,24 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
                 LastActivity = p.GrowthLogs.Max(q => (DateTime?)q.CreatedAt) ?? p.UpdatedAt
             })
             .OrderByDescending(p => p.LastActivity)
+            .ThenByDescending(p => p.Planted.CreatedAt)
+            .Select(p => p.Planted);
+
+        return await ProjectPlantedForList(query).ToListAsync();
+    }
+
+    public async Task<List<Planted>> GetAllDeadPlantsAsync(int userId)
+    {
+
+        var query = dbSet
+            .Where(p => p.PlantStatusId == 3 && p.Place != null && p.Place.UserId == userId && p.DeletedAt == null)
+            .Select(p => new
+            {
+                Planted = p,
+                LastActivity = p.GrowthLogs.Max(q => (DateTime?)q.CreatedAt) ?? p.UpdatedAt
+            })
+            .OrderByDescending(p => p.LastActivity)
+            .ThenByDescending(p => p.Planted.UpdatedAt)
             .ThenByDescending(p => p.Planted.CreatedAt)
             .Select(p => p.Planted);
 
@@ -73,7 +100,8 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
             .Include(q => q.GrowthLogs)
                 .ThenInclude(g => g.Images)
             .Include(q => q.GrowthLogs)
-                .ThenInclude(g => g.PlantStatus);
+                .ThenInclude(g => g.PlantStatus)
+            .Where(p => p.DeletedAt == null);
 
         return await query.FirstOrDefaultAsync(q => q.Id == id);
     }
@@ -113,7 +141,7 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
                 .ThenInclude(p => p.Images)
             .Include(p => p.Images)
             .Include(p => p.PlantStatus)
-            .Where(p => p.Plant != null && p.Place != null && p.Place.UserId == userId && p.PlantStatusId != 3);
+            .Where(p => p.Plant != null && p.Place != null && p.Place.UserId == userId && p.PlantStatusId != 3 && p.DeletedAt == null);
     }
     /*private IQueryable<Planted> OrderPlanted(IQueryable<Planted> query, bool filterByName)
     {

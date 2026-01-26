@@ -31,6 +31,13 @@ public class PlantedController(IPlantedService plantedService) : Controller
         return Ok(result);
     }
 
+    [HttpGet("dead")]
+    public async Task<IActionResult> GetAllDeadPlants([FromQuery] int? userId)
+    {
+        var result = await plantedService.GetAllDeadPlantsAsync(userId);
+        return Ok(result);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
