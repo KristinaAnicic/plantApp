@@ -1,0 +1,272 @@
+﻿using Microsoft.EntityFrameworkCore;
+using PlantApp.Data;
+using PlantApp.Data.Models;
+using PlantApp.Domain.Dtos.Analytics;
+using PlantApp.Domain.Interfaces.Data;
+using System.Numerics;
+
+namespace PlantApp.Domain.Repositories;
+
+public class AnalyticsRepository : IAnalyticsRepository
+{
+    public readonly AppDbContext context;
+    public AnalyticsRepository(AppDbContext context)
+    {
+        this.context = context;
+    }
+
+    public async Task<PlantSummary> GetPlantSummary(int userId)
+    {
+        var baseQueryPlanted = context.Planteds
+            .Where(p => p.DeletedAt == null && 
+            p.Place != null && 
+            p.Place.UserId == userId);
+
+        var baseQueryLog = context.GrowthLogs
+            .Where(p => p.DeletedAt == null &&
+            p.Planted != null &&
+            p.Planted.Place != null &&
+            p.Planted.Place.UserId == userId);
+
+        var firstPlantedDate = await baseQueryPlanted
+            .OrderBy(p => p.DatePlanted)
+            .ThenBy(p => p.CreatedAt)
+            .Select(p => p.DatePlanted)
+            .FirstOrDefaultAsync();
+
+        var numOfPlants = await baseQueryPlanted.CountAsync();
+        var numOfActivePlants = await baseQueryPlanted
+            .Where(p => p.PlantStatusId != 3)
+            .CountAsync();
+
+        var numOfLogsOverAll = await baseQueryLog.CountAsync();
+        var numOfLogsThisYear = await baseQueryLog
+            .Where(l => l.CreatedAt.Year == DateTime.UtcNow.Year)
+            .CountAsync();
+
+        return new PlantSummary
+        {
+            NumOfCurrentPlants = numOfActivePlants,
+            NumOfPlants = numOfPlants,
+            NumOfLogsOverAll = numOfLogsOverAll,
+            NumOfLogsThisYear = numOfLogsThisYear,
+            FirstPlantedDate = firstPlantedDate
+        };
+    }
+
+    public async Task<List<ReminderStat>> GetReminderStats(int userId)
+    {
+        var date = DateTime.UtcNow.AddYears(-1);
+        var query = context.ReminderHistory
+            .Where(h => h.Planted != null && h.Planted.Place != null && h.Planted.Place.UserId == userId && h.CreatedAt >= date);
+
+        var total = await query.CountAsync();
+        if (total == 0) return new List<ReminderStat>();
+
+        return await query.GroupBy(h => h.delay == 0 ? "On Time" : h.delay <= 3 ? "Delayed" : "Late")
+            .Select(g => new ReminderStat {
+                Label = g.Key,
+                Percentage = (int)Math.Round((g.Count() * 100.0) / total)
+            })
+            .OrderByDescending(q => q.Percentage)
+            .ToListAsync();
+    }
+
+    /*public async Task<List<HealthOverview>> GetHealthStats(int userId)
+    {
+        var date = DateTime.UtcNow.AddYears(-1);
+        var healthy = new List<string>{ "Healthy", "Growing", "Flowering", "Fruiting", "Seedling", "Transplanted" };
+        var stressed = new List<string>{ "Sick", "Wilting", "Stressed", "Dormant" };
+
+        var query = context.GrowthLogs
+            .Where(h => 
+                h.Planted != null && 
+                h.Planted.Place != null && 
+                h.Planted.Place.UserId == userId && 
+                h.CreatedAt >= date && 
+                h.PlantStatus != null
+            );
+
+        var total = await query.CountAsync();
+        if (total == 0) return new List<HealthOverview>();
+
+        var grouped = await query
+            .GroupBy(h => h.PlantStatus.Name)
+            .Select(g => new
+            {
+                StatusName = g.Key,
+                Count = g.Count()
+            })
+            .ToListAsync();
+
+       return grouped
+            .GroupBy(x =>
+                healthy.Contains(x.StatusName) ? "Healthy" :
+                stressed.Contains(x.StatusName) ? "Stressed" : "Dormant")
+            .Select(res => new HealthOverview
+            {
+                Label = res.Key,
+                Percentage = (int)Math.Round((res.Sum(x => x.Count) * 100.0) / total)
+            }).ToList();
+    }*/
+
+    public async Task<List<HealthOverview>> GetHealthStats(int userId)
+    {
+        var date = DateTime.UtcNow.AddYears(-1);
+        var healthy = new List<string> { "Healthy", "Growing", "Flowering", "Fruiting", "Seedling", "Transplanted" };
+        var stressed = new List<string> { "Sick", "Wilting", "Stressed", "Dormant" };
+
+        var logs = await context.GrowthLogs
+            .Where(h =>
+                h.Planted != null &&
+                h.Planted.Place != null &&
+                h.Planted.Place.UserId == userId &&
+                h.CreatedAt >= date &&
+                h.PlantStatus != null
+            )
+            .OrderBy(h => h.PlantedId)
+            .ThenBy(h => h.ObservationDate)
+            .Select(h => new {
+                h.PlantedId,
+                h.ObservationDate,
+                StatusName = h.PlantStatus.Name
+            })
+            .ToListAsync();
+
+        if (!logs.Any()) return new List<HealthOverview>();
+
+        var durationPerStatus = new Dictionary<string, double>
+        {
+            { "Healthy", 0 },
+            { "Stressed", 0 },
+            { "Dormant", 0 }
+        };
+
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        for (int i = 0; i < logs.Count; i++)
+        {
+            var currentLog = logs[i];
+            DateOnly periodEnd;
+
+            if (i + 1 < logs.Count && logs[i + 1].PlantedId == currentLog.PlantedId)
+            {
+                periodEnd = logs[i + 1].ObservationDate;
+            }
+            else
+            {
+                periodEnd = today;
+            }
+
+            int days = periodEnd.DayNumber - currentLog.ObservationDate.DayNumber;
+            days = Math.Max(0, days);
+
+            string status = healthy.Contains(currentLog.StatusName) ? "Healthy" :
+                 stressed.Contains(currentLog.StatusName) ? "Stressed" : "Dormant";
+
+            durationPerStatus[status] += days;
+        }
+
+        double totalDaysSum = durationPerStatus.Values.Sum();
+
+        return durationPerStatus
+             .Select(res => new HealthOverview
+             {
+                 Label = res.Key,
+                 Percentage = (int)Math.Round((res.Value * 100.0) / totalDaysSum)
+             })
+             .OrderByDescending(r => r.Percentage)
+             .ToList();
+    }
+
+    public async Task<List<GrowthLogActivity>> GetGrowthLogStats(int userId, DateTime startDate)
+    {
+        //var now = DateTime.UtcNow;
+        //var startDate = new DateTime(now.Year - 1, now.Month, 1).AddMonths(1);
+
+        return await context.GrowthLogs
+            .Where(log => log.Planted != null && log.Planted.Place != null && log.Planted.Place.UserId == userId && log.CreatedAt >= startDate)
+            .GroupBy(log => new { log.CreatedAt.Year, log.CreatedAt.Month })
+            .Select(g => new GrowthLogActivity
+            {
+                Year = g.Key.Year,
+                Month = g.Key.Month,
+                Count = g.Count()
+            })
+            .OrderBy(g => g.Year)
+            .ThenBy(g => g.Month)
+            .ToListAsync();
+    }
+
+    public async Task<List<ActionFrequencyDto>> GetActionFrequency(int userId)
+    {
+        var date = DateTime.UtcNow.AddYears(-1);
+        return await context.ReminderHistory
+            .Where(h => h.Planted != null && h.Planted.Place != null && h.Planted.Place.UserId == userId && h.CreatedAt >= date)
+            .GroupBy(h => h.ReminderType.Name)
+            .Select(g => new ActionFrequencyDto
+            {
+                ActionType = g.Key,
+                Count = g.Count()
+            })
+            .ToListAsync();
+    }
+
+    public async Task<Planted?> GetOldestPlant(int userId)
+    {
+        var query = context.Planteds
+            .Where(p => p.Place != null && p.Place.UserId == userId)
+            .OrderBy(h => h.DatePlanted)
+            .ThenBy(h => h.CreatedAt);
+
+        var projectedQuery = ProjectPlanted(query);
+        return await projectedQuery.FirstOrDefaultAsync();
+    }
+
+    public async Task<(int, Planted?)> GetMostResilientPlant(int userId)
+    {
+        var query = await context.ReminderHistory
+            .Where(h =>
+                h.Planted != null &&
+                h.Planted.Place != null &&
+                h.Planted.Place.UserId == userId &&
+                h.Planted.PlantStatusId != 3 &&
+                h.delay > 3)
+            .GroupBy(h => h.PlantedId)
+            .Select(g => new {
+                PlantedId = g.Key,
+                Count = g.Count(),
+                TotalDelayDays = g.Sum(h => h.delay)
+            })
+            .OrderByDescending(g => g.Count)
+            .ThenByDescending(g => g.TotalDelayDays)
+            .FirstOrDefaultAsync();
+
+        var plant = context.Planteds
+            .Where(p => p.Id == query.PlantedId);
+        var projectedQuery = ProjectPlanted(plant);
+        var planted = await projectedQuery.FirstOrDefaultAsync();
+
+        var numOfMissed = query?.Count ?? 0;
+        var totalMissedDays = query?.TotalDelayDays ?? 0;
+
+        return (numOfMissed, planted);
+    }
+
+
+    private IQueryable<Planted> ProjectPlanted(IQueryable<Planted> query)
+    {
+        return query.Select(q => new Planted
+        {
+            Id = q.Id,
+            PlaceId = q.PlaceId,
+            PlantId = q.PlantId,
+            Name = q.Name ?? (q.Plant != null ? q.Plant.CommonName ?? q.Plant.BotanicalName : null),
+            DatePlanted = q.DatePlanted,
+            Image = q.Image ??
+                    (q.Plant != null && q.Plant.Images.Any() ? q.Plant.Images.Select(i => i.Url).FirstOrDefault() :
+                    q.Images.Any() ? q.Images.Select(i => i.Url).FirstOrDefault() : null)
+        });
+    }
+
+}

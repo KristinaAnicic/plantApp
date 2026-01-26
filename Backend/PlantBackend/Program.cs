@@ -101,6 +101,7 @@ builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
 builder.Services.AddScoped<IGrowthLogRepository, GrowthLogRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPlantExchangeRepository, PlantExchangeRepository>();
+builder.Services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 
 builder.Services.AddScoped<IPlantService, PlantService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -113,6 +114,7 @@ builder.Services.AddScoped<IUserRatingService, UserRatingService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 builder.Services.AddScoped<ICurrentUserContext, CurrentUserContex>();
 builder.Services.AddScoped<SeedCsvDataService>();
 builder.Services.AddScoped<SeedTemporaryDataService>();
