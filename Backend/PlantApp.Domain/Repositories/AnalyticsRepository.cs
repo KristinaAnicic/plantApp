@@ -122,7 +122,8 @@ public class AnalyticsRepository : IAnalyticsRepository
                 h.Planted.Place != null &&
                 h.Planted.Place.UserId == userId &&
                 h.CreatedAt >= date &&
-                h.PlantStatus != null
+                h.PlantStatus != null &&
+                h.DeletedAt == null
             )
             .OrderBy(h => h.PlantedId)
             .ThenBy(h => h.ObservationDate)
@@ -179,15 +180,15 @@ public class AnalyticsRepository : IAnalyticsRepository
              .ToList();
     }
 
-    public async Task<List<GrowthLogActivity>> GetGrowthLogStats(int userId, DateTime startDate)
+    public async Task<List<MonthlyActivityDto>> GetGrowthLogStats(int userId, DateTime startDate)
     {
         //var now = DateTime.UtcNow;
         //var startDate = new DateTime(now.Year - 1, now.Month, 1).AddMonths(1);
 
         return await context.GrowthLogs
-            .Where(log => log.Planted != null && log.Planted.Place != null && log.Planted.Place.UserId == userId && log.CreatedAt >= startDate)
+            .Where(log => log.Planted != null && log.Planted.Place != null && log.Planted.Place.UserId == userId && log.CreatedAt >= startDate && log.DeletedAt == null)
             .GroupBy(log => new { log.CreatedAt.Year, log.CreatedAt.Month })
-            .Select(g => new GrowthLogActivity
+            .Select(g => new MonthlyActivityDto
             {
                 Year = g.Key.Year,
                 Month = g.Key.Month,
@@ -215,7 +216,7 @@ public class AnalyticsRepository : IAnalyticsRepository
     public async Task<Planted?> GetOldestPlant(int userId)
     {
         var query = context.Planteds
-            .Where(p => p.Place != null && p.Place.UserId == userId)
+            .Where(p => p.Place != null && p.Place.UserId == userId && p.DeletedAt == null)
             .OrderBy(h => h.DatePlanted)
             .ThenBy(h => h.CreatedAt);
 
@@ -228,6 +229,7 @@ public class AnalyticsRepository : IAnalyticsRepository
         var query = await context.ReminderHistory
             .Where(h =>
                 h.Planted != null &&
+                h.Planted.DeletedAt == null &&
                 h.Planted.Place != null &&
                 h.Planted.Place.UserId == userId &&
                 h.Planted.PlantStatusId != 3 &&
@@ -253,6 +255,21 @@ public class AnalyticsRepository : IAnalyticsRepository
         return (numOfMissed, planted);
     }
 
+    public async Task<List<MonthlyActivityDto>> GetSeasonalNumOfPlantings(int userId)
+    {
+        return await context.Planteds
+            .Where(p => p.Place != null && p.Place.UserId == userId && p.DeletedAt == null)
+            .GroupBy(p => new { p.DatePlanted.Year, p.DatePlanted.Month})
+            .Select(g => new MonthlyActivityDto
+            {
+                Year = g.Key.Year,
+                Month = g.Key.Month,
+                Count = g.Count(),
+            })
+            .OrderBy(h => h.Year)
+            .ThenBy(g => g.Month)
+            .ToListAsync();
+    }
 
     private IQueryable<Planted> ProjectPlanted(IQueryable<Planted> query)
     {

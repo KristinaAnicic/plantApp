@@ -5,7 +5,8 @@ export interface AnalyticsDto
     summary: PlantSummary;
     reminderStats: ReminderStat[];
     healthStats: HealthOverview[];
-    growthLogActivity: GrowthLogActivity[];
+    growthLogActivity: MonthlyActivityDto[];
+    seasonalPlanting: MonthlyActivityDto[];
     actionStats: ActionFrequencyDto[];
     hallOfFame?: PlantHallOfFame;
 
@@ -33,7 +34,7 @@ export interface HealthOverview
     percentage: number;
 }
 
-export interface GrowthLogActivity
+export interface MonthlyActivityDto
 {
     year: number;
     month: number;

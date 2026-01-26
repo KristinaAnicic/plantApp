@@ -17,6 +17,7 @@ export type ChartOptions = {
   stroke?: any;
   xaxis?: any;
   grid?: any;
+  markers?: any;
 };
 
 @Component({
@@ -160,7 +161,7 @@ export class Analytics implements OnInit {
     }
   });
 
-  areaChartOptions: Signal<ChartOptions> = computed(() => {
+  /*logAreaChartOptions: Signal<ChartOptions> = computed(() => {
     const activity = this.analytics()?.growthLogActivity || []; 
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     
@@ -168,6 +169,95 @@ export class Analytics implements OnInit {
       series: [
         {
           name: "Growth Logs",
+          data: activity.map(s => s.count)
+        }
+      ],
+      chart: {
+        height: 300,
+        width: "100%",
+        type: "area",
+        toolbar: { show: false }
+      },
+      plotOptions: {},
+      colors: ['#8922c5ff'],
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: "smooth",
+        width: 3
+      },
+      fill: {
+        type: "gradient",
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.5,
+          opacityTo: 0.1,
+          stops: [0, 90, 100]
+        }
+      },
+      xaxis: {
+        type: "category",
+        categories: activity.map(s => `${monthNames[s.month - 1]} ${s.year}`),
+      },
+      grid: {
+        borderColor: '#f1f5f9'
+      }
+    }
+  });*/
+
+  logLineChartOptions: Signal<ChartOptions> = computed(() => {
+    const activity = this.analytics()?.growthLogActivity || []; 
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    return {
+      series: [
+        {
+          name: "Growth Logs",
+          data: activity.map(s => s.count)
+        }
+      ],
+      chart: {
+        height: 300,
+        type: "line",
+        zoom: {
+          enabled: false
+        }
+      },
+      colors: ['#8922c5ff'],
+      plotOptions: {},
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: "straight",
+        width: 4
+      },
+      markers: {
+        size: 6,
+        hover: {
+          size: 10
+        }
+      },
+      grid: {
+        clipMarkers: false
+      },
+      xaxis: {
+        type: "category",
+        categories: activity.map(s => `${monthNames[s.month - 1]} ${s.year}`),
+      },
+    }
+  });
+
+
+  seasonalPlantingAreaChartOptions: Signal<ChartOptions> = computed(() => {
+    const activity = this.analytics()?.seasonalPlanting || []; 
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    
+    return {
+      series: [
+        {
+          name: "Seasonal plantings",
           data: activity.map(s => s.count)
         }
       ],

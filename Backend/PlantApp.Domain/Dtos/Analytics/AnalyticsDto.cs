@@ -7,8 +7,9 @@ public class AnalyticsDto
     public required PlantSummary Summary { get; set; }
     public List<ReminderStat> ReminderStats { get; set; } = new();
     public List<HealthOverview> HealthStats { get; set; } = new();
-    public List<GrowthLogActivity> GrowthLogActivity { get; set; } = new();
+    public List<MonthlyActivityDto> GrowthLogActivity { get; set; } = new();
     public List<ActionFrequencyDto> ActionStats { get; set; } = new();
+    public List<MonthlyActivityDto> SeasonalPlanting { get; set; } = new();
     public PlantHallOfFame? HallOfFame { get; set; }
 
 }
@@ -35,7 +36,7 @@ public class HealthOverview
     public int Percentage { get; set; }
 }
 
-public class GrowthLogActivity
+public class MonthlyActivityDto
 {
     public int Year { get; set; }
     public int Month { get; set; }
