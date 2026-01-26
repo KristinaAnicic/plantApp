@@ -1,0 +1,55 @@
+import { PlantedDto } from "./planted.interface";
+
+export interface AnalyticsDto
+{
+    summary: PlantSummary;
+    reminderStats: ReminderStat[];
+    healthStats: HealthOverview[];
+    growthLogActivity: GrowthLogActivity[];
+    actionStats: ActionFrequencyDto[];
+    hallOfFame?: PlantHallOfFame;
+
+}
+
+export interface PlantSummary
+{
+    numOfPlants: number;
+    numOfCurrentPlants: number;
+    numOfDeadPlants: number;
+    numOfLogsThisYear: number;
+    numOfLogsOverAll: number;
+    firstPlantedDate: string;
+}
+
+export interface ReminderStat
+{
+    label: string;
+    percentage: number;
+}
+
+export interface HealthOverview
+{
+    label: string;
+    percentage: number;
+}
+
+export interface GrowthLogActivity
+{
+    year: number;
+    month: number;
+    count: number;
+}
+
+export interface ActionFrequencyDto
+{
+    actionType: string;
+    count: number
+}
+
+export interface PlantHallOfFame
+{
+    oldestPlant: PlantedDto;
+    daysAlive: number;
+    mostResilientPlant: PlantedDto;
+    numOfLateReminder: number;
+}

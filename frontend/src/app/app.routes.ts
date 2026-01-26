@@ -74,5 +74,15 @@ export const routes: Routes = [
         loadComponent: () =>
             import('./pages/add-edit-exchange/add-edit-exchange').then((m) => m.AddEditExchange),
         resolve: { editTrade: plantTradeEditResolver }
+    },
+    {
+        path: 'plant-graveyard',
+        loadComponent: () =>
+            import('./pages/plant-graveyard/plant-graveyard').then((m) => m.PlantGraveyard)
+    },
+    {
+        path: 'my-analytics',
+        loadComponent: () =>
+            import('./pages/analytics/analytics').then((m) => m.Analytics)
     }
 ];

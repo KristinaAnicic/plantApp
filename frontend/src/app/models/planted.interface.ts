@@ -56,3 +56,9 @@ export interface PlantedReference {
     places: Reference[],
     plantStatuses: Reference[]
 }
+
+export interface PlantedWithAnyDeadBoolDto
+{
+    planted: PlantedDto[];
+    numOfDeadPlants: number;
+}

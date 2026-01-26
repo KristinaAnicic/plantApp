@@ -19,7 +19,7 @@
             </button>
         </div>
         <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div class="flex shrink-0 items-center justify-start">           
+            <div (click)="redirectToHome()" class="flex shrink-0 items-center justify-start cursor-pointer">           
                 <img src="assets/images/logo.png"  class="h-10 w-auto" >
             </div>
             <div class="hidden sm:ml-6 sm:flex sm:flex-1 sm:justify-center">
@@ -35,7 +35,7 @@
                         <a href="/my-plants" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">My Plants</a>
                     </div>
                     <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
-                        <a href="#" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">Reminders</a>
+                        <a href="/my-analytics" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">Analytics</a>
                     </div>  
                     }                         
                 </div>
@@ -84,11 +84,11 @@
     @if (isMobileMenuOpen()) {
     <div id="mobile-menu" class="block">
         <div class="space-y-0 px-2 pt-2 pb-3">
-        <a href="#" (click)="closeMenu()" aria-current="page" class="block rounded-md bg-green-900 px-3 py-2 text-base font-medium text-white">Plants</a>
-        <a href="#" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">Community</a>
+        <a href="/" (click)="closeMenu()" aria-current="page" class="block rounded-md bg-green-900 px-3 py-2 text-base font-medium text-white">Plants</a>
+        <a href="/trade" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">Community</a>
         @if(authService.isAuthenticated()){
             <a href="/my-plants" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">My Plants</a>
-            <a href="/my-plants" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">Reminders</a>
+            <a href="/my-analytics" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">Analytics</a>
         }    
     </div>
     </div>

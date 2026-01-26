@@ -12,6 +12,7 @@ import { Router, RouterLink } from "@angular/router";
 })
 export class NavbarComponent {
   public authService = inject(AuthService);
+  public router = inject(Router);
   
   isUserMenuOpen = signal(false);
   isLoginOpen: boolean = false;
@@ -33,12 +34,16 @@ export class NavbarComponent {
     this.authService.logout().subscribe({
       next: () => {
         this.isUserMenuOpen.set(false);
+        this.router.navigate([''])
       },
       error: (err) => {
         console.error('Logout failed', err);
         this.isUserMenuOpen.set(false);
       }
     });  
+  }
+  redirectToHome() {
+    this.router.navigate(['/']);
   }
   
 }
