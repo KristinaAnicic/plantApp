@@ -1,6 +1,6 @@
 import { Component, computed, inject, OnInit, Signal, signal } from '@angular/core';
 import { NgApexchartsModule, ApexPlotOptions, ApexChart } from "ng-apexcharts";
-import { AnalyticsDto } from '../../models/analytics.interface';
+import { AnalyticsDto, HealthPrediction } from '../../models/analytics.interface';
 import { AnalyticsService } from '../../services/analytics.service';
 import { DatePipe } from '@angular/common';
 
@@ -16,6 +16,7 @@ export type ChartOptions = {
   colors?: any;
   stroke?: any;
   xaxis?: any;
+  yaxis?: any;
   grid?: any;
   markers?: any;
 };
@@ -30,11 +31,12 @@ export type ChartOptions = {
 export class Analytics implements OnInit {
   service = inject(AnalyticsService);
   analytics =  signal<AnalyticsDto | null>(null);
-  //public chartOptions: Partial<ChartOptions>;
+  selectedPrediction = signal<HealthPrediction | null>(null);
 
   ngOnInit(): void {
     this.service.getAnalytics().subscribe((res) => {
       this.analytics.set(res);
+      this.selectedPrediction.set(res.healthPrediction[0]);
     })
   }
 
@@ -77,14 +79,6 @@ export class Analytics implements OnInit {
       color: this.healthColors[health.label] || '#9ca3af'
     }))
   }); 
-
-  /*actionData = computed(() => {
-    const action = this.analytics()?.actionStats || [];
-    return action.map( action => ({
-      label: action.actionType,
-      value: action.count
-    }))
-  })*/
 
   actionData = computed(() => {
     const action = this.analytics()?.actionStats || [];
@@ -161,51 +155,6 @@ export class Analytics implements OnInit {
     }
   });
 
-  /*logAreaChartOptions: Signal<ChartOptions> = computed(() => {
-    const activity = this.analytics()?.growthLogActivity || []; 
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    
-    return {
-      series: [
-        {
-          name: "Growth Logs",
-          data: activity.map(s => s.count)
-        }
-      ],
-      chart: {
-        height: 300,
-        width: "100%",
-        type: "area",
-        toolbar: { show: false }
-      },
-      plotOptions: {},
-      colors: ['#8922c5ff'],
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        curve: "smooth",
-        width: 3
-      },
-      fill: {
-        type: "gradient",
-        gradient: {
-          shadeIntensity: 1,
-          opacityFrom: 0.5,
-          opacityTo: 0.1,
-          stops: [0, 90, 100]
-        }
-      },
-      xaxis: {
-        type: "category",
-        categories: activity.map(s => `${monthNames[s.month - 1]} ${s.year}`),
-      },
-      grid: {
-        borderColor: '#f1f5f9'
-      }
-    }
-  });*/
-
   logLineChartOptions: Signal<ChartOptions> = computed(() => {
     const activity = this.analytics()?.growthLogActivity || []; 
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -234,13 +183,14 @@ export class Analytics implements OnInit {
         width: 4
       },
       markers: {
-        size: 6,
+        size: 4,
         hover: {
           size: 10
         }
       },
       grid: {
-        clipMarkers: false
+        clipMarkers: false,
+        borderColor: '#f1f5f9'
       },
       xaxis: {
         type: "category",
@@ -269,9 +219,7 @@ export class Analytics implements OnInit {
       },
       plotOptions: {},
       colors: ['#22c55e'],
-      dataLabels: {
-        enabled: false
-      },
+      dataLabels: { enabled: false },
       stroke: {
         curve: "smooth",
         width: 3
@@ -294,5 +242,67 @@ export class Analytics implements OnInit {
       }
     }
   });
+
+
+  predictionPlantLineChartOptions: Signal<ChartOptions> = computed(() => {
+    const prediction = this.selectedPrediction(); 
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    return {
+      series: [
+        {
+          name: "Health Score for " + (prediction?.plantName ?? 'Plant'),
+          data: prediction?.monthlyPrediction ?? []
+        }
+      ],
+      chart: {
+        height: 300,
+        type: "bar",
+        toolbar: { show: false },
+        zoom: { enabled: false },
+      },
+      colors: ['#68abd8ff'],
+      plotOptions: {},
+      dataLabels: { enabled: false },
+      stroke: {
+        curve: "smooth",
+        width: 4
+      },
+      markers: {
+        size: 4,
+        hover: {
+          size: 10
+        }
+      },
+      grid: {
+        clipMarkers: false,
+        borderColor: '#f1f5f9'
+      },
+      xaxis: {
+        type: "category",
+        categories: monthNames,
+      },
+      yaxis: {
+        min: 0,
+        max: 100,
+        tickAmount: 5,
+        labels: {
+          formatter: (val: any) => `${val.toFixed(0)}%`,
+          style: { colors: '#64748b' }
+        }
+      },
+    }
+  });
+
+  onPlantChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const index = Number(selectElement.value);
+    
+    const predictions = this.analytics()?.healthPrediction;
+    
+    if (predictions && predictions[index]) {
+      this.selectedPrediction.set(predictions[index]);
+    }
+  }
 }
 

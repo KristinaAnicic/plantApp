@@ -2,8 +2,8 @@
 using PlantApp.Data;
 using PlantApp.Data.Models;
 using PlantApp.Domain.Dtos.Analytics;
+using PlantApp.Domain.Dtos.ML;
 using PlantApp.Domain.Interfaces.Data;
-using System.Numerics;
 
 namespace PlantApp.Domain.Repositories;
 
@@ -54,17 +54,18 @@ public class AnalyticsRepository : IAnalyticsRepository
         };
     }
 
-    public async Task<List<ReminderStat>> GetReminderStats(int userId)
+    public async Task<List<PercentageSegment>> GetReminderStats(int userId)
     {
         var date = DateTime.UtcNow.AddYears(-1);
         var query = context.ReminderHistory
             .Where(h => h.Planted != null && h.Planted.Place != null && h.Planted.Place.UserId == userId && h.CreatedAt >= date);
 
         var total = await query.CountAsync();
-        if (total == 0) return new List<ReminderStat>();
+        if (total == 0) return new List<PercentageSegment>();
 
         return await query.GroupBy(h => h.delay == 0 ? "On Time" : h.delay <= 3 ? "Delayed" : "Late")
-            .Select(g => new ReminderStat {
+            .Select(g => new PercentageSegment
+            {
                 Label = g.Key,
                 Percentage = (int)Math.Round((g.Count() * 100.0) / total)
             })
@@ -72,45 +73,7 @@ public class AnalyticsRepository : IAnalyticsRepository
             .ToListAsync();
     }
 
-    /*public async Task<List<HealthOverview>> GetHealthStats(int userId)
-    {
-        var date = DateTime.UtcNow.AddYears(-1);
-        var healthy = new List<string>{ "Healthy", "Growing", "Flowering", "Fruiting", "Seedling", "Transplanted" };
-        var stressed = new List<string>{ "Sick", "Wilting", "Stressed", "Dormant" };
-
-        var query = context.GrowthLogs
-            .Where(h => 
-                h.Planted != null && 
-                h.Planted.Place != null && 
-                h.Planted.Place.UserId == userId && 
-                h.CreatedAt >= date && 
-                h.PlantStatus != null
-            );
-
-        var total = await query.CountAsync();
-        if (total == 0) return new List<HealthOverview>();
-
-        var grouped = await query
-            .GroupBy(h => h.PlantStatus.Name)
-            .Select(g => new
-            {
-                StatusName = g.Key,
-                Count = g.Count()
-            })
-            .ToListAsync();
-
-       return grouped
-            .GroupBy(x =>
-                healthy.Contains(x.StatusName) ? "Healthy" :
-                stressed.Contains(x.StatusName) ? "Stressed" : "Dormant")
-            .Select(res => new HealthOverview
-            {
-                Label = res.Key,
-                Percentage = (int)Math.Round((res.Sum(x => x.Count) * 100.0) / total)
-            }).ToList();
-    }*/
-
-    public async Task<List<HealthOverview>> GetHealthStats(int userId)
+    public async Task<List<PercentageSegment>> GetHealthStats(int userId)
     {
         var date = DateTime.UtcNow.AddYears(-1);
         var healthy = new List<string> { "Healthy", "Growing", "Flowering", "Fruiting", "Seedling", "Transplanted" };
@@ -134,7 +97,7 @@ public class AnalyticsRepository : IAnalyticsRepository
             })
             .ToListAsync();
 
-        if (!logs.Any()) return new List<HealthOverview>();
+        if (!logs.Any()) return new List<PercentageSegment>();
 
         var durationPerStatus = new Dictionary<string, double>
         {
@@ -171,7 +134,7 @@ public class AnalyticsRepository : IAnalyticsRepository
         double totalDaysSum = durationPerStatus.Values.Sum();
 
         return durationPerStatus
-             .Select(res => new HealthOverview
+             .Select(res => new PercentageSegment
              {
                  Label = res.Key,
                  Percentage = (int)Math.Round((res.Value * 100.0) / totalDaysSum)
@@ -182,9 +145,6 @@ public class AnalyticsRepository : IAnalyticsRepository
 
     public async Task<List<MonthlyActivityDto>> GetGrowthLogStats(int userId, DateTime startDate)
     {
-        //var now = DateTime.UtcNow;
-        //var startDate = new DateTime(now.Year - 1, now.Month, 1).AddMonths(1);
-
         return await context.GrowthLogs
             .Where(log => log.Planted != null && log.Planted.Place != null && log.Planted.Place.UserId == userId && log.CreatedAt >= startDate && log.DeletedAt == null)
             .GroupBy(log => new { log.CreatedAt.Year, log.CreatedAt.Month })
@@ -269,6 +229,82 @@ public class AnalyticsRepository : IAnalyticsRepository
             .OrderBy(h => h.Year)
             .ThenBy(g => g.Month)
             .ToListAsync();
+    }
+
+    public async Task<List<PlantAnalyticsRecord>> GetTrainingData()
+    {
+        var data = await context.GrowthLogs
+            .Where(l =>
+                l.Place != null &&
+                l.Planted != null &&
+                l.Planted.Plant != null &&
+                l.Planted.Plant.Family != null &&
+                l.DeletedAt == null)
+            .Select(l => new PlantAnalyticsRecord
+            {
+                SunlightIntensity = (float)l.Place!.SunlightIntensity,
+                HumidityIntensity = (float)l.Place.HumidityIntensity,
+                IsOutside = l.Planted!.IsOutside,
+                Family = l.Planted.Plant!.Family!.Name,
+                Hardiness = l.Planted.Plant.HardinessLevel != null ? l.Planted.Plant.HardinessLevel.Level : "Unknown",
+                PlantStatusId = l.PlantStatusId,
+                SunlightList = l.Planted.Plant.Sunlights.ToList(),
+                MoistureList = l.Planted.Plant.Moistures.ToList(),
+                LowMaintenace = l.Planted.Plant.IsLowMaintenance ?? false,
+                DroughtResistant = l.Planted.Plant.IsDroughtResistant ?? false,
+                Month = l.ObservationDate.Month
+            }).ToListAsync();
+
+        return data;
+    }
+
+    public async Task<List<PlantPredictionDto>> GetUserMLInputData(int userId)
+    {
+        var data = await context.Planteds
+            .Where(p =>
+                p.Place != null &&
+                p.Plant != null &&
+                p.Plant.Family != null &&
+                p.DeletedAt == null &&
+                p.PlantStatusId != 3 &&
+                p.Place.UserId == userId)
+            .Select(p => new
+            {
+                DisplayName = p.Name ?? p.Plant!.CommonName ?? p.Plant.BotanicalName,
+                PlaceName = p.Place!.Name,
+                SunlightIntensity = (float)p.Place!.SunlightIntensity,
+                HumidityIntensity = (float)p.Place.HumidityIntensity,
+                IsOutside = p.IsOutside,
+                FamilyName = p.Plant!.Family!.Name,
+                Hardiness = p.Plant.HardinessLevel != null ? p.Plant.HardinessLevel.Level : "Unknown",
+                SunlightList = p.Plant.Sunlights.Select(s => "S" + s.Id).ToList(),
+                MoistureList = p.Plant.Moistures.Select(m => "M" + m.Id).ToList(),
+                LowMaintenace = p.Plant.IsLowMaintenance,
+                DroughtResistant = p.Plant.IsDroughtResistant,
+            })
+            .ToListAsync();
+
+        var results = data.Select(d => new PlantPredictionDto
+        {
+            PlantName = d.DisplayName,
+            PlaceName = d.PlaceName,
+            MLInput = new PlantMLInput
+            {
+                SunlightIntensity = d.SunlightIntensity,
+                HumidityIntensity = d.HumidityIntensity,
+                IsOutside = d.IsOutside,
+                PlantFamily = d.FamilyName,
+                HardinessLevel = d.Hardiness,
+                HealthScore = 0,
+                SunlightRequirements = string.Join(", ", d.SunlightList),
+                MoistureRequirements = string.Join(", ", d.MoistureList),
+                IsLowMaintenance = d.LowMaintenace ?? false,
+                IsDroughtResistant = d.DroughtResistant ?? false,
+                Month = (float)DateTime.UtcNow.Month
+            }
+        }).ToList();
+
+        return results;
     }
 
     private IQueryable<Planted> ProjectPlanted(IQueryable<Planted> query)

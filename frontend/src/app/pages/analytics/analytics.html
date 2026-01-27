@@ -183,6 +183,39 @@
             </div>
         </div>
         <div>
+            <h2 class="font-bold text-lg py-1">Health Prediction</h2>
+            <div class="bg-white w-full border border-gray-200 px-6 py-6 rounded-xl shadow shadow-sm">
+                @if((analytics()?.healthPrediction?.length ?? 0) > 0) {
+                    <select (change)="onPlantChange($event)">
+                        @for (pred of analytics()?.healthPrediction; track $index) {
+                            <option [value]="$index">
+                                {{ pred.plantName }} - {{ pred.placeName }}
+                            </option>
+                        }
+                    </select>
+
+                    <div class="w-full h-full">
+                        <apx-chart
+                            [series]="predictionPlantLineChartOptions().series"
+                            [chart]="predictionPlantLineChartOptions().chart"
+                            [stroke]="predictionPlantLineChartOptions().stroke"
+                            [fill]="predictionPlantLineChartOptions().fill"
+                            [dataLabels]="predictionPlantLineChartOptions().dataLabels"
+                            [xaxis]="predictionPlantLineChartOptions().xaxis"
+                            [yaxis]="predictionPlantLineChartOptions().yaxis"
+                            [colors]="predictionPlantLineChartOptions().colors"
+                            [markers]="predictionPlantLineChartOptions().markers">    
+                        </apx-chart>
+                    </div>
+                }
+                @else {
+                    <div class="flex items-center h-full justify-center">
+                        <p class="italic text-gray-400 self-center justify-self-center py-15">There is currently no info to analyse.</p>
+                    </div>
+                } 
+            </div>
+        </div>
+        <div>
             <h2 class="font-bold text-lg py-1">Plant Hall Of Fame</h2>
             @if (!analytics()?.hallOfFame?.oldestPlant && !analytics()?.hallOfFame?.mostResilientPlant){
                 <div class="flex items-center h-full justify-center bg-white border border-gray-200 px-6 py-6 rounded-xl shadow shadow-sm">
@@ -271,5 +304,4 @@
                 <!--Most Resilient Plant End-->
             </div>
         </div>
-    
 </div>

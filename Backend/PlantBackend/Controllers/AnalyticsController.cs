@@ -8,12 +8,20 @@ namespace PlantBackend.Controllers;
 [Route("api/analytics")]
 [ApiController]
 [Authorize]
-public class AnalyticsController(IAnalyticsService service) : Controller
+public class AnalyticsController(IAnalyticsService service, IMLService mlService) : Controller
 {
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         var result = await service.GetAnalytics();
         return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("train")]
+    public async Task<IActionResult> Train()
+    {
+        await mlService.TrainModelAsync();
+        return Ok();
     }
 }

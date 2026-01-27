@@ -7,7 +7,8 @@ namespace PlantApp.Domain.Services;
 
 public class AnalyticsService(
     IAnalyticsRepository repository,
-    ICurrentUserContext userContext
+    ICurrentUserContext userContext,
+    IMLService mlService
 ): IAnalyticsService
 {
     private int CurrentUserId => userContext.GetCurrentUserId();
@@ -24,6 +25,7 @@ public class AnalyticsService(
         var sesonalPlantings = await GetSeasonalPlantings(userId);
         var actionStats = await repository.GetActionFrequency(userId);
         var hallOfFame = await GetHallOfFame(userId);
+        var healthPrediction = await GetHealthScorePredictions(userId);
 
         return new AnalyticsDto
         {
@@ -33,8 +35,41 @@ public class AnalyticsService(
             GrowthLogActivity = growthLogStats,
             ActionStats = actionStats,
             HallOfFame = hallOfFame,
-            SeasonalPlanting = sesonalPlantings
+            SeasonalPlanting = sesonalPlantings,
+            HealthPrediction = healthPrediction
         };
+    }
+
+    private async Task<List<HealthPredictionDto>> GetHealthScorePredictions(int userId)
+    {
+        var data = await repository.GetUserMLInputData(userId);
+        var results = new List<HealthPredictionDto>();
+
+        foreach (var info in data)
+        {
+            var inputList = new List<PlantMLInput>();
+
+            for (int month = 1; month <= 12; month++)
+            {
+                var inputCopy = info.MLInput.Clone();
+                inputCopy.Month = (float)month;
+                inputList.Add(inputCopy);
+            }
+
+            var monthlyPrediction = await mlService.PredictHealthScoresBatch(inputList);
+
+            var currentMonth = DateTime.Now.Month;
+            var currentScore = monthlyPrediction[currentMonth - 1];
+
+            results.Add(new HealthPredictionDto
+            {
+                PlaceName = info.PlaceName,
+                PlantName = info.PlantName,
+                CurrentSuccessProbability = currentScore,
+                MonthlyPrediction = monthlyPrediction
+            });
+        }
+        return results;
     }
 
     private async Task<List<MonthlyActivityDto>> GetGrowthLogStats(int userId)

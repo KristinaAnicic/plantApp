@@ -9,6 +9,7 @@ export interface AnalyticsDto
     seasonalPlanting: MonthlyActivityDto[];
     actionStats: ActionFrequencyDto[];
     hallOfFame?: PlantHallOfFame;
+    healthPrediction: HealthPrediction[];
 
 }
 
@@ -20,6 +21,14 @@ export interface PlantSummary
     numOfLogsThisYear: number;
     numOfLogsOverAll: number;
     firstPlantedDate: string;
+}
+
+export interface HealthPrediction
+{
+    plantName: string;
+    placeName: string;
+    monthlyPrediction: number[];
+    currentSuccessProbability: number;
 }
 
 export interface ReminderStat

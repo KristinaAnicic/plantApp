@@ -114,6 +114,7 @@ builder.Services.AddScoped<IUserRatingService, UserRatingService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IMLService, MLService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 builder.Services.AddScoped<ICurrentUserContext, CurrentUserContex>();
 builder.Services.AddScoped<SeedCsvDataService>();
