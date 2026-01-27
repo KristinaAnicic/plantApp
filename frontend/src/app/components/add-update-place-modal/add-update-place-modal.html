@@ -1,5 +1,5 @@
 <!-- Main modal -->
-<div class="relative px-4 py-2 w-full lg:w-md max-w-[90vh] max-h-[90vh] mb-10" (click)="$event.stopPropagation()">
+<div class="relative px-4 py-2 w-full lg:w-xl max-w-[90vh] max-h-[90vh] mb-10" (click)="$event.stopPropagation()">
     <!-- Modal content -->
     <div class="relative bg-white border border-gray-200 rounded-xl shadow-sm p-4 md:p-6">
         <!-- Modal header -->
@@ -48,8 +48,63 @@
             <div>
                 <label for="note" class="block text-sm font-medium text-heading px-1 py-1">Note</label>
                 <input type="text" id="note" formControlName="note" class="block w-full p-2 ps-5 border border-default-medium border-gray-400 text-heading text-sm rounded-lg focus:ring-2 shadow-xs placeholder:text-body" placeholder="Note" autocomplete="off" />
+            </div>
+            <div>
+                <div class="text-center py-2 pt-8 flex flex-col justify-center">
+                    <h3 class="text-lg font-bold text-slate-800">
+                        {{ sunLevels[selectedSun()].title }}
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-1 italic px-2">
+                        {{ sunLevels[selectedSun()].desc }}
+                    </p>
+                </div>
+                <div class="relative px-2">
+                    <input type="range" min="1" max="5" step="1" formControlName="sunlightIntensity" class="w-full bg-slate-100" />
+                    <div class="flex justify-between mt-1">
+                        @for(level of [1,2,3,4,5]; track $index){
+                        <div class="transition-all duration-300"
+                            [class.scale-125]="selectedSun() == level"
+                            [class.drop-shadow-md]="selectedSun() == level">
+                            
+                            <p class="text-2xl transition-all cursor-default"
+                                [class.grayscale]="selectedSun() != level"
+                                [class.opacity-40]="selectedSun() != level">
+                                {{ level == 1 ? '🌑' : level == 2 ? '☁️' : level == 3 ? '⛅' : level == 4 ? '🌤️' : '☀️' }}
+                            </p>
+                        </div>
+                        }
+                    </div>
+                </div>
             </div>      
-            <button type="submit" class="mt-4 w-full bg-green-900 hover:bg-green-800 text-white text-sm py-2 px-4 rounded-full transition-all cursor-pointer">
+
+            <div>
+                <div class="text-center py-2 pt-7 h-20 flex flex-col justify-center">
+                    <h3 class="text-lg font-bold text-slate-800">
+                        {{ humidityLevels[selectedHumidity()].title }}
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-1 italic px-2">
+                        {{ humidityLevels[selectedHumidity()].desc }}
+                    </p>
+                </div>
+                <div class="relative px-2">
+                    <input type="range" min="1" max="5" step="1" formControlName="humidityIntensity" class="w-full bg-slate-100" />
+                    <div class="flex justify-between mt-1">
+                        @for(level of [1,2,3,4,5]; track $index){
+                        <div class="transition-all duration-300"
+                            [class.scale-125]="selectedHumidity() == level"
+                            [class.drop-shadow-md]="selectedHumidity() == level">
+                            
+                            <p class="text-2xl transition-all cursor-default"
+                                [class.grayscale]="selectedHumidity() != level"
+                                [class.opacity-40]="selectedHumidity() != level">
+                                {{ level == 1 ? '🏜️' : level == 2 ? '🌵' : level == 3 ? '🍃' : level == 4 ? '💧' : '☁️' }}
+                            </p>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>      
+            <button type="submit" class="mt-7 w-full bg-green-900 hover:bg-green-800 text-white text-sm py-2 px-4 rounded-full transition-all cursor-pointer">
                 {{ buttonText() }}
             </button>
         </form>

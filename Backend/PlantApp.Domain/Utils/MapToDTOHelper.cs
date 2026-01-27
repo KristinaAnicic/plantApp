@@ -109,7 +109,9 @@ public static class MapToDTOHelper
             City = place.City,
             Country = place.Country?.MapReferenceToDto(),
             Note = place.Note,
-            Planted = place.PlantedList?.Select(p => p.MapPlantedToPlantedDto()).ToList()
+            Planted = place.PlantedList?.Select(p => p.MapPlantedToPlantedDto()).ToList(),
+            SunlightIntensity = place.SunlightIntensity,
+            HumidityIntensity = place.HumidityIntensity
         };
     }
 

@@ -1,14 +1,27 @@
 <div class="flex flex-col w-full px-10 py-5 gap-y-8">
     <div>
-        <div class="p-5 border border-gray-100 shadow-lg shadow-gray-300/50 rounded-xl mb-8 py-10">
+        <div class="p-5 border border-gray-100 shadow-lg shadow-gray-300/50 rounded-xl mb-8 py-8">
             <div class="flex sm:flex-row-reverse flex-wrap justify-between gap-y-4">               
                 <div (click)="deletePlace()" class="cursor-pointer">
                     <svg class="w-6 h-6 text-red-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                     </svg>
                 </div> 
-                <h2 class="text-2xl font-semibold pb-3 break-all min-w-0">{{ place()?.name }}</h2>
+                <div class="flex gap-4 items-center pb-3 -translate-x-2">   
+                    <div class="flex items-center gap-2 bg-yellow-50 px-3 py-0.5 rounded-full border border-yellow-100">
+                        <p class="text-lg">{{ sunLevels[place()?.sunlightIntensity ?? 0].icon }}</p>
+                        <p class="text-xs font-bold text-yellow-800">{{ sunLevels[place()?.sunlightIntensity ?? 0].title }}</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 bg-blue-50 px-3 py-0.5 rounded-full border border-blue-100">
+                        <p class="text-lg">{{ humidityLevels[place()?.humidityIntensity ?? 0].icon }}</p>
+                        <p class="text-xs font-bold text-blue-800">{{ humidityLevels[place()?.humidityIntensity ?? 0].title }}</p>
+                    </div>
+                </div>
+                
             </div>
+
+            <h2 class="text-2xl font-semibold break-all min-w-0 pb-3">{{ place()?.name }}</h2>
             
             <div class="flex flex-wrap md:flex-nowrap sm:justify-between items-start pb-5">
                 <div class="flex flex-col gap-y-3">

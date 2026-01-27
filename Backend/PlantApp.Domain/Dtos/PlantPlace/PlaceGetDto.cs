@@ -12,4 +12,6 @@ public class PlaceGetDto
     public required ReferenceDto Country { get; set; }
     public string? Note { get; set; }
     public List<PlantedDto>? Planted { get; set; }
+    public int SunlightIntensity { get; set; }
+    public int HumidityIntensity { get; set; }
 }

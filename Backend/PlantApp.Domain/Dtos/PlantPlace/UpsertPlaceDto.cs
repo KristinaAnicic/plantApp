@@ -14,4 +14,10 @@ public class UpsertPlaceDto
     public string? Note { get; set; }
     [Required]
     public int CountryId { get; set; }
+    [Required]
+    [Range(1, 5, ErrorMessage = "Sunlight must be between 1 and 5")]
+    public int SunlightIntensity { get; set; }
+    [Required]
+    [Range(1, 5, ErrorMessage = "Humidity must be between 1 and 5")]
+    public int HumidityIntensity { get; set; }
 }

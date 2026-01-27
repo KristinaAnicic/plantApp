@@ -2,6 +2,9 @@ import { Component, computed, effect, inject, input, OnInit, output, signal } fr
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PlaceService } from '../../services/place.service';
 import { UpsertPlaceDto } from '../../models/place.interface';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { SUN_LEVELS } from '../../constants/sunlight.constants';
+import { HUMIDITY_LEVELS } from '../../constants/humidity.constants';
 
 @Component({
   selector: 'app-add-update-place-modal',
@@ -19,6 +22,9 @@ export class AddUpdatePlaceModal implements OnInit {
   showWarning = signal(false);
   errorMessage = signal('');
 
+  sunLevels = SUN_LEVELS;
+  humidityLevels = HUMIDITY_LEVELS;
+
   isEditing = computed(() => !!this.editPlace());
   headerText = computed(() => this.isEditing() ? 'Edit location' : 'Add a new location');
   buttonText = computed(() => this.isEditing() ? 'Save changes' : 'Add place');
@@ -29,8 +35,20 @@ export class AddUpdatePlaceModal implements OnInit {
     address: new FormControl('', { nonNullable: true }),
     city: new FormControl('', { nonNullable: true }),
     note: new FormControl('', { nonNullable: true }),
-    countryId: new FormControl(0, { nonNullable: true })
+    countryId: new FormControl(0, { nonNullable: true }),
+    sunlightIntensity: new FormControl<number>(3, { nonNullable: true }),
+    humidityIntensity: new FormControl<number>(3, { nonNullable: true })
   });
+
+  private sunlightChanges = toSignal(
+    this.placeForm.get('sunlightIntensity')!.valueChanges, 
+    { initialValue: 3 }
+  );
+
+  private humidityChanges = toSignal(
+    this.placeForm.get('humidityIntensity')!.valueChanges, 
+    { initialValue: 3 }
+  );
 
   ngOnInit(): void {
     const place = this.editPlace();
@@ -101,4 +119,7 @@ export class AddUpdatePlaceModal implements OnInit {
     }
     
   }
+
+  selectedSun = computed(() => this.sunlightChanges());
+  selectedHumidity = computed(() => this.humidityChanges());
 }

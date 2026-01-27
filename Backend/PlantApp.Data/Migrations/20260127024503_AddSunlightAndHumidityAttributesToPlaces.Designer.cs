@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PlantApp.Data;
@@ -11,9 +12,11 @@ using PlantApp.Data;
 namespace PlantApp.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260127024503_AddSunlightAndHumidityAttributesToPlaces")]
+    partial class AddSunlightAndHumidityAttributesToPlaces
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -372,10 +375,6 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("date")
                         .HasColumnName("observation_date");
 
-                    b.Property<int?>("PlaceId")
-                        .HasColumnType("integer")
-                        .HasColumnName("place_id");
-
                     b.Property<int>("PlantStatusId")
                         .HasColumnType("integer")
                         .HasColumnName("plant_status_id");
@@ -394,8 +393,6 @@ namespace PlantApp.Data.Migrations
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PlaceId");
 
                     b.HasIndex("PlantStatusId");
 
@@ -1584,10 +1581,6 @@ namespace PlantApp.Data.Migrations
 
             modelBuilder.Entity("PlantApp.Data.Models.GrowthLog", b =>
                 {
-                    b.HasOne("PlantApp.Data.Models.Place", "Place")
-                        .WithMany("GrowthLogs")
-                        .HasForeignKey("PlaceId");
-
                     b.HasOne("PlantApp.Data.Models.PlantStatus", "PlantStatus")
                         .WithMany("GrowthLogList")
                         .HasForeignKey("PlantStatusId")
@@ -1599,8 +1592,6 @@ namespace PlantApp.Data.Migrations
                         .HasForeignKey("PlantedId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Place");
 
                     b.Navigation("PlantStatus");
 
@@ -1919,8 +1910,6 @@ namespace PlantApp.Data.Migrations
 
             modelBuilder.Entity("PlantApp.Data.Models.Place", b =>
                 {
-                    b.Navigation("GrowthLogs");
-
                     b.Navigation("PlantedList");
                 });
 

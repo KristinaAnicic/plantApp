@@ -105,6 +105,8 @@ public static class MapFromDTOHelper
         place.City = dto.City;
         place.Note = dto.Note;
         place.CountryId = dto.CountryId;
+        place.SunlightIntensity = dto.SunlightIntensity;
+        place.HumidityIntensity = dto.HumidityIntensity;
     }
 
     public static Place MapUpsertPlaceDtoToPlace(this UpsertPlaceDto dto, Place? place = null)

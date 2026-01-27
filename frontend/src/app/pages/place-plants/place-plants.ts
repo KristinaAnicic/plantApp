@@ -5,6 +5,8 @@ import { PlaceGetDto, UpsertPlaceDto } from '../../models/place.interface';
 import { PlantedService } from '../../services/planted.service';
 import { AddUpdatePlaceModal } from "../../components/add-update-place-modal/add-update-place-modal";
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SUN_LEVELS } from '../../constants/sunlight.constants';
+import { HUMIDITY_LEVELS } from '../../constants/humidity.constants';
 
 @Component({
   selector: 'app-place-plants',
@@ -19,6 +21,9 @@ export class PlacePlants implements OnInit, OnDestroy {
   private placeService = inject(PlaceService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
+
+  sunLevels = SUN_LEVELS;
+  humidityLevels = HUMIDITY_LEVELS;
 
   place = signal<PlaceGetDto | null>(null);
   placeToEdit = signal<UpsertPlaceDto | null>(null);
@@ -51,7 +56,9 @@ export class PlacePlants implements OnInit, OnDestroy {
       address: currentPlace.address ?? '',
       city: currentPlace.city ?? '',
       note: currentPlace.note ?? '',
-      countryId: currentPlace.country.id
+      countryId: currentPlace.country.id,
+      humidityIntensity: currentPlace.humidityIntensity,
+      sunlightIntensity: currentPlace.sunlightIntensity
     });
 
     this.isEditModalOpen.set(true);

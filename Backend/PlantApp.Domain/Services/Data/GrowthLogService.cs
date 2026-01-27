@@ -71,6 +71,7 @@ public class GrowthLogService(
             log.Images.Clear();
             await imageService.AddImagesSafeAsync(log, dto.Images);
         }
+        log.PlaceId = planted.PlaceId;
 
         await repository.AddAsync(log);
         logger.LogInformation("Growth log {LogId} successfully created", log.Id);

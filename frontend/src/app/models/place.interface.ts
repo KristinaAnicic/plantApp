@@ -17,6 +17,8 @@ export interface PlaceGetDto {
     country: Reference;
     note?: string;
     planted?: PlantedDto[];
+    sunlightIntensity: number;
+    humidityIntensity: number;
 }
 
 export interface UpsertPlaceDto {
@@ -26,4 +28,6 @@ export interface UpsertPlaceDto {
     city: string;
     note?: string;
     countryId: number;
+    sunlightIntensity: number;
+    humidityIntensity: number;
 }
