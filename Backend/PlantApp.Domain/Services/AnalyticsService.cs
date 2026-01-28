@@ -1,4 +1,5 @@
 ﻿using PlantApp.Domain.Dtos.Analytics;
+using PlantApp.Domain.Dtos.ML;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Utils;
@@ -42,8 +43,15 @@ public class AnalyticsService(
 
     private async Task<List<HealthPredictionDto>> GetHealthScorePredictions(int userId)
     {
-        var data = await repository.GetUserMLInputData(userId);
+        var rawData = await repository.GetUserMLInputData(userId);
         var results = new List<HealthPredictionDto>();
+
+        var data = rawData.Select(d => new PlantPredictionDto
+        {
+            PlaceName = d.PlaceName,
+            PlantName = d.PlantName,
+            MLInput = d.MapPlantAnalyticsRecordToPlantMLInput()
+        }).ToList();
 
         foreach (var info in data)
         {

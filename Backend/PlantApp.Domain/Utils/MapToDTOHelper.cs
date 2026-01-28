@@ -2,7 +2,9 @@
 using PlantApp.Data.Models;
 using PlantApp.Data.Models.Interfaces;
 using PlantApp.Domain.Dtos;
+using PlantApp.Domain.Dtos.Analytics;
 using PlantApp.Domain.Dtos.GrowthLog;
+using PlantApp.Domain.Dtos.ML;
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Dtos.PlantExchange;
@@ -335,4 +337,38 @@ public static class MapToDTOHelper
             Name = reference.Name
         };
     }
+
+    public static PlantMLInput MapPlantAnalyticsRecordToPlantMLInput(this PlantAnalyticsRecord data)
+    {
+        return new PlantMLInput
+        {
+            SunlightIntensity = data.SunlightIntensity,
+            HumidityIntensity = data.HumidityIntensity,
+            IsOutside = data.IsOutside,
+            Month = data.Month,
+
+            HardinessLevel = data.Hardiness,
+            PlantFamily = data.Family,
+            SunlightRequirements = EncodeVector(data.SunlightList.Select(s => s.Id).ToList()),
+            MoistureRequirements = EncodeVector(data.MoistureList.Select(s => s.Id).ToList()),
+            IsLowMaintenance = data.LowMaintenace,
+            IsDroughtResistant = data.DroughtResistant,
+            HealthScore = data.HealthScore
+        };
+    }
+
+    public static float[] EncodeVector(List<int> ids)
+    {
+        var vector = new float[3];
+        foreach (var id in ids)
+        {
+            if (id >= 1 && id <= 3)
+            {
+                vector[id - 1] = 1f;
+            }
+        }
+        return vector;
+    }
+
+
 }

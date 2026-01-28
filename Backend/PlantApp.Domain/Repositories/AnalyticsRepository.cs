@@ -252,15 +252,15 @@ public class AnalyticsRepository : IAnalyticsRepository
                 MoistureList = l.Planted.Plant.Moistures.ToList(),
                 LowMaintenace = l.Planted.Plant.IsLowMaintenance ?? false,
                 DroughtResistant = l.Planted.Plant.IsDroughtResistant ?? false,
-                Month = l.ObservationDate.Month
+                Month = l.ObservationDate.Month,
             }).ToListAsync();
 
         return data;
     }
 
-    public async Task<List<PlantPredictionDto>> GetUserMLInputData(int userId)
+    public async Task<List<PlantAnalyticsRecord>> GetUserMLInputData(int userId)
     {
-        var data = await context.Planteds
+        return await context.Planteds
             .Where(p =>
                 p.Place != null &&
                 p.Plant != null &&
@@ -268,43 +268,23 @@ public class AnalyticsRepository : IAnalyticsRepository
                 p.DeletedAt == null &&
                 p.PlantStatusId != 3 &&
                 p.Place.UserId == userId)
-            .Select(p => new
+            .Select(p => new PlantAnalyticsRecord
             {
-                DisplayName = p.Name ?? p.Plant!.CommonName ?? p.Plant.BotanicalName,
+                PlantName = p.Name ?? p.Plant!.CommonName ?? p.Plant.BotanicalName,
                 PlaceName = p.Place!.Name,
                 SunlightIntensity = (float)p.Place!.SunlightIntensity,
                 HumidityIntensity = (float)p.Place.HumidityIntensity,
                 IsOutside = p.IsOutside,
-                FamilyName = p.Plant!.Family!.Name,
+                Family = p.Plant!.Family!.Name,
                 Hardiness = p.Plant.HardinessLevel != null ? p.Plant.HardinessLevel.Level : "Unknown",
-                SunlightList = p.Plant.Sunlights.Select(s => "S" + s.Id).ToList(),
-                MoistureList = p.Plant.Moistures.Select(m => "M" + m.Id).ToList(),
-                LowMaintenace = p.Plant.IsLowMaintenance,
-                DroughtResistant = p.Plant.IsDroughtResistant,
+                SunlightList = p.Plant.Sunlights.ToList(),
+                MoistureList = p.Plant.Moistures.ToList(),
+                LowMaintenace = p.Plant.IsLowMaintenance ?? false,
+                DroughtResistant = p.Plant.IsDroughtResistant ?? false,
+                Month = (float)DateTime.UtcNow.Month,
+                HealthScore = 0
             })
-            .ToListAsync();
-
-        var results = data.Select(d => new PlantPredictionDto
-        {
-            PlantName = d.DisplayName,
-            PlaceName = d.PlaceName,
-            MLInput = new PlantMLInput
-            {
-                SunlightIntensity = d.SunlightIntensity,
-                HumidityIntensity = d.HumidityIntensity,
-                IsOutside = d.IsOutside,
-                PlantFamily = d.FamilyName,
-                HardinessLevel = d.Hardiness,
-                HealthScore = 0,
-                SunlightRequirements = string.Join(", ", d.SunlightList),
-                MoistureRequirements = string.Join(", ", d.MoistureList),
-                IsLowMaintenance = d.LowMaintenace ?? false,
-                IsDroughtResistant = d.DroughtResistant ?? false,
-                Month = (float)DateTime.UtcNow.Month
-            }
-        }).ToList();
-
-        return results;
+            .ToListAsync();    
     }
 
     private IQueryable<Planted> ProjectPlanted(IQueryable<Planted> query)

@@ -1,9 +1,11 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Data;
+using Microsoft.ML.Transforms;
 using PlantApp.Domain.Dtos.Analytics;
 using PlantApp.Domain.Dtos.ML;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
+using PlantApp.Domain.Utils;
 
 namespace PlantApp.Domain.Services;
 
@@ -17,31 +19,33 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
         var rawData = await analyticsRepository.GetTrainingData();
         if (rawData.Count == 0) return;
 
-        var data = rawData.Select(d => new PlantMLInput
+        var dataRecord = rawData.Select(d => new PlantAnalyticsRecord
         {
             SunlightIntensity = d.SunlightIntensity,
             HumidityIntensity = d.HumidityIntensity,
             IsOutside = d.IsOutside,
+            Family = d.Family,
+            Hardiness = d.Hardiness,
+            PlantStatusId = d.PlantStatusId,
+            SunlightList = d.SunlightList,
+            MoistureList = d.MoistureList,
+            LowMaintenace = d.LowMaintenace,
+            DroughtResistant = d.DroughtResistant,
             Month = d.Month,
 
-            HardinessLevel = d.Hardiness,
-            PlantFamily = d.Family,
-            SunlightRequirements = string.Join(", ", d.SunlightList.Select(s => "S" + s.Id).ToList()),
-            MoistureRequirements = string.Join(", ", d.MoistureList.Select(s => "M" + s.Id).ToList()),
-            IsLowMaintenance = d.LowMaintenace,
-            IsDroughtResistant = d.DroughtResistant,
-            HealthScore = CalculateAdjustedHealthScore(d),
-        });
+            HealthScore = CalculateAdjustedHealthScore(d)
+        }).ToList();
+
+        var data = dataRecord
+            .Select(d => d.MapPlantAnalyticsRecordToPlantMLInput())
+            .ToList();
 
         var context = new MLContext();
         IDataView dataView = context.Data.LoadFromEnumerable(data);
 
-        var pipeline = context.Transforms.ReplaceMissingValues(nameof(PlantMLInput.SunlightIntensity))
-            .Append(context.Transforms.Categorical.OneHotEncoding("FamilyEncoded", nameof(PlantMLInput.PlantFamily)))
+        var pipeline = context.Transforms
+            .Categorical.OneHotEncoding("FamilyEncoded", nameof(PlantMLInput.PlantFamily))
             .Append(context.Transforms.Categorical.OneHotEncoding("HardinessEncoded", nameof(PlantMLInput.HardinessLevel)))
-
-            .Append(context.Transforms.Text.FeaturizeText("SunlightEncoded", nameof(PlantMLInput.SunlightRequirements)))
-            .Append(context.Transforms.Text.FeaturizeText("HumidityEncoded", nameof(PlantMLInput.MoistureRequirements)))
 
             .Append(context.Transforms.Conversion.ConvertType(nameof(PlantMLInput.IsOutside), outputKind: DataKind.Single))
             .Append(context.Transforms.Conversion.ConvertType(nameof(PlantMLInput.IsLowMaintenance), outputKind: DataKind.Single))
@@ -53,7 +57,10 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
                 nameof(PlantMLInput.IsOutside),
                 nameof(PlantMLInput.IsLowMaintenance),
                 nameof(PlantMLInput.IsDroughtResistant),
-                "FamilyEncoded", "HardinessEncoded", "SunlightEncoded", "HumidityEncoded"))
+                "FamilyEncoded", 
+                "HardinessEncoded", 
+                nameof(PlantMLInput.SunlightRequirements), 
+                nameof(PlantMLInput.MoistureRequirements)))
             .Append(context.Regression.Trainers.FastTree());
 
         var model = pipeline.Fit(dataView);
@@ -63,6 +70,8 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
 
         context.Model.Save(model, dataView.Schema, path);
     }
+
+    
 
     private float CalculateAdjustedHealthScore(PlantAnalyticsRecord log)
     {
@@ -105,9 +114,12 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
             }
         }
 
-        if (log.SunlightIntensity < minIdealSun) adjustment -= 15f;
-        else if (log.SunlightIntensity > maxIdealSun) adjustment -= 10f;
-        else adjustment += 5f;
+        if (log.SunlightIntensity < minIdealSun) 
+            adjustment -= 15f;
+        else if (log.SunlightIntensity > maxIdealSun) 
+            adjustment -= 10f;
+        else 
+            adjustment += 5f;
 
 
         var moistureIds = log.MoistureList.Select(m => m.Id).ToList();
@@ -133,9 +145,12 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
             }
         }
 
-        if (log.HumidityIntensity < minIdealMoist) adjustment -= 15f;
-        else if (log.HumidityIntensity > maxIdealMoist) adjustment -= 10f;
-        else adjustment += 5f;
+        if (log.HumidityIntensity < minIdealMoist) 
+            adjustment -= 15f;
+        else if (log.HumidityIntensity > maxIdealMoist) 
+            adjustment -= 10f;
+        else 
+            adjustment += 5f;
 
         return Math.Clamp(baseScore + adjustment, 0f, 100f);
     }

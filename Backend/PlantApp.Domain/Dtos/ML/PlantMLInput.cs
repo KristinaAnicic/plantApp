@@ -11,8 +11,10 @@ public class PlantMLInput
 
     public required string PlantFamily { get; set; }
     public required string HardinessLevel { get; set; }
-    public required string SunlightRequirements { get; set; }
-    public required string MoistureRequirements { get; set; }
+    [VectorType(3)]
+    public required float[] SunlightRequirements { get; set; } = new float[3];
+    [VectorType(3)]
+    public required float[] MoistureRequirements { get; set; } = new float[3];
     public bool IsLowMaintenance { get; set; }
     public bool IsDroughtResistant { get; set; }
 

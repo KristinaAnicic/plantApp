@@ -15,5 +15,5 @@ public interface IAnalyticsRepository
     public Task<Planted?> GetOldestPlant(int userId);
     public Task<(int, Planted?)> GetMostResilientPlant(int userId);
     public Task<List<PlantAnalyticsRecord>> GetTrainingData();
-    public Task<List<PlantPredictionDto>> GetUserMLInputData(int userId);
+    public Task<List<PlantAnalyticsRecord>> GetUserMLInputData(int userId);
 }
