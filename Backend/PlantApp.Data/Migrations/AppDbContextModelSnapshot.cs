@@ -17,7 +17,7 @@ namespace PlantApp.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.10")
+                .HasAnnotation("ProductVersion", "10.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -36,7 +36,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("PlantsId");
 
-                    b.ToTable("aspect_plant");
+                    b.ToTable("aspect_plant", (string)null);
                 });
 
             modelBuilder.Entity("ExposurePlant", b =>
@@ -53,7 +53,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("PlantsId");
 
-                    b.ToTable("exposure_plant");
+                    b.ToTable("exposure_plant", (string)null);
                 });
 
             modelBuilder.Entity("GrowthLogImage", b =>
@@ -70,7 +70,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("ImagesId");
 
-                    b.ToTable("growth_log_image");
+                    b.ToTable("growth_log_image", (string)null);
                 });
 
             modelBuilder.Entity("HabitPlant", b =>
@@ -87,7 +87,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("PlantsId");
 
-                    b.ToTable("habit_plant");
+                    b.ToTable("habit_plant", (string)null);
                 });
 
             modelBuilder.Entity("ImagePlant", b =>
@@ -104,7 +104,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("PlantsId");
 
-                    b.ToTable("image_plant");
+                    b.ToTable("image_plant", (string)null);
                 });
 
             modelBuilder.Entity("ImagePlantExchange", b =>
@@ -121,7 +121,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("PlantExchangesId");
 
-                    b.ToTable("image_plant_exchange");
+                    b.ToTable("image_plant_exchange", (string)null);
                 });
 
             modelBuilder.Entity("ImagePlanted", b =>
@@ -138,7 +138,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("PlantedId");
 
-                    b.ToTable("image_planted");
+                    b.ToTable("image_planted", (string)null);
                 });
 
             modelBuilder.Entity("MoisturePlant", b =>
@@ -155,7 +155,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("PlantsId");
 
-                    b.ToTable("moisture_plant");
+                    b.ToTable("moisture_plant", (string)null);
                 });
 
             modelBuilder.Entity("PhPlant", b =>
@@ -172,7 +172,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("PlantsId");
 
-                    b.ToTable("ph_plant");
+                    b.ToTable("ph_plant", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Aspect", b =>
@@ -191,7 +191,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("aspects");
+                    b.ToTable("aspects", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Categories.Frequency", b =>
@@ -210,7 +210,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("frequencies");
+                    b.ToTable("frequencies", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Categories.Season", b =>
@@ -229,7 +229,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("seasons");
+                    b.ToTable("seasons", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.City", b =>
@@ -254,7 +254,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("cities");
+                    b.ToTable("cities", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Country", b =>
@@ -287,7 +287,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("countries");
+                    b.ToTable("countries", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.ExchangeType", b =>
@@ -306,7 +306,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("exchange_types");
+                    b.ToTable("exchange_types", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Exposure", b =>
@@ -325,7 +325,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("exposures");
+                    b.ToTable("exposures", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Fragrance", b =>
@@ -344,7 +344,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("fragrances");
+                    b.ToTable("fragrances", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.GrowthLog", b =>
@@ -401,7 +401,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("PlantedId");
 
-                    b.ToTable("growth_logs");
+                    b.ToTable("growth_logs", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Habit", b =>
@@ -420,7 +420,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("habits");
+                    b.ToTable("habits", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.HardinessLevel", b =>
@@ -444,7 +444,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("hardiness_levels");
+                    b.ToTable("hardiness_levels", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.HeightType", b =>
@@ -476,7 +476,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("height_types");
+                    b.ToTable("height_types", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Image", b =>
@@ -517,7 +517,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("images");
+                    b.ToTable("images", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Moisture", b =>
@@ -536,7 +536,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("moistures");
+                    b.ToTable("moistures", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Ph", b =>
@@ -555,7 +555,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("phs");
+                    b.ToTable("phs", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Place", b =>
@@ -618,7 +618,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("places");
+                    b.ToTable("places", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Plant", b =>
@@ -748,7 +748,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("TimeToFullHeightId");
 
-                    b.ToTable("plants");
+                    b.ToTable("plants", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.PlantExchange", b =>
@@ -845,7 +845,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("plant_exchanges");
+                    b.ToTable("plant_exchanges", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.PlantFamily", b =>
@@ -864,7 +864,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("plant_families");
+                    b.ToTable("plant_families", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.PlantStatus", b =>
@@ -883,7 +883,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("plant_statuses");
+                    b.ToTable("plant_statuses", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Planted", b =>
@@ -957,7 +957,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("ReasonOfDeathId");
 
-                    b.ToTable("planteds");
+                    b.ToTable("planteds", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.ReasonOfDeath", b =>
@@ -976,7 +976,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("reasons_of_death");
+                    b.ToTable("reasons_of_death", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.RefreshToken", b =>
@@ -1016,7 +1016,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("refresh_tokens");
+                    b.ToTable("refresh_tokens", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Reminder", b =>
@@ -1076,7 +1076,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("ReminderTypeId");
 
-                    b.ToTable("reminders");
+                    b.ToTable("reminders", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.ReminderHistory", b =>
@@ -1136,7 +1136,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("ReminderTypeId");
 
-                    b.ToTable("reminder_history");
+                    b.ToTable("reminder_history", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.ReminderType", b =>
@@ -1155,7 +1155,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("reminder_types");
+                    b.ToTable("reminder_types", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Role", b =>
@@ -1174,7 +1174,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("roles");
+                    b.ToTable("roles", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.SoilType", b =>
@@ -1193,7 +1193,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("soils");
+                    b.ToTable("soils", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.SpreadType", b =>
@@ -1225,7 +1225,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("spreads");
+                    b.ToTable("spreads", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.Sunlight", b =>
@@ -1244,7 +1244,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("sunlights");
+                    b.ToTable("sunlights", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.TimeToFullHeight", b =>
@@ -1271,7 +1271,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("time_to_full_height");
+                    b.ToTable("time_to_full_height", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.User", b =>
@@ -1335,7 +1335,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("users");
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("PlantApp.Data.Models.UserRating", b =>
@@ -1382,7 +1382,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("RaterId");
 
-                    b.ToTable("user_ratings");
+                    b.ToTable("user_ratings", (string)null);
                 });
 
             modelBuilder.Entity("PlantSeason", b =>
@@ -1399,7 +1399,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("SeasonsId");
 
-                    b.ToTable("plant_season");
+                    b.ToTable("plant_season", (string)null);
                 });
 
             modelBuilder.Entity("PlantSoilType", b =>
@@ -1416,7 +1416,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("SoilTypesId");
 
-                    b.ToTable("plant_soil_type");
+                    b.ToTable("plant_soil_type", (string)null);
                 });
 
             modelBuilder.Entity("PlantSunlight", b =>
@@ -1433,7 +1433,7 @@ namespace PlantApp.Data.Migrations
 
                     b.HasIndex("SunlightsId");
 
-                    b.ToTable("plant_sunlight");
+                    b.ToTable("plant_sunlight", (string)null);
                 });
 
             modelBuilder.Entity("AspectPlant", b =>

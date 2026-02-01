@@ -8,13 +8,14 @@ using PlantApp.Domain;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
-using PlantApp.Domain.Repositories;
+using PlantApp.Data.Repositories;
 using PlantApp.Domain.Services;
 using PlantApp.Domain.Services.Data;
 using PlantApp.Domain.Utils;
 using PlantBackend.ExceptionHandlers;
 using Scalar.AspNetCore;
 using System.Text;
+using PlantApp.Domain.Models.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;

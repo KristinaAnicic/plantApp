@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using PlantApp.Data.Models;
+using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.Authentication;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Repository;

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using PlantApp.Data.Models;
+using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos;
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.PlantExchange;
@@ -8,6 +8,7 @@ using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
 using PlantApp.Domain.Utils.Exceptions;
+using PlantApp.Domain.Models.Interfaces;
 
 namespace PlantApp.Domain.Services.Data;
 

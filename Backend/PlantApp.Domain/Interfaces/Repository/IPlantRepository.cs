@@ -1,4 +1,4 @@
-﻿using PlantApp.Data.Models;
+﻿using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.Plant;
 
 namespace PlantApp.Domain.Interfaces.Repository;

@@ -1,4 +1,4 @@
-﻿using PlantApp.Data.Models;
+﻿using PlantApp.Domain.Models;
 
 namespace PlantApp.Domain.Dtos.ML;
 

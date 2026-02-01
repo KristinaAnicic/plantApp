@@ -1,4 +1,4 @@
-﻿using PlantApp.Data.Models;
+﻿using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.GrowthLog;
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.Planted;
@@ -6,7 +6,6 @@ using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Dtos.PlantPlace;
 using PlantApp.Domain.Dtos.Reminder;
 using PlantApp.Domain.Dtos.User;
-using System.ComponentModel.DataAnnotations;
 
 namespace PlantApp.Domain.Utils;
 

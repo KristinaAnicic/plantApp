@@ -1,7 +1,6 @@
-﻿using PlantApp.Data.Models.Interfaces;
-using PlantApp.Domain.Interfaces.Repository;
+﻿using PlantApp.Domain.Interfaces.Repository;
 
-namespace PlantApp.Domain.Interfaces.Data;
+namespace PlantApp.Domain.Models.Interfaces;
 
 public interface IImageService
 {

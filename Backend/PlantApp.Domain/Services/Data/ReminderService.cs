@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using PlantApp.Data.Models;
-using PlantApp.Data.Models.Categories;
+using PlantApp.Domain.Models;
+using PlantApp.Domain.Models.Categories;
 using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Dtos.Reminder;
 using PlantApp.Domain.Interfaces;

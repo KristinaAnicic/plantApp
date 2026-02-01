@@ -1,10 +1,9 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Data;
-using Microsoft.ML.Transforms;
 using PlantApp.Domain.Dtos.Analytics;
 using PlantApp.Domain.Dtos.ML;
 using PlantApp.Domain.Interfaces;
-using PlantApp.Domain.Interfaces.Data;
+using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
 
 namespace PlantApp.Domain.Services;

@@ -1,5 +1,4 @@
-﻿using PlantApp.Data.Models;
-using PlantApp.Domain.Dtos.Planted;
+﻿using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Dtos.PlantPlace;
 
 namespace PlantApp.Domain.Interfaces.Data;

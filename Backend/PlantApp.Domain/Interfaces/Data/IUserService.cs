@@ -1,5 +1,4 @@
-﻿using PlantApp.Data.Models;
-using PlantApp.Domain.Dtos.User;
+﻿using PlantApp.Domain.Dtos.User;
 
 namespace PlantApp.Domain.Interfaces.Data;
 

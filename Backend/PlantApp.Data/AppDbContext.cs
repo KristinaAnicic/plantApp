@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PlantApp.Data.Models;
-using PlantApp.Data.Models.Categories;
+using PlantApp.Domain.Models;
+using PlantApp.Domain.Models.Categories;
 
 namespace PlantApp.Data;
 

@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\" />
+	  <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,13 +16,12 @@
     <PackageReference Include="FirebaseAdmin" Version="3.4.0" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="4.13.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.2" />
     <PackageReference Include="Microsoft.ML" Version="5.0.0" />
     <PackageReference Include="Microsoft.ML.FastTree" Version="5.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\PlantApp.Data\PlantApp.Data.csproj" />
   </ItemGroup>
 
 </Project>

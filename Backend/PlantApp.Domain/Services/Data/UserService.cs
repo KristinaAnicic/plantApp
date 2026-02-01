@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using PlantApp.Data.Models;
+using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.User;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;

@@ -1,8 +1,8 @@
-﻿using PlantApp.Data.Models;
+﻿using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.Analytics;
 using PlantApp.Domain.Dtos.ML;
 
-namespace PlantApp.Domain.Interfaces.Data;
+namespace PlantApp.Domain.Interfaces.Repository;
 
 public interface IAnalyticsRepository
 {

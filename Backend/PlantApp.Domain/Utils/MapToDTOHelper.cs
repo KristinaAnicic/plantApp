@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PlantApp.Data.Models;
-using PlantApp.Data.Models.Interfaces;
+﻿using PlantApp.Domain.Models;
+using PlantApp.Domain.Models.Interfaces;
 using PlantApp.Domain.Dtos;
 using PlantApp.Domain.Dtos.Analytics;
 using PlantApp.Domain.Dtos.GrowthLog;
@@ -76,7 +75,7 @@ public static class MapToDTOHelper
         };
     }
 
-    public static ImageDto MapImageToImageDto(this PlantApp.Data.Models.Image img)
+    public static ImageDto MapImageToImageDto(this PlantApp.Domain.Models.Image img)
     {
         return new ImageDto
         {

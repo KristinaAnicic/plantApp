@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using PlantApp.Data.Models;
+using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;

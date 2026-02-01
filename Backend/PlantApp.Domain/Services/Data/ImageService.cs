@@ -1,8 +1,8 @@
 ﻿using Appwrite;
 using Appwrite.Services;
 using Microsoft.Extensions.Logging;
-using PlantApp.Data.Models;
-using PlantApp.Data.Models.Interfaces;
+using PlantApp.Domain.Models;
+using PlantApp.Domain.Models.Interfaces;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
