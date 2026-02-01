@@ -4,6 +4,7 @@ import { UpsertPlantDto } from './models/plant.interface'
 import { plantEditResolver } from './utils/plant-edit-resolver';
 import { plantTradeEditResolver } from './utils/plant-trade-edit-resolver';
 import { authGuard } from './utils/auth-guard';
+import { adminGuard } from './utils/admin-guard';
 
 export const routes: Routes = [
     {
@@ -50,14 +51,14 @@ export const routes: Routes = [
         path: 'plant-form',
         loadComponent: () =>
             import('./pages/add-edit-plant/add-edit-plant').then((m) => m.AddEditPlant),
-        canActivate: [authGuard],
+        canActivate: [adminGuard],
         resolve: { editPlant: () => null }
     },
     {
         path: 'plant-form/:id',
         loadComponent: () =>
             import('./pages/add-edit-plant/add-edit-plant').then((m) => m.AddEditPlant),
-        canActivate: [authGuard],
+        canActivate: [adminGuard],
         resolve: { editPlant: plantEditResolver }
     },
     {
