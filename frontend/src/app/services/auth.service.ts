@@ -4,7 +4,7 @@ import { LoginCredentials } from '../models/auth/login.interface';
 import { Observable, tap } from 'rxjs';
 import { LoginResponse } from '../models/auth/login-response.interface';
 import { environment } from '../../environments/environment';
-import { UserDto } from '../models/user.interface';
+import { AddUserDto, UserDto } from '../models/user.interface';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -48,6 +48,10 @@ export class AuthService {
           }
         })
       )
+  }
+
+  register(user: AddUserDto) {
+    return this.http.post(`${environment.apiUrl}/auth/register`, user);
   }
 
   logout(): Observable<void>{

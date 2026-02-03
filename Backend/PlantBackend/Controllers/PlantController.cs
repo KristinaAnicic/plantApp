@@ -50,7 +50,9 @@ public class PlantController(IPlantService plantService) : Controller
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpsertPlantDto dto)
     {
-        await plantService.UpdateAsync(id, dto);
+        var error = await plantService.UpdateAsync(id, dto);
+        if (error != null)
+            return StatusCode(error.StatusCode, error);
         return NoContent();
     }
 

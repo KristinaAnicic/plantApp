@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using PlantApp.Domain.Models;
 using PlantApp.Domain.Models.Interfaces;
 using PlantApp.Domain.Interfaces;
-using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils.Exceptions;
 

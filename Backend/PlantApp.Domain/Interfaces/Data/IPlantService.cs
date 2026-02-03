@@ -1,5 +1,6 @@
 ﻿using PlantApp.Domain.Dtos;
 using PlantApp.Domain.Dtos.Plant;
+using PlantBackend.ExceptionHandlers;
 
 namespace PlantApp.Domain.Interfaces.Data;
 
@@ -9,7 +10,7 @@ public interface IPlantService
     public Task<PlantGetDto?> GetByIdAsync(int id);
     public Task<ListResponse<PlantDto>> GetFilteredAsync(FilterByDto filter, int page);
     public Task AddAsync(UpsertPlantDto plantDto);
-    public Task UpdateAsync(int Id, UpsertPlantDto plantDto);
+    public Task<ErrorResponse?> UpdateAsync(int Id, UpsertPlantDto plantDto);
     public Task DeleteAsync(int Id);
     public Task AddImages(int plantId, List<string> urls);
     public Task RemoveImageById(int plantId, int imageId);

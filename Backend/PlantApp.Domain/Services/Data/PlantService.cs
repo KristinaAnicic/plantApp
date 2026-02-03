@@ -1,14 +1,16 @@
-﻿using Microsoft.Extensions.Logging;
-using PlantApp.Domain.Models;
-using PlantApp.Domain.Models.Categories;
+﻿using Appwrite;
+using Microsoft.Extensions.Logging;
 using PlantApp.Domain.Dtos;
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
+using PlantApp.Domain.Models;
+using PlantApp.Domain.Models.Categories;
+using PlantApp.Domain.Models.Interfaces;
 using PlantApp.Domain.Utils;
 using PlantApp.Domain.Utils.Exceptions;
-using PlantApp.Domain.Models.Interfaces;
+using PlantBackend.ExceptionHandlers;
 
 namespace PlantApp.Domain.Services.Data;
 
@@ -78,11 +80,7 @@ public class PlantService(
 
         if (!(await timeRepository.IdExistsAsync(plantDto.TimeToFullHeightId)))
         {
-            throw new InvalidOperationAppException(
-                userMessage: "Invalid plant data submitted (Time to full height).",
-                internalMessage: $"TimeToFullHeight with id {plantDto.TimeToFullHeightId} does not exist.",
-                logger: logger
-            );
+            throw new NotFoundException("Time to full height", plantDto.TimeToFullHeightId, logger);
         }
 
         var plant = plantDto.MapUpsertPlantDtoToPlant();
@@ -108,15 +106,11 @@ public class PlantService(
         logger.LogInformation("Plant {PlantId} added by user {UserId}", plant.Id, CurrentUserId);
     }
 
-    public async Task UpdateAsync(int Id, UpsertPlantDto plantDto)
+    public async Task<ErrorResponse?> UpdateAsync(int Id, UpsertPlantDto plantDto)
     {
         if (plantDto == null)
         {
-            throw new InvalidOperationAppException(
-                userMessage: "Invalid plant data submitted.",
-                internalMessage: "Null UpsertPlantDto provided to UpdateAsync.",
-                logger: logger
-            );
+            return new ErrorResponse("Plant data is required.", 400);
         }
 
         if (plantDto.Id != Id) 
@@ -164,6 +158,7 @@ public class PlantService(
         await imageService.RemoveUnusedImagesAsync();
 
         logger.LogInformation("Plant {PlantId} updated by user {UserId}", Id, CurrentUserId);
+        return null;
     }
 
     public async Task DeleteAsync(int Id)

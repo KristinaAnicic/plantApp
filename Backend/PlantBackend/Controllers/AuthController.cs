@@ -16,9 +16,13 @@ public class AuthController(
     private const string RefreshTokenCookieName = "refreshToken";
 
     [HttpPost("register")]
-    public async Task<ActionResult> Register([FromBody] AddUserDto dto)
+    [AllowAnonymous]
+    public async Task<IActionResult> Register([FromBody] AddUserDto dto)
     {
-        await userService.AddAsync(dto);
+        var error = await userService.AddAsync(dto, isSelfRegistration: true);
+        if (error != null)
+            return StatusCode(error.StatusCode, error);
+
         return NoContent();
     }
 

@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.User;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
+using PlantApp.Domain.Models;
 using PlantApp.Domain.Utils;
 using PlantApp.Domain.Utils.Exceptions;
+using PlantBackend.ExceptionHandlers;
 namespace PlantApp.Domain.Services.Data;
 
 public class UserService(
@@ -37,37 +38,33 @@ public class UserService(
         return user?.MapUserToUserGetDto();
     }
 
-    public async Task AddAsync(AddUserDto dto)
+    public async Task<ErrorResponse?> AddAsync(AddUserDto dto, bool isSelfRegistration)
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
         if (dto.DateOfBirth > today.AddYears(-13))
-            throw new InvalidOperationAppException("You must be at least 13 years old.");
+            return new ErrorResponse("You must be at least 13 years old.", 400);
 
         var existingEmail = await repository.ExistsAsync(u => EF.Functions.ILike(u.Email, dto.Email));
         if (existingEmail)
         {
-            throw new InvalidOperationAppException(
-                userMessage: "This email is already registered.",
-                internalMessage: $"Attempt to add user with existing email: {dto.Email}",
-                logger: logger
-            );
+            return new ErrorResponse("This email is already registered.", 400);
         }
 
         var existingUsername = await repository.ExistsAsync(u => EF.Functions.ILike(u.Username, dto.Username));
         if (existingUsername)
         {
-            throw new InvalidOperationAppException(
-                userMessage: "This username is already taken.",
-                internalMessage: $"Attempt to add user with existing username: {dto.Username}",
-                logger: logger
-            );
+            return new ErrorResponse("This username is already taken.", 400);
         }
 
         var role = await roleRepo.GetByIdAsync(dto.RoleId);
         if (role == null) 
             throw new NotFoundException("Role", dto.RoleId, logger);
 
-        if (!IsAdmin && dto.RoleId != 3)
+        if (isSelfRegistration)
+        {
+            dto.RoleId = 3;
+        }
+        else if (!IsAdmin && dto.RoleId != 3)
         {
             dto.RoleId = 3;
             logger.LogInformation("Non-admin user {UserId} attempted to assign role {RoleId}, defaulted to regular user", CurrentUserId, dto.RoleId);
@@ -78,13 +75,16 @@ public class UserService(
 
         await repository.AddAsync(user);
 
-        logger.LogInformation("User {UserId} added new user {NewUserEmail}", CurrentUserId, dto.Email);
+        if (!isSelfRegistration)
+            logger.LogInformation("User {UserId} added new user {NewUserEmail}", CurrentUserId, dto.Email);
+
+        return null;
     }
 
-    public async Task UpdateAsync(int id, UpdateUserDto dto)
+    public async Task<ErrorResponse?> UpdateAsync(int id, UpdateUserDto dto)
     {
         if (dto == null)
-            throw new InvalidOperationAppException("User data is required.", logger: logger);
+            return new ErrorResponse("User data is required.", 400);
 
         if (id != dto.Id) 
             throw new DtoIdMismatchException("User", dto.Id, id, logger);
@@ -106,6 +106,7 @@ public class UserService(
         
         await repository.UpdateAsync(existingUser);
         logger.LogInformation("User {UserId} updated user {UpdatedUserId}", CurrentUserId, id);
+        return null;
     }
 
     public async Task DeleteAsync(int id)

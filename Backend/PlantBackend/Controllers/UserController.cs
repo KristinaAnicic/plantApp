@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PlantApp.Domain.Dtos.User;
 using PlantApp.Domain.Interfaces.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PlantBackend.Controllers;
 
@@ -27,14 +28,20 @@ public class UserController(IUserService userService) : Controller
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] AddUserDto dto)
     {
-        await userService.AddAsync(dto);
+        var error = await userService.AddAsync(dto, isSelfRegistration: false);
+        if (error != null)
+            return StatusCode(error.StatusCode, error);
+
         return NoContent();
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateUserDto dto)
     {
-        await userService.UpdateAsync(id, dto);
+        var error = await userService.UpdateAsync(id, dto);
+        if (error != null)
+            return StatusCode(error.StatusCode, error);
+
         return NoContent();
     }
 

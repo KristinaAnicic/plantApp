@@ -48,14 +48,18 @@ public class PlantedController(IPlantedService plantedService) : Controller
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] UpsertPlantedDto dto)
     {
-        await plantedService.AddAsync(dto);
+        var error = await plantedService.AddAsync(dto);
+        if (error != null)
+            return StatusCode(error.StatusCode, error);
         return NoContent();
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpsertPlantedDto dto)
     {
-        await plantedService.UpdateAsync(id, dto);
+        var error = await plantedService.UpdateAsync(id, dto);
+        if (error != null)
+            return StatusCode(error.StatusCode, error);
         return NoContent();
     }
 

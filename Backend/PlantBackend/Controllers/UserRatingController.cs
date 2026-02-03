@@ -20,7 +20,10 @@ public class UserRatingController(IUserRatingService userRatingService) : Contro
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] AddUserRatingDto dto)
     {
-        await userRatingService.AddAsync(dto);
+        var error = await userRatingService.AddAsync(dto);
+        if (error != null)
+            return StatusCode(error.StatusCode, error);
+
         return NoContent();
     }
 

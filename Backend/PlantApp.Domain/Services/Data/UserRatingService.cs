@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
-using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
+using PlantApp.Domain.Models;
 using PlantApp.Domain.Utils;
 using PlantApp.Domain.Utils.Exceptions;
+using PlantBackend.ExceptionHandlers;
 
 namespace PlantApp.Domain.Services.Data;
 
@@ -34,11 +35,11 @@ public class UserRatingService(
         return ratings.Select(r => r.MapUserRatingToUserRatingGetDto()).ToList();
     }
 
-    public async Task AddAsync(AddUserRatingDto dto)
+    public async Task<ErrorResponse?> AddAsync(AddUserRatingDto dto)
     {
         var rating = await repository.GetAllByKeyAsync(u => u.RatedId == dto.RatedUserId && u.RaterId == CurrentUserId);
         if (rating.Any() && !IsAdmin) 
-            throw new InvalidOperationAppException("You have already rated this user. You can update the existing rating instead.",null, logger);
+            return new ErrorResponse("You have already rated this user. You can update the existing rating instead.", 400);
 
         var userExists = await userRepo.IdExistsAsync(dto.RatedUserId);
         if (!userExists) 
@@ -50,6 +51,7 @@ public class UserRatingService(
         await repository.AddAsync(newRating);
 
         logger.LogInformation("User {UserId} added a rating for user {RatedUserId}", CurrentUserId, dto.RatedUserId);
+        return null;
     }
 
     public async Task UpdateAsync(int id, UpdateUserRatingDto dto)

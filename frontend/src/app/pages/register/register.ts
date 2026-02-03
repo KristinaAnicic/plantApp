@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, Form, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AddUserDto } from '../../models/user.interface';
-import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   styleUrl: './register.css',
 })
 export class Register {
-  private service = inject(UserService);
+  private service = inject(AuthService);
   router = inject(Router);
 
   maxDate = new Date().toISOString().split('T')[0];
@@ -64,7 +64,7 @@ export class Register {
 
   register(){
     const data: AddUserDto = this.registerForm.getRawValue();
-    this.service.addUser(data).subscribe({
+    this.service.register(data).subscribe({
       next:() => {
         this.router.navigate(['/login']);
       },

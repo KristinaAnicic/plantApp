@@ -1,14 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
-using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Dtos.PlantPlace;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
+using PlantApp.Domain.Models;
+using PlantApp.Domain.Models.Interfaces;
 using PlantApp.Domain.Utils;
 using PlantApp.Domain.Utils.Exceptions;
-using PlantApp.Domain.Models.Interfaces;
+using PlantBackend.ExceptionHandlers;
 
 namespace PlantApp.Domain.Services.Data;
 
@@ -111,10 +112,10 @@ public class PlantedService(
         return planted.MapPlantedToPlantedGetDto();
     }
 
-    public async Task AddAsync(UpsertPlantedDto dto)
+    public async Task<ErrorResponse?> AddAsync(UpsertPlantedDto dto)
     {
-        if (dto == null) 
-            throw new InvalidOperationAppException("Planted data is required.", logger: logger);
+        if (dto == null)
+            return new ErrorResponse("Planted data is required.", 400);
 
         if (dto.DatePlanted == null)
             dto.DatePlanted = DateOnly.FromDateTime(DateTime.UtcNow);
@@ -138,12 +139,13 @@ public class PlantedService(
 
         await repository.AddAsync(planted);
         logger.LogInformation("Planted plant added. User {UserId}, Place {PlaceId}", CurrentUserId, dto.PlaceId);
+        return null;
     }
 
-    public async Task UpdateAsync(int id, UpsertPlantedDto dto)
+    public async Task<ErrorResponse?> UpdateAsync(int id, UpsertPlantedDto dto)
     {
-        if (dto == null) 
-            throw new InvalidOperationAppException("Planted data is required.", logger: logger);
+        if (dto == null)
+            return new ErrorResponse("Planted data is required.", 400);
         if (dto.Id != id) 
             throw new DtoIdMismatchException("Planted plant", dto.Id ?? 0, id, logger);
 
@@ -176,6 +178,7 @@ public class PlantedService(
         await imageService.RemoveUnusedImagesAsync();
 
         logger.LogInformation("Planted plant {PlantedId} updated by user {UserId}", id, CurrentUserId);
+        return null;
     }
 
     public async Task DeleteAsync(int id)
