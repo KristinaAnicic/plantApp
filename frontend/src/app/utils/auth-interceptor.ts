@@ -24,7 +24,7 @@ export class AuthInterceptor implements HttpInterceptor {
     
     return next.handle(req).pipe(
       catchError((error) => {
-        if (error instanceof HttpErrorResponse && error.status === 401) {
+        if (token && error instanceof HttpErrorResponse && error.status === 401) {
           if (!this.isRefreshing) {
             this.isRefreshing = true;
             this.refreshTokenSubject.next(null);
@@ -61,8 +61,8 @@ export class AuthInterceptor implements HttpInterceptor {
   private addToken(req: HttpRequest<any>, token: string) {
     return req.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     });
   }
 };

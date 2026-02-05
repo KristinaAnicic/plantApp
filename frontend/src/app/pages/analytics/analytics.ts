@@ -237,6 +237,9 @@ export class Analytics implements OnInit {
         type: "category",
         categories: activity.map(s => `${monthNames[s.month - 1]} ${s.year}`),
       },
+      yaxis: {
+        min: 0,
+      },
       grid: {
         borderColor: '#f1f5f9'
       }
