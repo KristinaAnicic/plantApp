@@ -28,6 +28,7 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
             PlantStatusId = d.PlantStatusId,
             SunlightList = d.SunlightList,
             MoistureList = d.MoistureList,
+            SeasonList = d.SeasonList,
             LowMaintenace = d.LowMaintenace,
             DroughtResistant = d.DroughtResistant,
             Month = d.Month,
@@ -41,6 +42,8 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
 
         var context = new MLContext();
         IDataView dataView = context.Data.LoadFromEnumerable(data);
+
+        //var split = context.Data.TrainTestSplit(dataView, testFraction: 0.2);
 
         var pipeline = context.Transforms
             .Categorical.OneHotEncoding("FamilyEncoded", nameof(PlantMLInput.PlantFamily))
@@ -59,10 +62,30 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
                 "FamilyEncoded", 
                 "HardinessEncoded", 
                 nameof(PlantMLInput.SunlightRequirements), 
-                nameof(PlantMLInput.MoistureRequirements)))
+                nameof(PlantMLInput.MoistureRequirements),
+                nameof(PlantMLInput.Seasons)))
             .Append(context.Regression.Trainers.FastTree());
 
+        var validationResults = context.Regression.CrossValidate(
+            data: dataView,
+            estimator: pipeline,
+            numberOfFolds: 5,
+            labelColumnName: "Label"
+        );
+
+        var acc = validationResults.Average(f => f.Metrics.RSquared);
+        var avgRMSE = validationResults.Average(f => f.Metrics.RootMeanSquaredError);
+
+        Console.WriteLine($"Accuracy: {Math.Round(acc, 2)}");
+        Console.WriteLine($"RMSE (average error): {Math.Round(avgRMSE, 2)}");
+
         var model = pipeline.Fit(dataView);
+
+        /*var predictions = model.Transform(split.TestSet);
+        var metrics = context.Regression.Evaluate(predictions, labelColumnName: "HealthScore");
+
+        Console.WriteLine("Model accuracy: " + Math.Round(metrics.RSquared, 2));
+        Console.WriteLine("Average error: " + Math.Round(metrics.RootMeanSquaredError, 2));*/
 
         if (!Directory.Exists(Path.GetDirectoryName(path)))
             Directory.CreateDirectory(Path.GetDirectoryName(path)!);

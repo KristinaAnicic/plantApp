@@ -345,23 +345,23 @@ public static class MapToDTOHelper
             HumidityIntensity = data.HumidityIntensity,
             IsOutside = data.IsOutside,
             Month = data.Month,
-
             HardinessLevel = data.Hardiness,
             PlantFamily = data.Family,
-            SunlightRequirements = EncodeVector(data.SunlightList.Select(s => s.Id).ToList()),
-            MoistureRequirements = EncodeVector(data.MoistureList.Select(s => s.Id).ToList()),
+            SunlightRequirements = EncodeVector(data.SunlightList.Select(s => s.Id).ToList(), 3),
+            MoistureRequirements = EncodeVector(data.MoistureList.Select(s => s.Id).ToList(), 3),
+            Seasons = EncodeVector(data.SeasonList.Select(s => s.Id).ToList(), 4),
             IsLowMaintenance = data.LowMaintenace,
             IsDroughtResistant = data.DroughtResistant,
             HealthScore = data.HealthScore
         };
     }
 
-    public static float[] EncodeVector(List<int> ids)
+    public static float[] EncodeVector(List<int> ids, int size)
     {
-        var vector = new float[3];
+        var vector = new float[size];
         foreach (var id in ids)
         {
-            if (id >= 1 && id <= 3)
+            if (id >= 1 && id <= size)
             {
                 vector[id - 1] = 1f;
             }

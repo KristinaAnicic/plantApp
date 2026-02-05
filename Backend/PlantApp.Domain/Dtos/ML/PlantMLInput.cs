@@ -15,6 +15,8 @@ public class PlantMLInput
     public required float[] SunlightRequirements { get; set; } = new float[3];
     [VectorType(3)]
     public required float[] MoistureRequirements { get; set; } = new float[3];
+    [VectorType(4)]
+    public required float[] Seasons { get; set; } = new float[4];
     public bool IsLowMaintenance { get; set; }
     public bool IsDroughtResistant { get; set; }
 

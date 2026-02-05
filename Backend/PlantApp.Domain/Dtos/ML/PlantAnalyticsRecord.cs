@@ -1,4 +1,5 @@
 ﻿using PlantApp.Domain.Models;
+using PlantApp.Domain.Models.Categories;
 
 namespace PlantApp.Domain.Dtos.ML;
 
@@ -14,6 +15,7 @@ public class PlantAnalyticsRecord
     public int PlantStatusId {  get; set; }
     public List<Sunlight> SunlightList { get; set; } = new();
     public List<Moisture> MoistureList { get; set; } = new();
+    public List<Season> SeasonList { get; set; } = new();
     public bool LowMaintenace { get; set; }
     public bool DroughtResistant { get; set; }
     public float Month { get; set; }

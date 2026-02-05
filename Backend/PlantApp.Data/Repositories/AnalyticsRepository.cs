@@ -77,7 +77,7 @@ public class AnalyticsRepository : IAnalyticsRepository
     {
         var date = DateTime.UtcNow.AddYears(-1);
         var healthy = new List<string> { "Healthy", "Growing", "Flowering", "Fruiting", "Seedling", "Transplanted" };
-        var stressed = new List<string> { "Sick", "Wilting", "Stressed", "Dormant" };
+        var stressed = new List<string> { "Sick", "Wilting", "Stressed" };
 
         var logs = await context.GrowthLogs
             .Where(h =>
@@ -86,7 +86,8 @@ public class AnalyticsRepository : IAnalyticsRepository
                 h.Planted.Place.UserId == userId &&
                 h.CreatedAt >= date &&
                 h.PlantStatus != null &&
-                h.DeletedAt == null
+                h.DeletedAt == null &&
+                h.PlantStatusId != 3
             )
             .OrderBy(h => h.PlantedId)
             .ThenBy(h => h.ObservationDate)
@@ -250,6 +251,7 @@ public class AnalyticsRepository : IAnalyticsRepository
                 PlantStatusId = l.PlantStatusId,
                 SunlightList = l.Planted.Plant.Sunlights.ToList(),
                 MoistureList = l.Planted.Plant.Moistures.ToList(),
+                SeasonList = l.Planted.Plant.Seasons.ToList(),
                 LowMaintenace = l.Planted.Plant.IsLowMaintenance ?? false,
                 DroughtResistant = l.Planted.Plant.IsDroughtResistant ?? false,
                 Month = l.ObservationDate.Month,
@@ -279,6 +281,7 @@ public class AnalyticsRepository : IAnalyticsRepository
                 Hardiness = p.Plant.HardinessLevel != null ? p.Plant.HardinessLevel.Level : "Unknown",
                 SunlightList = p.Plant.Sunlights.ToList(),
                 MoistureList = p.Plant.Moistures.ToList(),
+                SeasonList = p.Plant.Seasons.ToList(),
                 LowMaintenace = p.Plant.IsLowMaintenance ?? false,
                 DroughtResistant = p.Plant.IsDroughtResistant ?? false,
                 Month = (float)DateTime.UtcNow.Month,
