@@ -77,17 +77,24 @@
 
             <!-- Right side -->
             <div class="flex flex-col gap-y-3">
-                <div class="bg-white rounded-lg px-8 py-6 border border-gray-100 shadow-sm shadow-gray-200">
+                <div class="relative bg-white rounded-lg px-8 py-6 border border-gray-100 shadow-sm shadow-gray-200">
                     <div class="flex justify-between">
                         <h3 class="text-xl font-semibold pb-2">Plant Details</h3>
-                        @if (authService.isAdmin()){
-                        <div [routerLink]="['/plant-form', id]" class="cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">                 
-                                <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
-                                <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
+                        @if (authService.isAdmin()) {
+                        <div (click)="toggleOptionsMenu()" class="absolute top-4 right-4 cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                                <path fill-rule="evenodd" d="M4.5 12a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z" clip-rule="evenodd" />
                             </svg>
                         </div>
-                        }
+                    }
+                
+                    @if(isOptionsMenuOpened()){
+                        <div class="fixed inset-0 z-10" (click)="toggleOptionsMenu()"></div> 
+                        <div class="absolute top-10 mb-2 right-3 z-20 bg-white flex flex-col justify-start items-center text-sm rounded-md border border-gray-200">
+                            <button (click)="editPlant()" class="px-8 py-1.5 w-full text-end border-b border-b-gray-100 hover:bg-gray-50 cursor-pointer">Edit</button>
+                            <button (click)="deletePlant()" class="px-8 py-1.5 w-full text-end hover:bg-gray-50 cursor-pointer">Delete</button>
+                        </div>
+                    }
                     
                     </div>                   
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-2">

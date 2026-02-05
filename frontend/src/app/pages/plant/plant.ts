@@ -2,9 +2,10 @@ import { Component, computed, inject, Input, OnInit, signal } from '@angular/cor
 import { PlantService } from '../../services/plant.service';
 import { PlantGetDto } from '../../models/plant.interface';
 import { Reference } from '../../models/reference.interface';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { AuthService } from '../../services/auth.service';
 import { AddEditPlantedModal } from "../../components/add-edit-planted-modal/add-edit-planted-modal";
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-plant',
@@ -16,11 +17,14 @@ export class Plant implements OnInit {
   @Input() id!: string;
   
   private service = inject(PlantService);
+  private router = inject(Router);
   public authService = inject(AuthService);
+  public notif = inject(NotificationService);
   plant = signal<PlantGetDto | null>(null);
   selectedImage = signal<string | null>(null);
   selectedOption = signal<string | null>(null);
   isAddPlantedModalOpen = signal(false);
+  isOptionsMenuOpened = signal(false);
 
   ngOnInit(): void {
     this.service.getPlant(parseInt(this.id)).subscribe({
@@ -145,5 +149,25 @@ export class Plant implements OnInit {
     } else {
       document.body.classList.remove('overflow-hidden');
     }
+  }
+
+  toggleOptionsMenu(){
+    this.isOptionsMenuOpened.update(val => !val);
+  }
+
+  editPlant(){
+    this.router.navigate(['/plant-form', this.id]);
+    this.isOptionsMenuOpened.set(false);
+  }
+
+  deletePlant(){
+    this.service.removePlant(parseInt(this.id)).subscribe({
+      next: () => {
+        this.router.navigate(['']);
+        this.notif.showSuccess("Successfully deleted plant")
+      },
+      error: () => this.notif.showError("Couldn't remove log, try again later!")
+    });
+    this.isOptionsMenuOpened.set(false);
   }
 }

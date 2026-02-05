@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { AbstractControl, Form, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AddUserDto } from '../../models/user.interface';
 import { Router } from '@angular/router';
@@ -17,16 +17,28 @@ export class Register {
   maxDate = new Date().toISOString().split('T')[0];
   showWarning = signal(false);
   errorMessage = signal('');
+  formSubmitted = signal(false);
 
   registerForm = new FormGroup({
-    email: new FormControl('', { validators: [Validators.required, Validators.email],  nonNullable: true }),
-    username: new FormControl('', { nonNullable: true }),
-    password: new FormControl('', { validators: [Validators.minLength(8)], nonNullable: true }),
-    passwordConfirm: new FormControl('', { validators: this.passwordMatchValidation(), nonNullable: true }),
+    email: new FormControl('', { 
+      validators: [Validators.required, Validators.email],  
+      nonNullable: true 
+    }),
+    username: new FormControl('', { validators: Validators.required, nonNullable: true }),
+    password: new FormControl('', { 
+      validators: [Validators.required, Validators.minLength(8)], 
+      nonNullable: true 
+    }),
+    passwordConfirm: new FormControl('', { 
+      validators: this.passwordMatchValidation(), 
+      nonNullable: true 
+    }),
     displayName: new FormControl('', { nonNullable: true }),
     contact: new FormControl('', { nonNullable: true }),
     gender: new FormControl('F', { nonNullable: true }),
-    dateOfBirth: new FormControl(new Date().toISOString().split('T')[0], { validators: [Validators.required, this.ageValidation() ], nonNullable: true }),
+    dateOfBirth: new FormControl(new Date().toISOString().split('T')[0], { 
+      validators: [Validators.required, this.ageValidation() ], 
+      nonNullable: true }),
   })
 
   passwordMatchValidation(){
@@ -63,6 +75,12 @@ export class Register {
   }
 
   register(){
+    this.formSubmitted.set(true);
+    if (this.registerForm.invalid){
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
     const data: AddUserDto = this.registerForm.getRawValue();
     this.service.register(data).subscribe({
       next:() => {
@@ -84,4 +102,10 @@ export class Register {
     })
 
   }
+
+  readonly hasRequiredErrors = computed<boolean>(() => 
+    Object.values(this.registerForm.controls).some(control => 
+      control.invalid && control.errors?.['required'] && (control.touched || this.formSubmitted())
+    )
+  )
 }
