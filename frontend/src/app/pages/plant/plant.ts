@@ -9,7 +9,7 @@ import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-plant',
-  imports: [RouterLink, AddEditPlantedModal],
+  imports: [AddEditPlantedModal],
   templateUrl: './plant.html',
   styleUrl: './plant.css',
 })
@@ -166,7 +166,7 @@ export class Plant implements OnInit {
         this.router.navigate(['']);
         this.notif.showSuccess("Successfully deleted plant")
       },
-      error: () => this.notif.showError("Couldn't remove log, try again later!")
+      error: () => this.notif.showError("Couldn't remove plant, try again later!")
     });
     this.isOptionsMenuOpened.set(false);
   }

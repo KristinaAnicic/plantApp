@@ -9,6 +9,8 @@ import { AddEditLogModal } from "../../components/add-edit-log-modal/add-edit-lo
 import { GrowthLogGetDto, UpsertGrowthLogDto } from '../../models/growth-log.interface';
 import { UpsertReminderDto } from '../../models/reminder.interface';
 import { AddEditReminderModal } from "../../components/add-edit-reminder-modal/add-edit-reminder-modal";
+import { Router } from '@angular/router';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-user-plant',
@@ -20,6 +22,9 @@ export class UserPlant implements OnInit {
   @Input() id!: string;
 
   service = inject(PlantedService);
+  private router = inject(Router);
+  public notif = inject(NotificationService);
+
   planted = signal<PlantedGetDto | null>(null);
   isEditPlantedModalOpen = signal(false);
   isLogModalOpen = signal(false);
@@ -138,5 +143,15 @@ export class UserPlant implements OnInit {
   addReminder(){
     this.reminderToEdit.set(null);
     this.isReminderModalOpen.set(true);
+  }
+
+  deletePlanted(){
+    this.service.removePlanted(parseInt(this.id)).subscribe({
+      next: () => {
+        this.router.navigate(['/my-plants']);
+        this.notif.showSuccess("Successfully deleted plant")
+      },
+      error: () => this.notif.showError("Couldn't remove plant, try again later!")
+    });
   }
 }
