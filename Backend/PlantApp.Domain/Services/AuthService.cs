@@ -1,13 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.Authentication;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Repository;
+using PlantApp.Domain.Models;
 using PlantApp.Domain.Utils;
 using PlantApp.Domain.Utils.Exceptions;
+using PlantBackend.ExceptionHandlers;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -112,7 +114,7 @@ public class AuthService(
         return existingRefreshToken;
     }
 
-    public async Task<(string, TokenResponseDto)> RefreshTokens(string token)
+    public async Task<TokenResponseDto> RefreshTokens(string token)
     {
         var refreshToken = await ValidateRefreshTokenAsync(token);
 
@@ -135,17 +137,18 @@ public class AuthService(
         return await CreateTokenResponse(user);
     }
 
-    public async Task<(string, TokenResponseDto)> CreateTokenResponse(User user)
+    public async Task<TokenResponseDto> CreateTokenResponse(User user)
     {
         var refreshToken = await GenerateAndSaveRefreshTokenAsync(user.Id);
-        return (refreshToken, new TokenResponseDto
+        return new TokenResponseDto
         {
             AccessToken = GenerateToken(user),
-            User = user.MapUserToUserDto()
-        });
+            User = user.MapUserToUserDto(),
+            RefreshToken = refreshToken
+        };
     }
 
-    public async Task<(string, TokenResponseDto)> LoginUser(LoginDto dto)
+    public async Task<(TokenResponseDto?, ErrorResponse?)> LoginUser(LoginDto dto)
     {
         var user = await userRepo.GetByKeyAsync(u => 
             EF.Functions.ILike(u.Username, dto.UsernameOrEmail) || 
@@ -154,15 +157,17 @@ public class AuthService(
         if (user == null || 
             !BCrypt.Net.BCrypt.EnhancedVerify(dto.Password, user.Password))
         {
-            throw new InvalidOperationAppException(
-            userMessage: "Username or password is incorrect.",
-            internalMessage: $"Failed login attempt for UsernameOrEmail '{dto.UsernameOrEmail}'",
-            logger: logger
-        );
+            logger.LogWarning("Failed login attempt for '{UsernameOrEmail}'", dto.UsernameOrEmail);
+
+            return (null, new ErrorResponse
+            {
+                StatusCode = StatusCodes.Status401Unauthorized,
+                Error = "Username or password is incorrect."
+            });
         }
 
         logger.LogInformation("User {UserId} successfully logged in", user.Id);
-        return await CreateTokenResponse(user);
+        return (await CreateTokenResponse(user), null);
     }
 
     public async Task Logout(string refreshToken)

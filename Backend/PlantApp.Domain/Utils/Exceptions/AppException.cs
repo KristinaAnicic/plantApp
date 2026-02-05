@@ -11,7 +11,6 @@ public abstract class AppException : Exception
     {
         UserMessage = userMessage;
 
-        // Logiramo detalje, ne poruku za korisnika
         if (logger != null)
         {
             logger.LogWarning("{ExceptionType}: {InternalMessage}", GetType().Name, internalMessage ?? userMessage);

@@ -4,6 +4,7 @@ using PlantApp.Domain.Dtos.Authentication;
 using PlantApp.Domain.Dtos.User;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 [Route("api/auth")]
 [ApiController]
@@ -29,10 +30,14 @@ public class AuthController(
     [HttpPost("login")]
     public async Task<ActionResult<TokenResponseDto>> Login([FromBody] LoginDto dto) 
     {
-        var (token, response) = await authService.LoginUser(dto);
-        SetRefreshTokenCookie(token);
+        var (token, error) = await authService.LoginUser(dto);
+        if (error != null)
+        {
+            return StatusCode(error.StatusCode, error);
+        }
+        SetRefreshTokenCookie(token!.RefreshToken!);
 
-        return Ok(response);
+        return Ok(token);
     }
 
     [HttpPost("refresh-token")]
@@ -43,8 +48,8 @@ public class AuthController(
 
         try
         {
-            var (token, response) = await authService.RefreshTokens(refreshToken);
-            SetRefreshTokenCookie(token);
+            var response = await authService.RefreshTokens(refreshToken);
+            SetRefreshTokenCookie(response.RefreshToken);
 
             return Ok(response);
         }
