@@ -56,18 +56,19 @@ public class AnalyticsService(
         foreach (var info in data)
         {
             var inputList = new List<PlantMLInput>();
+            var startMonth = (int)info.MLInput.Month;
 
-            for (int month = 1; month <= 12; month++)
+            for (int month = 0; month < 12; month++)
             {
+                int currentMonth = ((startMonth - 1 + month) % 12) + 1;
                 var inputCopy = info.MLInput.Clone();
-                inputCopy.Month = (float)month;
+                inputCopy.Month = (float)currentMonth;
+                inputCopy.DaysSincePlanted = info.MLInput.DaysSincePlanted + (month * 30);
                 inputList.Add(inputCopy);
             }
 
             var monthlyPrediction = await mlService.PredictHealthScoresBatch(inputList);
-
-            var currentMonth = DateTime.Now.Month;
-            var currentScore = monthlyPrediction[currentMonth - 1];
+            var currentScore = monthlyPrediction.FirstOrDefault();
 
             results.Add(new HealthPredictionDto
             {

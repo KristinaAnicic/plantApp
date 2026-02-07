@@ -352,6 +352,7 @@ public static class MapToDTOHelper
             Seasons = EncodeVector(data.SeasonList.Select(s => s.Id).ToList(), 4),
             IsLowMaintenance = data.LowMaintenace,
             IsDroughtResistant = data.DroughtResistant,
+            DaysSincePlanted = data.DaysSincePlanted,
             HealthScore = data.HealthScore
         };
     }

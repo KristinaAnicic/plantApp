@@ -1,10 +1,9 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Data;
-using PlantApp.Domain.Dtos.Analytics;
-using PlantApp.Domain.Dtos.ML;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
+using PlantApp.Domain.Dtos.ML;
 
 namespace PlantApp.Domain.Services;
 
@@ -31,6 +30,7 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
             SeasonList = d.SeasonList,
             LowMaintenace = d.LowMaintenace,
             DroughtResistant = d.DroughtResistant,
+            DaysSincePlanted = d.DaysSincePlanted,
             Month = d.Month,
 
             HealthScore = CalculateAdjustedHealthScore(d)
@@ -52,6 +52,7 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
             .Append(context.Transforms.Conversion.ConvertType(nameof(PlantMLInput.IsOutside), outputKind: DataKind.Single))
             .Append(context.Transforms.Conversion.ConvertType(nameof(PlantMLInput.IsLowMaintenance), outputKind: DataKind.Single))
             .Append(context.Transforms.Conversion.ConvertType(nameof(PlantMLInput.IsDroughtResistant), outputKind: DataKind.Single))
+            .Append(context.Transforms.NormalizeMinMax(nameof(PlantMLInput.DaysSincePlanted)))
             .Append(context.Transforms.Concatenate("Features",
                 nameof(PlantMLInput.SunlightIntensity),
                 nameof(PlantMLInput.HumidityIntensity),
@@ -63,8 +64,16 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
                 "HardinessEncoded", 
                 nameof(PlantMLInput.SunlightRequirements), 
                 nameof(PlantMLInput.MoistureRequirements),
-                nameof(PlantMLInput.Seasons)))
-            .Append(context.Regression.Trainers.FastTree());
+                nameof(PlantMLInput.Seasons),
+                nameof(PlantMLInput.DaysSincePlanted)))
+            .Append(context.Regression.Trainers.FastTree(
+                labelColumnName: "Label",
+                featureColumnName: "Features",
+                numberOfTrees: 150,
+                numberOfLeaves: 15,
+                minimumExampleCountPerLeaf: 10,
+                learningRate: 0.2
+            ));
 
         var validationResults = context.Regression.CrossValidate(
             data: dataView,
@@ -99,8 +108,7 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
     {
         float baseScore = log.PlantStatusId switch
         {
-            7 or 9 => 100f,     // fruiting, harvested
-            6 => 90f,           // flowering
+            6 or 7 or 9 => 100f,     // flowering, fruiting, harvested 
             1 or 5 => 85f,      // healthy, growing
             8 => 75f,           // seedling
             11 => 70f,          // transplanted

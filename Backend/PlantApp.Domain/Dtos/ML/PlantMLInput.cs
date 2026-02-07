@@ -1,6 +1,6 @@
 ﻿using Microsoft.ML.Data;
 
-namespace PlantApp.Domain.Dtos.Analytics;
+namespace PlantApp.Domain.Dtos.ML;
 
 public class PlantMLInput
 {
@@ -8,6 +8,7 @@ public class PlantMLInput
     public float HumidityIntensity { get; set; }
     public bool IsOutside { get; set; }
     public float Month { get; set; }
+    public float DaysSincePlanted { get; set; }
 
     public required string PlantFamily { get; set; }
     public required string HardinessLevel { get; set; }

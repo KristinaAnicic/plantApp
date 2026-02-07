@@ -3,7 +3,6 @@ using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.Analytics;
 using PlantApp.Domain.Dtos.ML;
 using PlantApp.Domain.Interfaces.Repository;
-using PlantApp.Domain.Utils;
 
 namespace PlantApp.Data.Repositories;
 
@@ -254,6 +253,7 @@ public class AnalyticsRepository : IAnalyticsRepository
                 SeasonList = l.Planted.Plant.Seasons.ToList(),
                 LowMaintenace = l.Planted.Plant.IsLowMaintenance ?? false,
                 DroughtResistant = l.Planted.Plant.IsDroughtResistant ?? false,
+                DaysSincePlanted = (float)(l.ObservationDate.DayNumber - l.Planted.DatePlanted.DayNumber),
                 Month = l.ObservationDate.Month,
             }).ToListAsync();
 
@@ -285,6 +285,7 @@ public class AnalyticsRepository : IAnalyticsRepository
                 LowMaintenace = p.Plant.IsLowMaintenance ?? false,
                 DroughtResistant = p.Plant.IsDroughtResistant ?? false,
                 Month = (float)DateTime.UtcNow.Month,
+                DaysSincePlanted = (float)(DateOnly.FromDateTime(DateTime.UtcNow).DayNumber - p.DatePlanted.DayNumber),
                 HealthScore = 0
             })
             .ToListAsync();    

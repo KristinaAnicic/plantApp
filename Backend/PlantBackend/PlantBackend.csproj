@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PlantApp.Data\PlantApp.Data.csproj" />
     <ProjectReference Include="..\PlantApp.Domain\PlantApp.Domain.csproj" />
+    <ProjectReference Include="..\PlantApp.ML\PlantApp.ML.csproj" />
   </ItemGroup>
 
 </Project>

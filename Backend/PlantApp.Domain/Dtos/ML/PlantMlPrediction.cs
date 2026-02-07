@@ -1,6 +1,6 @@
 ﻿using Microsoft.ML.Data;
 
-namespace PlantApp.Domain.Dtos.Analytics;
+namespace PlantApp.Domain.Dtos.ML;
 
 public class PlantMLPrediction
 {

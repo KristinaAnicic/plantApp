@@ -19,5 +19,6 @@ public class PlantAnalyticsRecord
     public bool LowMaintenace { get; set; }
     public bool DroughtResistant { get; set; }
     public float Month { get; set; }
+    public float DaysSincePlanted { get; set; }
     public float HealthScore { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿using PlantApp.Domain.Dtos.Analytics;
+﻿using PlantApp.Domain.Dtos.ML;
 
 namespace PlantApp.Domain.Interfaces;
 
