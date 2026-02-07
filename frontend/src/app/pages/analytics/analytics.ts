@@ -250,6 +250,11 @@ export class Analytics implements OnInit {
   predictionPlantLineChartOptions: Signal<ChartOptions> = computed(() => {
     const prediction = this.selectedPrediction(); 
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const startMonth = new Date().getMonth();
+    const listedMonthNames = [
+      ...monthNames.slice(startMonth),
+      ...monthNames.slice(0, startMonth)
+    ];
 
     return {
       series: [
@@ -283,7 +288,7 @@ export class Analytics implements OnInit {
       },
       xaxis: {
         type: "category",
-        categories: monthNames,
+        categories: listedMonthNames,
       },
       yaxis: {
         min: 0,
