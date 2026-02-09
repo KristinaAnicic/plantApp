@@ -16,6 +16,7 @@ using PlantBackend.ExceptionHandlers;
 using Scalar.AspNetCore;
 using System.Text;
 using PlantApp.Domain.Models.Interfaces;
+using PlantApp.ML;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -103,6 +104,7 @@ builder.Services.AddScoped<IGrowthLogRepository, GrowthLogRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPlantExchangeRepository, PlantExchangeRepository>();
 builder.Services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
+builder.Services.AddScoped<IMLRepository, MLRepository>();
 
 builder.Services.AddScoped<IPlantService, PlantService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -115,7 +117,8 @@ builder.Services.AddScoped<IUserRatingService, UserRatingService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IMLService, MLService>();
+builder.Services.AddScoped<IMLHealthPredictionService, MLHealthPredictionService>();
+builder.Services.AddScoped<IMLRecommendationService, MLRecommendationService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 builder.Services.AddScoped<ICurrentUserContext, CurrentUserContex>();
 builder.Services.AddScoped<SeedCsvDataService>();

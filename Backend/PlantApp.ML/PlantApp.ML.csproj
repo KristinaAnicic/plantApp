@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.ML.Recommender" Version="0.23.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PlantApp.Domain\PlantApp.Domain.csproj" />
   </ItemGroup>
 

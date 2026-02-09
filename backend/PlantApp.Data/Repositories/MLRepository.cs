@@ -91,4 +91,70 @@ public class MLRepository : IMLRepository
             .ToListAsync();
     }
 
+    public async Task<List<RecommendationMLInput>> GetRecommendationMLInput()
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        var plantCount = await GetPlantCountsAsync();
+
+        var plantedList = await context.Planteds
+            .Where(p => p.DeletedAt == null && p.Place != null && p.Plant != null)
+            .Select(p => new RecommendationMLInput
+            {
+                PlantFamilyId = p.Plant.FamilyId ?? 0,
+                UserId = p.Place.UserId,
+                DaysAlive = (float)(p.DateOfDeath ?? today).DayNumber - p.DatePlanted.DayNumber,
+                AvgReminderDelay = p.ReminderHistory.Select(r => (float?)r.delay).Average() ?? 0f,
+                IsLowMaintenance = p.Plant.IsLowMaintenance ?? false,
+            }).ToListAsync();
+
+        foreach (var plant in plantedList)
+        {
+            plant.TimesPlanted = plantCount.GetValueOrDefault(plant.PlantFamilyId, 0);
+        }
+
+        return plantedList;
+    }
+
+    /*public async Task<List<RecommendationMLInput>> GetUserRecommendationInputData(int userId)
+    {
+        var plantList = await context.Plants
+            .Where(p => p.DeletedAt == null && 
+                !p.PlantedList.Any(pl => pl.Place != null && pl.Place.UserId == userId))
+            .Select(p => new RecommendationMLInput
+            {
+                PlantName = p.Name,
+                PlantId = p.Id,
+                UserId = userId,
+                DaysAlive = 0
+            }).ToListAsync();
+
+        return plantList;
+    }*/
+
+    public async Task<List<RecommendationMLInput>> GetUserRecommendationInputData(int userId)
+    {
+        var plantList = await context.PlantFamilies
+            .Where(fam => 
+                !fam.Plants.Any(p => p.PlantedList.Any(pl => pl.Place != null && pl.Place.UserId == userId)))
+            .Select(fam => new RecommendationMLInput
+            {
+                FamilyName = fam.Name,
+                PlantFamilyId = fam.Id,
+                UserId = userId,
+                DaysAlive = 0
+            }).ToListAsync();
+
+        return plantList;
+    }
+
+    private async Task<Dictionary<int, int>> GetPlantCountsAsync()
+    {
+        return await context.Planteds
+            .Where(p => p.DeletedAt == null && p.Plant != null && p.Plant.FamilyId != null)
+            .GroupBy(p => p.Plant.FamilyId!.Value)
+            .Select(g => new { FamilyId = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.FamilyId, x => x.Count);
+    }
+
 }

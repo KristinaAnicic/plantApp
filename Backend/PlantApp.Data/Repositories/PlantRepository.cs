@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Interfaces.Repository;
+using PlantApp.Domain.Models;
+using System.Linq.Expressions;
 
 namespace PlantApp.Data.Repositories;
 
@@ -71,5 +72,21 @@ public class PlantRepository(AppDbContext context) : Repository<Plant>(context),
             .ToListAsync();
 
         return (total, plants);
+    }
+
+    public async Task<List<string>> GetTopPlantFamilies()
+    {
+        return await context.Planteds
+            .Where(p => p.DeletedAt == null && p.Plant != null && p.Plant.Family != null)
+            .GroupBy(p => p.Plant!.Family!.Name)
+            .Select(g => new
+            {
+                FamilyName = g.Key,
+                Count = g.Count()
+            })
+            .OrderByDescending(g => g.Count)
+            .Take(5)
+            .Select(g => g.FamilyName)
+            .ToListAsync();
     }
 }

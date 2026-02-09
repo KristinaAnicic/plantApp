@@ -81,7 +81,8 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
                     (q.Plant != null && q.Plant.Images.Any() ? q.Plant.Images.Select(i => i.Url).FirstOrDefault() :
                     q.Images.Any() ? q.Images.Select(i => i.Url).FirstOrDefault() : null),
             PlantStatus = q.PlantStatus,
-            PlantStatusId = q.PlantStatusId
+            PlantStatusId = q.PlantStatusId,
+            CreatedAt = q.CreatedAt
         });
     }
 

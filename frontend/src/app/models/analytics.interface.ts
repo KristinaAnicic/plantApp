@@ -10,7 +10,7 @@ export interface AnalyticsDto
     actionStats: ActionFrequencyDto[];
     hallOfFame?: PlantHallOfFame;
     healthPrediction: HealthPrediction[];
-
+    plantRecommendations: string[];
 }
 
 export interface PlantSummary

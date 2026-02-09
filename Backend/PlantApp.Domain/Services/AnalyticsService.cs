@@ -1,4 +1,5 @@
-﻿using PlantApp.Domain.Dtos.Analytics;
+﻿using Microsoft.Extensions.Logging;
+using PlantApp.Domain.Dtos.Analytics;
 using PlantApp.Domain.Dtos.ML;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Repository;
@@ -11,6 +12,10 @@ public class AnalyticsService(
     IMLRepository mLRepository,
     ICurrentUserContext userContext,
     IMLHealthPredictionService mlService,
+    IMLRecommendationService mlRecService,
+    IPlantedRepository plantedRepo,
+    IPlantRepository plantRepo,
+    ILogger<AnalyticsService> logger
 ): IAnalyticsService
 {
     private int CurrentUserId => userContext.GetCurrentUserId();
@@ -28,6 +33,7 @@ public class AnalyticsService(
         var actionStats = await repository.GetActionFrequency(userId);
         var hallOfFame = await GetHallOfFame(userId);
         var healthPrediction = await GetHealthScorePredictions(userId);
+        var recommendations = await GetPlantRecommendations(userId);
 
         return new AnalyticsDto
         {
@@ -38,7 +44,8 @@ public class AnalyticsService(
             ActionStats = actionStats,
             HallOfFame = hallOfFame,
             SeasonalPlanting = sesonalPlantings,
-            HealthPrediction = healthPrediction
+            HealthPrediction = healthPrediction,
+            PlantRecommendations = recommendations
         };
     }
 
@@ -156,4 +163,31 @@ public class AnalyticsService(
             NumOfLateReminder = totalMissed,
         };
     }
+
+    private async Task<List<string>> GetPlantRecommendations(int userId)
+    {
+        var planted = await plantedRepo.GetPlantedPlantsByUserId(userId);
+        if (planted == null || planted.Count == 0)
+        {
+            return await plantRepo.GetTopPlantFamilies();
+        }
+
+        var modelDate = mlRecService.GetModelCreationDate();
+        var minPlantAgeDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-90));
+
+        int validPlantsCount = planted.Count(p => 
+            p.CreatedAt < modelDate && 
+            p.DatePlanted <= minPlantAgeDate);
+
+        if (validPlantsCount >= 3)
+        {
+            logger.LogInformation("AI Plant Recommendation");
+            return await mlRecService.RecommendPlantsByuserIdAsync(userId);
+        }
+
+        logger.LogInformation("Showing Top Plants");
+        return await plantRepo.GetTopPlantFamilies();
+
+    }
 }
+ 

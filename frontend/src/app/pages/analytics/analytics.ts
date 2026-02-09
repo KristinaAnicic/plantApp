@@ -3,6 +3,7 @@ import { NgApexchartsModule, ApexPlotOptions, ApexChart } from "ng-apexcharts";
 import { AnalyticsDto, HealthPrediction } from '../../models/analytics.interface';
 import { AnalyticsService } from '../../services/analytics.service';
 import { DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 
 export type ChartOptions = {
   series: any;
@@ -30,6 +31,7 @@ export type ChartOptions = {
 
 export class Analytics implements OnInit {
   service = inject(AnalyticsService);
+  router = inject(Router);
   analytics =  signal<AnalyticsDto | null>(null);
   selectedPrediction = signal<HealthPrediction | null>(null);
 
@@ -311,6 +313,12 @@ export class Analytics implements OnInit {
     if (predictions && predictions[index]) {
       this.selectedPrediction.set(predictions[index]);
     }
+  }
+
+  search(query: string){
+    this.router.navigate(['/'], {
+      queryParams: { search: query, page: 1 }
+    })
   }
 }
 

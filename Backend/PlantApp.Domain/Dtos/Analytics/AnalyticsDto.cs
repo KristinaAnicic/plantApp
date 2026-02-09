@@ -10,5 +10,6 @@ public class AnalyticsDto
     public List<MonthlyActivityDto> SeasonalPlanting { get; set; } = new();
     public PlantHallOfFame? HallOfFame { get; set; }
     public List<HealthPredictionDto> HealthPrediction { get; set; } = new();
+    public List<string> PlantRecommendations { get; set; } = new();
 
 }
