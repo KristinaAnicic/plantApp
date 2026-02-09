@@ -34,7 +34,7 @@ public class PlantRepository(AppDbContext context) : Repository<Plant>(context),
 
             query = query
                 .Where(matches)             
-                .OrderByDescending(p => p.SynonymParentPlantId != null)
+                .OrderByDescending(p => p.SynonymParentPlantId == null)
                 .ThenByDescending(matches)
                 .ThenByDescending(p => p.Images.Any(i => i.Url != null && i.Url != ""))
                 .ThenBy(p => p.Id);

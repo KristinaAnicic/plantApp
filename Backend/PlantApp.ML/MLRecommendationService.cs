@@ -21,16 +21,12 @@ public class MLRecommendationService(IMLRepository MLRepository) : IMLRecommenda
         var data = await MLRepository.GetRecommendationMLInput();
         if (data.Count == 0) return;
 
-        foreach (var row in data)
-        {
-            row.DaysAlive = (float)Math.Log(row.DaysAlive / (1 + 0.1f * row.AvgReminderDelay));
-        }
-
         var context = new MLContext();
         IDataView dataView = context.Data.LoadFromEnumerable(data);
 
         var pipeline = context.Transforms.Conversion.MapValueToKey("UserIdEncoded", nameof(RecommendationMLInput.UserId))
             .Append(context.Transforms.Conversion.MapValueToKey("PlantFamilyIdEncoded", nameof(RecommendationMLInput.PlantFamilyId)))
+            .Append(context.Transforms.NormalizeMinMax("Label"))
             .Append(context.Recommendation().Trainers.MatrixFactorization(
                 new MatrixFactorizationTrainer.Options
                 {

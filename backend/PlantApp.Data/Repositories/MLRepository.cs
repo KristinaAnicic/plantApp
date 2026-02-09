@@ -91,7 +91,7 @@ public class MLRepository : IMLRepository
             .ToListAsync();
     }
 
-    public async Task<List<RecommendationMLInput>> GetRecommendationMLInput()
+    /*public async Task<List<RecommendationMLInput>> GetRecommendationMLInput()
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
@@ -101,11 +101,38 @@ public class MLRepository : IMLRepository
             .Where(p => p.DeletedAt == null && p.Place != null && p.Plant != null)
             .Select(p => new RecommendationMLInput
             {
-                PlantFamilyId = p.Plant.FamilyId ?? 0,
+                PlantId = p.PlantId,
                 UserId = p.Place.UserId,
                 DaysAlive = (float)(p.DateOfDeath ?? today).DayNumber - p.DatePlanted.DayNumber,
                 AvgReminderDelay = p.ReminderHistory.Select(r => (float?)r.delay).Average() ?? 0f,
                 IsLowMaintenance = p.Plant.IsLowMaintenance ?? false,
+            }).ToListAsync();
+
+        foreach (var plant in plantedList)
+        {
+            plant.TimesPlanted = plantCount.GetValueOrDefault(plant.PlantFamilyId, 0);
+        }
+
+        return plantedList;
+    }*/
+
+    public async Task<List<RecommendationMLInput>> GetRecommendationMLInput()
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        var plantCount = await GetPlantCountsAsync();
+
+        var plantedList = await context.Planteds
+            .Where(p => p.DeletedAt == null && p.Place != null && p.Plant != null)
+            .GroupBy(p => new { p.Place.UserId, PlantFamilyId = p.Plant.FamilyId })
+            .Select(g => new RecommendationMLInput
+            {
+                PlantFamilyId = g.Key.PlantFamilyId ?? 0,
+                UserId = g.Key.UserId,
+                DaysAlive = g.Sum(p => (float)((p.DateOfDeath ?? today).DayNumber - p.DatePlanted.DayNumber)),
+                AvgReminderDelay = g.SelectMany(p => p.ReminderHistory).Select(r => (float?)r.delay).DefaultIfEmpty(0f).Average() ?? 0f,
+                TimesPlanted = g.Count(),
+                IsLowMaintenance = g.First().Plant.IsLowMaintenance ?? false
             }).ToListAsync();
 
         foreach (var plant in plantedList)
