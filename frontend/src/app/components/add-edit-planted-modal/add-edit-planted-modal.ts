@@ -5,10 +5,11 @@ import { PlantedService } from '../../services/planted.service';
 import { ImageForm, UploadMapping } from '../../models/image.interface';
 import { ImageUploadService } from '../../services/image-upload.service';
 import { NotificationService } from '../../services/notification.service';
+import { AddUpdatePlaceModal } from "../add-update-place-modal/add-update-place-modal";
 
 @Component({
   selector: 'app-add-edit-planted-modal',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AddUpdatePlaceModal],
   templateUrl: './add-edit-planted-modal.html',
   styleUrl: './add-edit-planted-modal.css',
 })
@@ -36,6 +37,10 @@ export class AddEditPlantedModal implements OnInit {
       throw new Error('AddEditPlantedModal requires [editPlanted] for editing or [plantId] for adding.');
     }
 
+    this.setReferences();
+  }
+  
+  setReferences(){
     this.service.getReferences().subscribe((response) => {
       this.references?.set(response)
       const planted = this.editPlanted();

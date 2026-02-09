@@ -1,3 +1,4 @@
+@if((references()?.places?.length ?? 0) > 0){
 <!-- Main modal -->
 <div class="relative px-4 py-2 w-[90vw] max-w-[90vw] max-h-[90vh] mb-10" (click)="$event.stopPropagation()">
     <!-- Modal content -->
@@ -133,4 +134,9 @@
         </form>
     </div>
 </div>
+}
+
+@else {
+    <app-add-update-place-modal (placeAdded)="setReferences()"></app-add-update-place-modal>
+}
 
