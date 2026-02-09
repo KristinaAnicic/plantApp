@@ -3,7 +3,7 @@ using PlantApp.Domain.Models.Categories;
 
 namespace PlantApp.Domain.Dtos.ML;
 
-public class PlantAnalyticsRecord
+public class HealthPredictionRecord
 {
     public string? PlantName { get; set; }
     public string? PlaceName { get; set; }
@@ -20,5 +20,6 @@ public class PlantAnalyticsRecord
     public bool DroughtResistant { get; set; }
     public float Month { get; set; }
     public float DaysSincePlanted { get; set; }
+    public float ReminderDelay { get; set; }
     public float HealthScore { get; set; }
 }

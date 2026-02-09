@@ -14,6 +14,4 @@ public interface IAnalyticsRepository
     public Task<List<MonthlyActivityDto>> GetSeasonalNumOfPlantings(int userId);
     public Task<Planted?> GetOldestPlant(int userId);
     public Task<(int, Planted?)> GetMostResilientPlant(int userId);
-    public Task<List<PlantAnalyticsRecord>> GetTrainingData();
-    public Task<List<PlantAnalyticsRecord>> GetUserMLInputData(int userId);
 }

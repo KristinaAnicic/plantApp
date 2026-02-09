@@ -2,13 +2,13 @@
 
 namespace PlantApp.Domain.Dtos.ML;
 
-public class PlantMLInput
+public class HealthPredictionMLInput
 {
     public float SunlightIntensity { get; set; }
     public float HumidityIntensity { get; set; }
     public bool IsOutside { get; set; }
     public float Month { get; set; }
-    public float DaysSincePlanted { get; set; }
+    public float AvgReminderDelay { get; set; }
 
     public required string PlantFamily { get; set; }
     public required string HardinessLevel { get; set; }
@@ -24,8 +24,8 @@ public class PlantMLInput
     [ColumnName("Label")]
     public float HealthScore { get; set; }
 
-    public PlantMLInput Clone()
+    public HealthPredictionMLInput Clone()
     {
-        return (PlantMLInput)this.MemberwiseClone();
+        return (HealthPredictionMLInput)this.MemberwiseClone();
     }
 }

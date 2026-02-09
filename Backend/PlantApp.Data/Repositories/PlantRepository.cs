@@ -26,24 +26,16 @@ public class PlantRepository(AppDbContext context) : Repository<Plant>(context),
         {
             var name = filter.Name.Trim();
 
+            Expression<Func<Plant, bool>> matches = p =>
+                EF.Functions.ILike(p.CommonName, $"%{name}%") ||
+                EF.Functions.ILike(p.BotanicalName, $"%{name}%") ||
+                (p.Family != null && EF.Functions.ILike(p.Family.Name, $"%{name}%"));
+
             query = query
-                .Where(p =>
-                    EF.Functions.ILike(p.CommonName, $"%{name}%") ||
-                    EF.Functions.ILike(p.BotanicalName, $"%{name}%") ||
-                    EF.Functions.TrigramsSimilarity(p.CommonName, name) > 0.3 ||
-                    EF.Functions.TrigramsSimilarity(p.BotanicalName, name) > 0.3
-                )             
+                .Where(matches)             
                 .OrderByDescending(p => p.SynonymParentPlantId != null)
-                .ThenByDescending(p =>
-                    EF.Functions.ILike(p.CommonName, $"%{name}%") || EF.Functions.ILike(p.BotanicalName, $"%{name}%")
-                )
-                .ThenByDescending(p =>
-                    Math.Max(
-                        EF.Functions.TrigramsSimilarity(p.CommonName, name),
-                        EF.Functions.TrigramsSimilarity(p.BotanicalName, name)
-                    )
-                )
-                .ThenBy(p => p.Images.Any(i => i.Url != null && i.Url != ""))
+                .ThenByDescending(matches)
+                .ThenByDescending(p => p.Images.Any(i => i.Url != null && i.Url != ""))
                 .ThenBy(p => p.Id);
         }
         else

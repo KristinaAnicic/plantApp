@@ -8,8 +8,9 @@ namespace PlantApp.Domain.Services;
 
 public class AnalyticsService(
     IAnalyticsRepository repository,
+    IMLRepository mLRepository,
     ICurrentUserContext userContext,
-    IMLService mlService
+    IMLHealthPredictionService mlService,
 ): IAnalyticsService
 {
     private int CurrentUserId => userContext.GetCurrentUserId();
@@ -43,10 +44,10 @@ public class AnalyticsService(
 
     private async Task<List<HealthPredictionDto>> GetHealthScorePredictions(int userId)
     {
-        var rawData = await repository.GetUserMLInputData(userId);
+        var rawData = await mLRepository.GetUserHealthPredictionInputData(userId);
         var results = new List<HealthPredictionDto>();
 
-        var data = rawData.Select(d => new PlantPredictionDto
+        var data = rawData.Select(d => new PlantHealthPredictionDto
         {
             PlaceName = d.PlaceName,
             PlantName = d.PlantName,
@@ -55,7 +56,7 @@ public class AnalyticsService(
 
         foreach (var info in data)
         {
-            var inputList = new List<PlantMLInput>();
+            var inputList = new List<HealthPredictionMLInput>();
             var startMonth = (int)info.MLInput.Month;
 
             for (int month = 0; month < 12; month++)
@@ -63,7 +64,7 @@ public class AnalyticsService(
                 int currentMonth = ((startMonth - 1 + month) % 12) + 1;
                 var inputCopy = info.MLInput.Clone();
                 inputCopy.Month = (float)currentMonth;
-                inputCopy.DaysSincePlanted = info.MLInput.DaysSincePlanted + (month * 30);
+                //inputCopy.DaysSincePlanted = info.MLInput.DaysSincePlanted + (month * 30);
                 inputList.Add(inputCopy);
             }
 

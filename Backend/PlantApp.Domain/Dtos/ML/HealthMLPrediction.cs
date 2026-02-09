@@ -2,7 +2,7 @@
 
 namespace PlantApp.Domain.Dtos.ML;
 
-public class PlantMLPrediction
+public class HealthMLPrediction
 {
     [ColumnName("Score")]
     public float PredictedHealthScore { get; set; }

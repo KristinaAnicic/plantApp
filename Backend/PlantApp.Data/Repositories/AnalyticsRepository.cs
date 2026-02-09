@@ -204,6 +204,11 @@ public class AnalyticsRepository : IAnalyticsRepository
             .ThenByDescending(g => g.TotalDelayDays)
             .FirstOrDefaultAsync();
 
+        if (query == null)
+        {
+            return (0, null);
+        }
+
         var plant = context.Planteds
             .Where(p => p.Id == query.PlantedId);
         var projectedQuery = ProjectPlanted(plant);
@@ -229,66 +234,6 @@ public class AnalyticsRepository : IAnalyticsRepository
             .OrderBy(h => h.Year)
             .ThenBy(g => g.Month)
             .ToListAsync();
-    }
-
-    public async Task<List<PlantAnalyticsRecord>> GetTrainingData()
-    {
-        var data = await context.GrowthLogs
-            .Where(l =>
-                l.Place != null &&
-                l.Planted != null &&
-                l.Planted.Plant != null &&
-                l.Planted.Plant.Family != null &&
-                l.DeletedAt == null)
-            .Select(l => new PlantAnalyticsRecord
-            {
-                SunlightIntensity = (float)l.Place!.SunlightIntensity,
-                HumidityIntensity = (float)l.Place.HumidityIntensity,
-                IsOutside = l.Planted!.IsOutside,
-                Family = l.Planted.Plant!.Family!.Name,
-                Hardiness = l.Planted.Plant.HardinessLevel != null ? l.Planted.Plant.HardinessLevel.Level : "Unknown",
-                PlantStatusId = l.PlantStatusId,
-                SunlightList = l.Planted.Plant.Sunlights.ToList(),
-                MoistureList = l.Planted.Plant.Moistures.ToList(),
-                SeasonList = l.Planted.Plant.Seasons.ToList(),
-                LowMaintenace = l.Planted.Plant.IsLowMaintenance ?? false,
-                DroughtResistant = l.Planted.Plant.IsDroughtResistant ?? false,
-                DaysSincePlanted = (float)(l.ObservationDate.DayNumber - l.Planted.DatePlanted.DayNumber),
-                Month = l.ObservationDate.Month,
-            }).ToListAsync();
-
-        return data;
-    }
-
-    public async Task<List<PlantAnalyticsRecord>> GetUserMLInputData(int userId)
-    {
-        return await context.Planteds
-            .Where(p =>
-                p.Place != null &&
-                p.Plant != null &&
-                p.Plant.Family != null &&
-                p.DeletedAt == null &&
-                p.PlantStatusId != 3 &&
-                p.Place.UserId == userId)
-            .Select(p => new PlantAnalyticsRecord
-            {
-                PlantName = p.Name ?? p.Plant!.CommonName ?? p.Plant.BotanicalName,
-                PlaceName = p.Place!.Name,
-                SunlightIntensity = (float)p.Place!.SunlightIntensity,
-                HumidityIntensity = (float)p.Place.HumidityIntensity,
-                IsOutside = p.IsOutside,
-                Family = p.Plant!.Family!.Name,
-                Hardiness = p.Plant.HardinessLevel != null ? p.Plant.HardinessLevel.Level : "Unknown",
-                SunlightList = p.Plant.Sunlights.ToList(),
-                MoistureList = p.Plant.Moistures.ToList(),
-                SeasonList = p.Plant.Seasons.ToList(),
-                LowMaintenace = p.Plant.IsLowMaintenance ?? false,
-                DroughtResistant = p.Plant.IsDroughtResistant ?? false,
-                Month = (float)DateTime.UtcNow.Month,
-                DaysSincePlanted = (float)(DateOnly.FromDateTime(DateTime.UtcNow).DayNumber - p.DatePlanted.DayNumber),
-                HealthScore = 0
-            })
-            .ToListAsync();    
     }
 
     private IQueryable<Planted> ProjectPlanted(IQueryable<Planted> query)

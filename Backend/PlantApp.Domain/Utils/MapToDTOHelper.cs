@@ -337,9 +337,9 @@ public static class MapToDTOHelper
         };
     }
 
-    public static PlantMLInput MapPlantAnalyticsRecordToPlantMLInput(this PlantAnalyticsRecord data)
+    public static HealthPredictionMLInput MapPlantAnalyticsRecordToPlantMLInput(this HealthPredictionRecord data)
     {
-        return new PlantMLInput
+        return new HealthPredictionMLInput
         {
             SunlightIntensity = data.SunlightIntensity,
             HumidityIntensity = data.HumidityIntensity,
@@ -352,7 +352,7 @@ public static class MapToDTOHelper
             Seasons = EncodeVector(data.SeasonList.Select(s => s.Id).ToList(), 4),
             IsLowMaintenance = data.LowMaintenace,
             IsDroughtResistant = data.DroughtResistant,
-            DaysSincePlanted = data.DaysSincePlanted,
+            AvgReminderDelay = data.ReminderDelay,
             HealthScore = data.HealthScore
         };
     }

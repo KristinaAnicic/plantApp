@@ -7,17 +7,22 @@ using PlantApp.Domain.Dtos.ML;
 
 namespace PlantApp.Domain.Services;
 
-public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
+public class MLHealthPredictionService(IMLRepository MLRepository) : IMLHealthPredictionService
 {
-    private readonly string path = Path.Combine(AppContext.BaseDirectory, "MLModels", "PlantModel.zip");
+    private readonly string path = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+        "PlantApp",
+        "MLModels",
+        "HealthPredictionModel.zip"
+    );
     private ITransformer? _trainedModel;
     public async Task TrainModelAsync()
     {
         
-        var rawData = await analyticsRepository.GetTrainingData();
+        var rawData = await MLRepository.GetHealthPredictionTrainingData();
         if (rawData.Count == 0) return;
 
-        var dataRecord = rawData.Select(d => new PlantAnalyticsRecord
+        var dataRecord = rawData.Select(d => new HealthPredictionRecord
         {
             SunlightIntensity = d.SunlightIntensity,
             HumidityIntensity = d.HumidityIntensity,
@@ -31,6 +36,7 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
             LowMaintenace = d.LowMaintenace,
             DroughtResistant = d.DroughtResistant,
             DaysSincePlanted = d.DaysSincePlanted,
+            ReminderDelay = d.ReminderDelay,
             Month = d.Month,
 
             HealthScore = CalculateAdjustedHealthScore(d)
@@ -46,33 +52,34 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
         //var split = context.Data.TrainTestSplit(dataView, testFraction: 0.2);
 
         var pipeline = context.Transforms
-            .Categorical.OneHotEncoding("FamilyEncoded", nameof(PlantMLInput.PlantFamily))
-            .Append(context.Transforms.Categorical.OneHotEncoding("HardinessEncoded", nameof(PlantMLInput.HardinessLevel)))
+            .Categorical.OneHotEncoding("FamilyEncoded", nameof(HealthPredictionMLInput.PlantFamily))
+            .Append(context.Transforms.Categorical.OneHotEncoding("HardinessEncoded", nameof(HealthPredictionMLInput.HardinessLevel)))
 
-            .Append(context.Transforms.Conversion.ConvertType(nameof(PlantMLInput.IsOutside), outputKind: DataKind.Single))
-            .Append(context.Transforms.Conversion.ConvertType(nameof(PlantMLInput.IsLowMaintenance), outputKind: DataKind.Single))
-            .Append(context.Transforms.Conversion.ConvertType(nameof(PlantMLInput.IsDroughtResistant), outputKind: DataKind.Single))
-            .Append(context.Transforms.NormalizeMinMax(nameof(PlantMLInput.DaysSincePlanted)))
+            .Append(context.Transforms.Conversion.ConvertType(nameof(HealthPredictionMLInput.IsOutside), outputKind: DataKind.Single))
+            .Append(context.Transforms.Conversion.ConvertType(nameof(HealthPredictionMLInput.IsLowMaintenance), outputKind: DataKind.Single))
+            .Append(context.Transforms.Conversion.ConvertType(nameof(HealthPredictionMLInput.IsDroughtResistant), outputKind: DataKind.Single))
+            .Append(context.Transforms.NormalizeMinMax(nameof(HealthPredictionMLInput.AvgReminderDelay)))
             .Append(context.Transforms.Concatenate("Features",
-                nameof(PlantMLInput.SunlightIntensity),
-                nameof(PlantMLInput.HumidityIntensity),
-                nameof(PlantMLInput.Month),
-                nameof(PlantMLInput.IsOutside),
-                nameof(PlantMLInput.IsLowMaintenance),
-                nameof(PlantMLInput.IsDroughtResistant),
+                nameof(HealthPredictionMLInput.SunlightIntensity),
+                nameof(HealthPredictionMLInput.HumidityIntensity),
+                nameof(HealthPredictionMLInput.Month),
+                nameof(HealthPredictionMLInput.IsOutside),
+                nameof(HealthPredictionMLInput.IsLowMaintenance),
+                nameof(HealthPredictionMLInput.IsDroughtResistant),
                 "FamilyEncoded", 
                 "HardinessEncoded", 
-                nameof(PlantMLInput.SunlightRequirements), 
-                nameof(PlantMLInput.MoistureRequirements),
-                nameof(PlantMLInput.Seasons),
-                nameof(PlantMLInput.DaysSincePlanted)))
+                nameof(HealthPredictionMLInput.SunlightRequirements), 
+                nameof(HealthPredictionMLInput.MoistureRequirements),
+                nameof(HealthPredictionMLInput.Seasons),
+                nameof(HealthPredictionMLInput.AvgReminderDelay)
+                ))
             .Append(context.Regression.Trainers.FastTree(
                 labelColumnName: "Label",
                 featureColumnName: "Features",
-                numberOfTrees: 150,
-                numberOfLeaves: 15,
-                minimumExampleCountPerLeaf: 10,
-                learningRate: 0.2
+                numberOfTrees: 200,
+                numberOfLeaves: 8,
+                minimumExampleCountPerLeaf: 20,
+                learningRate: 0.05
             ));
 
         var validationResults = context.Regression.CrossValidate(
@@ -85,7 +92,7 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
         var acc = validationResults.Average(f => f.Metrics.RSquared);
         var avgRMSE = validationResults.Average(f => f.Metrics.RootMeanSquaredError);
 
-        Console.WriteLine($"Accuracy: {Math.Round(acc, 2)}");
+        Console.WriteLine($"R2 (accuracy): {Math.Round(acc, 2)}");
         Console.WriteLine($"RMSE (average error): {Math.Round(avgRMSE, 2)}");
 
         var model = pipeline.Fit(dataView);
@@ -93,8 +100,8 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
         /*var predictions = model.Transform(split.TestSet);
         var metrics = context.Regression.Evaluate(predictions, labelColumnName: "HealthScore");
 
-        Console.WriteLine("Model accuracy: " + Math.Round(metrics.RSquared, 2));
-        Console.WriteLine("Average error: " + Math.Round(metrics.RootMeanSquaredError, 2));*/
+        Console.WriteLine("R2 (accuracy): " + Math.Round(metrics.RSquared, 2));
+        Console.WriteLine("RMSE (average error): " + Math.Round(metrics.RootMeanSquaredError, 2));*/
 
         if (!Directory.Exists(Path.GetDirectoryName(path)))
             Directory.CreateDirectory(Path.GetDirectoryName(path)!);
@@ -104,7 +111,7 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
 
     
 
-    private float CalculateAdjustedHealthScore(PlantAnalyticsRecord log)
+    private float CalculateAdjustedHealthScore(HealthPredictionRecord log)
     {
         float baseScore = log.PlantStatusId switch
         {
@@ -185,7 +192,7 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
         return Math.Clamp(baseScore + adjustment, 0f, 100f);
     }
 
-    public async Task<float> PredictHealthScore(PlantMLInput input)
+    public async Task<float> PredictHealthScore(HealthPredictionMLInput input)
     {
         if (!File.Exists(path))
         {
@@ -199,13 +206,13 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
             _trainedModel = context.Model.Load(path, out _);
         }
 
-        var predictionEngine = context.Model.CreatePredictionEngine<PlantMLInput, PlantMLPrediction>(_trainedModel);
+        var predictionEngine = context.Model.CreatePredictionEngine<HealthPredictionMLInput, HealthMLPrediction>(_trainedModel);
         
         var prediction = predictionEngine.Predict(input);
         return prediction.PredictedHealthScore;
     }
 
-    public async Task<List<float>> PredictHealthScoresBatch(List<PlantMLInput> inputs)
+    public async Task<List<float>> PredictHealthScoresBatch(List<HealthPredictionMLInput> inputs)
     {
         if (!File.Exists(path))
         {
@@ -223,7 +230,7 @@ public class MLService(IAnalyticsRepository analyticsRepository) : IMLService
         IDataView inputDataView = context.Data.LoadFromEnumerable(inputs);
         var predictions = _trainedModel.Transform(inputDataView);
 
-        var scores = context.Data.CreateEnumerable<PlantMLPrediction>(predictions, reuseRowObject: false)
+        var scores = context.Data.CreateEnumerable<HealthMLPrediction>(predictions, reuseRowObject: false)
             .Select(p => p.PredictedHealthScore)
             .ToList();
 
