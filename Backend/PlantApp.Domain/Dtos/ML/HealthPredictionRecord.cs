@@ -11,7 +11,7 @@ public class HealthPredictionRecord
     public float HumidityIntensity {  get; set; }
     public bool IsOutside {  get; set; }
     public string Family {  get; set; }
-    public string Hardiness {  get; set; }
+    public float Hardiness {  get; set; }
     public int PlantStatusId {  get; set; }
     public List<Sunlight> SunlightList { get; set; } = new();
     public List<Moisture> MoistureList { get; set; } = new();

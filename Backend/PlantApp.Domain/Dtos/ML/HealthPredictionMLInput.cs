@@ -11,7 +11,7 @@ public class HealthPredictionMLInput
     public float AvgReminderDelay { get; set; }
 
     public required string PlantFamily { get; set; }
-    public required string HardinessLevel { get; set; }
+    public required float HardinessLevel { get; set; }
     [VectorType(3)]
     public required float[] SunlightRequirements { get; set; } = new float[3];
     [VectorType(3)]

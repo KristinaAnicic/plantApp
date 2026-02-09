@@ -53,12 +53,14 @@ public class MLHealthPredictionService(IMLRepository MLRepository) : IMLHealthPr
 
         var pipeline = context.Transforms
             .Categorical.OneHotEncoding("FamilyEncoded", nameof(HealthPredictionMLInput.PlantFamily))
-            .Append(context.Transforms.Categorical.OneHotEncoding("HardinessEncoded", nameof(HealthPredictionMLInput.HardinessLevel)))
-
             .Append(context.Transforms.Conversion.ConvertType(nameof(HealthPredictionMLInput.IsOutside), outputKind: DataKind.Single))
             .Append(context.Transforms.Conversion.ConvertType(nameof(HealthPredictionMLInput.IsLowMaintenance), outputKind: DataKind.Single))
             .Append(context.Transforms.Conversion.ConvertType(nameof(HealthPredictionMLInput.IsDroughtResistant), outputKind: DataKind.Single))
             .Append(context.Transforms.NormalizeMinMax(nameof(HealthPredictionMLInput.AvgReminderDelay)))
+            .Append(context.Transforms.NormalizeMinMax(nameof(HealthPredictionMLInput.HardinessLevel)))
+            .Append(context.Transforms.NormalizeMinMax(nameof(HealthPredictionMLInput.SunlightIntensity)))
+            .Append(context.Transforms.NormalizeMinMax(nameof(HealthPredictionMLInput.HumidityIntensity)))
+            .Append(context.Transforms.NormalizeMinMax(nameof(HealthPredictionMLInput.Month)))
             .Append(context.Transforms.Concatenate("Features",
                 nameof(HealthPredictionMLInput.SunlightIntensity),
                 nameof(HealthPredictionMLInput.HumidityIntensity),
@@ -66,8 +68,8 @@ public class MLHealthPredictionService(IMLRepository MLRepository) : IMLHealthPr
                 nameof(HealthPredictionMLInput.IsOutside),
                 nameof(HealthPredictionMLInput.IsLowMaintenance),
                 nameof(HealthPredictionMLInput.IsDroughtResistant),
-                "FamilyEncoded", 
-                "HardinessEncoded", 
+                "FamilyEncoded",
+                nameof(HealthPredictionMLInput.HardinessLevel), 
                 nameof(HealthPredictionMLInput.SunlightRequirements), 
                 nameof(HealthPredictionMLInput.MoistureRequirements),
                 nameof(HealthPredictionMLInput.Seasons),

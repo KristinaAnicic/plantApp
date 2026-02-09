@@ -7,9 +7,6 @@ public class RecommendationMLInput
     public string? FamilyName { get; set; }
     public int PlantFamilyId { get; set; }
     public int UserId { get; set; }
-    public float TimesPlanted { get; set; }
-    public float AvgReminderDelay { get; set; }
-    public bool IsLowMaintenance { get; set; }
     [ColumnName("Label")]
     public float DaysAlive { get; set; }
 }

@@ -35,7 +35,7 @@ public class MLRepository : IMLRepository
                 HumidityIntensity = (float)q.Log.Place.HumidityIntensity,
                 IsOutside = q.Log.Planted!.IsOutside,
                 Family = q.Log.Planted.Plant!.Family!.Name,
-                Hardiness = q.Log.Planted.Plant.HardinessLevel != null ? q.Log.Planted.Plant.HardinessLevel.Level : "Unknown",
+                Hardiness = (float?)q.Log.Planted.Plant!.HardinessLevelId ?? 1f,
                 PlantStatusId = q.Log.PlantStatusId,
                 SunlightList = q.Log.Planted.Plant.Sunlights.ToList(),
                 MoistureList = q.Log.Planted.Plant.Moistures.ToList(),
@@ -77,7 +77,7 @@ public class MLRepository : IMLRepository
                 HumidityIntensity = (float)q.Planted.Place.HumidityIntensity,
                 IsOutside = q.Planted.IsOutside,
                 Family = q.Planted.Plant!.Family!.Name,
-                Hardiness = q.Planted.Plant.HardinessLevel != null ? q.Planted.Plant.HardinessLevel.Level : "Unknown",
+                Hardiness = (float?)q.Planted.Plant.HardinessLevelId ?? 1f,
                 SunlightList = q.Planted.Plant.Sunlights.ToList(),
                 MoistureList = q.Planted.Plant.Moistures.ToList(),
                 SeasonList = q.Planted.Plant.Seasons.ToList(),
@@ -94,9 +94,6 @@ public class MLRepository : IMLRepository
     /*public async Task<List<RecommendationMLInput>> GetRecommendationMLInput()
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
-
-        var plantCount = await GetPlantCountsAsync();
-
         var plantedList = await context.Planteds
             .Where(p => p.DeletedAt == null && p.Place != null && p.Plant != null)
             .Select(p => new RecommendationMLInput
@@ -104,14 +101,7 @@ public class MLRepository : IMLRepository
                 PlantId = p.PlantId,
                 UserId = p.Place.UserId,
                 DaysAlive = (float)(p.DateOfDeath ?? today).DayNumber - p.DatePlanted.DayNumber,
-                AvgReminderDelay = p.ReminderHistory.Select(r => (float?)r.delay).Average() ?? 0f,
-                IsLowMaintenance = p.Plant.IsLowMaintenance ?? false,
             }).ToListAsync();
-
-        foreach (var plant in plantedList)
-        {
-            plant.TimesPlanted = plantCount.GetValueOrDefault(plant.PlantFamilyId, 0);
-        }
 
         return plantedList;
     }*/
@@ -120,25 +110,20 @@ public class MLRepository : IMLRepository
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
-        var plantCount = await GetPlantCountsAsync();
-
         var plantedList = await context.Planteds
-            .Where(p => p.DeletedAt == null && p.Place != null && p.Plant != null)
+            .Where(p => p.DeletedAt == null && 
+                p.Place != null && p.Plant != null && 
+                (p.DateOfDeath != null ||
+                   (today.DayNumber - p.DatePlanted.DayNumber) >= 60
+                ))
             .GroupBy(p => new { p.Place.UserId, PlantFamilyId = p.Plant.FamilyId })
             .Select(g => new RecommendationMLInput
             {
                 PlantFamilyId = g.Key.PlantFamilyId ?? 0,
                 UserId = g.Key.UserId,
-                DaysAlive = g.Sum(p => (float)((p.DateOfDeath ?? today).DayNumber - p.DatePlanted.DayNumber)),
-                AvgReminderDelay = g.SelectMany(p => p.ReminderHistory).Select(r => (float?)r.delay).DefaultIfEmpty(0f).Average() ?? 0f,
-                TimesPlanted = g.Count(),
-                IsLowMaintenance = g.First().Plant.IsLowMaintenance ?? false
-            }).ToListAsync();
-
-        foreach (var plant in plantedList)
-        {
-            plant.TimesPlanted = plantCount.GetValueOrDefault(plant.PlantFamilyId, 0);
-        }
+                DaysAlive = g.Average(p => (float)((p.DateOfDeath ?? today).DayNumber - p.DatePlanted.DayNumber))
+            })
+            .ToListAsync();
 
         return plantedList;
     }
@@ -174,14 +159,4 @@ public class MLRepository : IMLRepository
 
         return plantList;
     }
-
-    private async Task<Dictionary<int, int>> GetPlantCountsAsync()
-    {
-        return await context.Planteds
-            .Where(p => p.DeletedAt == null && p.Plant != null && p.Plant.FamilyId != null)
-            .GroupBy(p => p.Plant.FamilyId!.Value)
-            .Select(g => new { FamilyId = g.Key, Count = g.Count() })
-            .ToDictionaryAsync(x => x.FamilyId, x => x.Count);
-    }
-
 }
