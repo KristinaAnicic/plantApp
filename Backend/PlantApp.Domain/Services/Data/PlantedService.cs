@@ -137,7 +137,12 @@ public class PlantedService(
             await imageService.AddImagesSafeAsync(planted, dto.Images);
         }
 
-        await repository.AddAsync(planted);
+        if (dto.PlantStatusId == 3)
+        {
+            planted.DateOfDeath = DateOnly.FromDateTime(DateTime.UtcNow);
+        }
+
+            await repository.AddAsync(planted);
         logger.LogInformation("Planted plant added. User {UserId}, Place {PlaceId}", CurrentUserId, dto.PlaceId);
         return null;
     }
@@ -165,7 +170,16 @@ public class PlantedService(
         if (dto.DatePlanted == null)
             dto.DatePlanted = existingPlanted.DatePlanted;
 
-        dto.MapUpsertPlantedDtoToPlanted(existingPlanted);
+        if (existingPlanted.PlantStatusId != dto.PlantStatusId && dto.PlantStatusId == 3)
+        {
+            existingPlanted.DateOfDeath = DateOnly.FromDateTime(DateTime.UtcNow);
+        }
+        else
+        {
+            existingPlanted.DateOfDeath = null;
+        }
+
+            dto.MapUpsertPlantedDtoToPlanted(existingPlanted);
 
         if (dto.Images != null && dto.Images.Any())
         {
