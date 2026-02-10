@@ -137,6 +137,6 @@
 }
 
 @else {
-    <app-add-update-place-modal (placeAdded)="setReferences()"></app-add-update-place-modal>
+    <app-add-update-place-modal (placeAdded)="setReferences()" (close)="onCloseClick()"></app-add-update-place-modal>
 }
 
