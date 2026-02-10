@@ -5,6 +5,7 @@ namespace PlantApp.Domain.Interfaces.Data;
 public interface IReminderService
 {
     public Task<List<ReminderDto>> GetAllAsync();
+    public Task<List<ReminderDto>> GetPendingRemindersAsync();
     public Task<ReminderGetDto> GetByIdAsync(int id);
     public Task ReminderDoneAsync(int id, DateTime? dateDone);
     public Task DelayReminderAsync(int id, int delay);

@@ -22,6 +22,10 @@ export class ReminderService {
     return this.http.get<ReminderDto[]>(`${environment.apiUrl}/reminder`);
   }
 
+  getPendingReminders(): Observable<ReminderDto[]> {
+    return this.http.get<ReminderDto[]>(`${environment.apiUrl}/reminder/pending`);
+  }
+
   getReminder(id: number): Observable<ReminderGetDto> {
     return this.http.get<ReminderGetDto>(`${environment.apiUrl}/reminder/${id}`);
   }

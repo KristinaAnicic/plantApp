@@ -214,8 +214,9 @@ public static class MapToDTOHelper
         return new ReminderDto
         {
             Id = reminder.Id,
-            Plant = reminder.Planted.Name,
+            Plant = reminder.Planted.Name != null ? reminder.Planted.Name : reminder.Planted.Plant.CommonName ?? reminder.Planted.Plant.BotanicalName,
             PlantedId = reminder.PlantedId,
+            Place = reminder.Planted.Place.Name,
             ReminderType = reminder.ReminderType?.Name,
             NextDueDate = reminder.NextDueDate,
             Notes = reminder.Note,

@@ -20,6 +20,23 @@ public class ReminderRepository(AppDbContext context) : Repository<Reminder>(con
         return await query.ToListAsync();
     }
 
+    public async Task<List<Reminder>> GetPendingRemindersAsync(int userId)
+    {
+        var query = dbSet
+            .Include(q => q.Planted)
+                .ThenInclude(p => p.Place)
+            .Include(r => r.Planted)
+                .ThenInclude(p => p.Plant)
+            .Include(r => r.ReminderType)
+            .Where(q => q.Planted != null && 
+                q.Planted.Place != null && 
+                q.Planted.Place.UserId == userId && 
+                q.NextDueDate.Date <= DateTime.UtcNow.Date)
+            .OrderBy(q => q.NextDueDate);
+
+        return await query.ToListAsync();
+    }
+
     public async Task<Reminder?> GetReminderAsync(int id)
     {
         var query = dbSet

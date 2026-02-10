@@ -9,7 +9,7 @@ import { AddEditLogModal } from "../../components/add-edit-log-modal/add-edit-lo
 import { GrowthLogGetDto, UpsertGrowthLogDto } from '../../models/growth-log.interface';
 import { UpsertReminderDto } from '../../models/reminder.interface';
 import { AddEditReminderModal } from "../../components/add-edit-reminder-modal/add-edit-reminder-modal";
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
@@ -20,10 +20,12 @@ import { NotificationService } from '../../services/notification.service';
 })
 export class UserPlant implements OnInit {
   @Input() id!: string;
+  currentPlantId = signal<number | null>(null);
 
   service = inject(PlantedService);
   private router = inject(Router);
   public notif = inject(NotificationService);
+  private route = inject(ActivatedRoute);
 
   planted = signal<PlantedGetDto | null>(null);
   isEditPlantedModalOpen = signal(false);
@@ -53,11 +55,18 @@ export class UserPlant implements OnInit {
   });
 
   ngOnInit(): void {
-    this.loadPlanted();
+    this.route.params.subscribe(params => {
+      const id = +params['id'];
+      this.currentPlantId.set(id);
+      this.loadPlanted();
+    })
   }
 
   loadPlanted(){
-    this.service.getPlanted(parseInt(this.id)).subscribe({
+    const id = this.currentPlantId();
+    if (!id) return;
+
+    this.service.getPlanted(id).subscribe({
       next: (result) => {
         this.planted.set(result);
       },

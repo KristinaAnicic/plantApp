@@ -31,6 +31,14 @@ public class ReminderService(
         return reminders.Select(r => r.MapReminderToReminderDto()).ToList();
     }
 
+    public async Task<List<ReminderDto>> GetPendingRemindersAsync()
+    {
+        var reminders = await repository.GetPendingRemindersAsync(CurrentUserId);
+
+        logger.LogInformation("Retrieved {Count} reminders for user {UserId}", reminders.Count, CurrentUserId);
+        return reminders.Select(r => r.MapReminderToReminderDto()).ToList();
+    }
+
     public async Task<ReminderGetDto> GetByIdAsync(int id)
     {
         var reminder = await repository.GetReminderAsync(id);

@@ -4,6 +4,7 @@ export interface ReminderDto {
     id: number;
     plantedId: number;
     plant: string;
+    place?: string;
     reminderType?: string;
     nextDueDate: string;
     notes?: string;

@@ -17,6 +17,13 @@ public class ReminderController(IReminderService reminderService) : Controller
         return Ok(result);
     }
 
+    [HttpGet("pending")]
+    public async Task<IActionResult> GetPending()
+    {
+        var result = await reminderService.GetPendingRemindersAsync();
+        return Ok(result);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
