@@ -5,10 +5,11 @@ import { RouterLink } from '@angular/router';
 import { PlaceService } from '../../services/place.service';
 import { PlaceDto } from '../../models/place.interface';
 import { AddUpdatePlaceModal } from "../../components/add-update-place-modal/add-update-place-modal";
+import { ImageDiseasePrediction } from "../../components/image-disease-prediction/image-disease-prediction";
 
 @Component({
   selector: 'app-user-plants',
-  imports: [RouterLink, AddUpdatePlaceModal],
+  imports: [RouterLink, AddUpdatePlaceModal, ImageDiseasePrediction],
   templateUrl: './user-plants.html',
   styleUrl: './user-plants.css',
 })
@@ -19,6 +20,7 @@ export class UserPlants implements OnInit, OnDestroy {
   places = signal<PlaceDto[]>([]);
   numOfDeadPlants = signal<number>(0);
   isAddPlaceOpen = signal(false);
+  isCheckDiseaseOpen = signal(false);
 
   ngOnInit(): void {
     this.loadUserPlants();
@@ -30,6 +32,16 @@ export class UserPlants implements OnInit, OnDestroy {
     this.isAddPlaceOpen.update(val => !val);
 
     if (this.isAddPlaceOpen()) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+  }
+
+  toggleCheckDiseaseModal(){
+    this.isCheckDiseaseOpen.update(val => !val);
+
+    if (this.isCheckDiseaseOpen()) {
       document.body.classList.add('overflow-hidden');
     } else {
       document.body.classList.remove('overflow-hidden');
