@@ -22,6 +22,12 @@ public class AnalyticsController(
     }
 
     [Authorize(Roles = "Admin")]
+    [HttpGet("{plantedId}")]
+    public async Task<IActionResult> GetAnalyticsForPlanted(int plantedId)
+    {
+        var result = await service.GetPlantedAnalytics(plantedId);
+        return Ok(result);
+    }
     [HttpPost("train/health_prediction")]
     public async Task<IActionResult> TrainHealthPrediction()
     {

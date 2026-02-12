@@ -372,7 +372,7 @@ public static class MapToDTOHelper
             SunlightRequirements = EncodeVector(data.SunlightList.Select(s => s.Id).ToList(), 3),
             MoistureRequirements = EncodeVector(data.MoistureList.Select(s => s.Id).ToList(), 3),
             Seasons = EncodeVector(data.SeasonList.Select(s => s.Id).ToList(), 4),
-            IsLowMaintenance = data.LowMaintenace,
+            IsLowMaintenance = data.LowMaintenance,
             IsDroughtResistant = data.DroughtResistant,
             AvgReminderDelay = data.ReminderDelay,
             HealthScore = data.HealthScore

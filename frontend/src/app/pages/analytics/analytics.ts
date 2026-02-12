@@ -271,7 +271,7 @@ export class Analytics implements OnInit {
         toolbar: { show: false },
         zoom: { enabled: false },
       },
-      colors: ['#68abd8ff'],
+      colors: ['#39735a'],
       plotOptions: {},
       dataLabels: { enabled: false },
       stroke: {

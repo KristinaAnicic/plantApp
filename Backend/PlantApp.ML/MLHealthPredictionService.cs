@@ -33,7 +33,7 @@ public class MLHealthPredictionService(IMLRepository MLRepository) : IMLHealthPr
             SunlightList = d.SunlightList,
             MoistureList = d.MoistureList,
             SeasonList = d.SeasonList,
-            LowMaintenace = d.LowMaintenace,
+            LowMaintenance = d.LowMaintenance,
             DroughtResistant = d.DroughtResistant,
             DaysSincePlanted = d.DaysSincePlanted,
             ReminderDelay = d.ReminderDelay,
@@ -128,6 +128,19 @@ public class MLHealthPredictionService(IMLRepository MLRepository) : IMLHealthPr
             3 => 0f,            // dead
             _ => 50f
         };
+
+        int currentSeason = (int)log.Month switch
+        {
+            3 or 4 or 5 => 1,    // Spring
+            6 or 7 or 8 => 2,    // Summer
+            9 or 10 or 11 => 3,  // Autumn
+            12 or 1 or 2 => 4,   // Winter
+            _ => 0
+        };
+
+        bool isActive = log.SeasonList.Any(s => s.Id == currentSeason);
+        if (!isActive)
+            return 50f;
 
         float adjustment = 0f;
 

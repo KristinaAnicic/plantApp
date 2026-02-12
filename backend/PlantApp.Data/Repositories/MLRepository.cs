@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Appwrite.Models;
+using Microsoft.EntityFrameworkCore;
 using PlantApp.Domain.Dtos.ML;
 using PlantApp.Domain.Interfaces.Repository;
+using PlantApp.Domain.Models;
 
 namespace PlantApp.Data.Repositories;
 
@@ -15,51 +17,86 @@ public class MLRepository : IMLRepository
     public async Task<List<HealthPredictionRecord>> GetHealthPredictionTrainingData()
     {
         var data = await context.GrowthLogs
-            .Where(l =>
-                l.Place != null &&
-                l.Planted != null &&
-                l.Planted.Plant != null &&
-                l.Planted.Plant.Family != null &&
-                l.DeletedAt == null)
-            .Select(l => new
-            {
-                Log = l,
-                AvgDeleay = context.ReminderHistory
-                    .Where(r => r.PlantedId == l.PlantedId && DateOnly.FromDateTime(r.DueDate) <= l.ObservationDate)
-                    .Select(r => (float?)r.delay)
-                    .Average() ?? 0f
-            })
-            .Select(q => new HealthPredictionRecord
-            {
-                SunlightIntensity = (float)q.Log.Place!.SunlightIntensity,
-                HumidityIntensity = (float)q.Log.Place.HumidityIntensity,
-                IsOutside = q.Log.Planted!.IsOutside,
-                Family = q.Log.Planted.Plant!.Family!.Name,
-                Hardiness = (float?)q.Log.Planted.Plant!.HardinessLevelId ?? 1f,
-                PlantStatusId = q.Log.PlantStatusId,
-                SunlightList = q.Log.Planted.Plant.Sunlights.ToList(),
-                MoistureList = q.Log.Planted.Plant.Moistures.ToList(),
-                SeasonList = q.Log.Planted.Plant.Seasons.ToList(),
-                LowMaintenace = q.Log.Planted.Plant.IsLowMaintenance ?? false,
-                DroughtResistant = q.Log.Planted.Plant.IsDroughtResistant ?? false,
-                DaysSincePlanted = (float)(q.Log.ObservationDate.DayNumber - q.Log.Planted.DatePlanted.DayNumber),
-                Month = q.Log.ObservationDate.Month,
-                ReminderDelay = q.AvgDeleay
-            }).ToListAsync();
+            .Where(l => l.DeletedAt == null)
+            .ToListAsync();
 
-        return data;
+        var result = new List<HealthPredictionRecord>();
+
+        foreach (var log in data)
+        {
+            var plants = new List<Planted>();
+
+            if (log.PlantGroupId != null)
+            {
+                plants.AddRange(await context.Planteds
+                    .Where(p => p.PlantGroupId == log.PlantGroupId &&
+                                p.Plant != null &&
+                                p.Plant.Family != null &&
+                                p.Place != null &&
+                                p.DeletedAt == null)
+                    .ToListAsync());
+            }
+            else if (log.Planted != null &&
+                log.Planted.Plant != null &&
+                log.Planted.Plant.Family != null &&
+                log.Planted.Place != null)
+            {
+                plants.Add(log.Planted);
+            }
+
+            foreach (var planted in plants)
+            {
+                if (planted?.Place == null || planted.Plant == null || planted.Plant.Family == null)
+                    continue;
+
+                var avgDelay = await context.ReminderHistory
+                    .Where(r => r.PlantedId == planted.Id && DateOnly.FromDateTime(r.DueDate) <= log.ObservationDate)
+                    .Select(r => (float?)r.delay)
+                    .AverageAsync() ?? 0f;
+
+                result.Add(new HealthPredictionRecord
+                {
+                    SunlightIntensity = (float)planted.Place!.SunlightIntensity,
+                    HumidityIntensity = (float)planted.Place.HumidityIntensity,
+                    IsOutside = planted.IsOutside,
+                    Family = planted.Plant!.Family!.Name,
+                    Hardiness = (float?)planted.Plant!.HardinessLevelId ?? 1f,
+                    PlantStatusId = log.PlantStatusId,
+                    SunlightList = planted.Plant.Sunlights.ToList(),
+                    MoistureList = planted.Plant.Moistures.ToList(),
+                    SeasonList = planted.Plant.Seasons.ToList(),
+                    LowMaintenance = planted.Plant.IsLowMaintenance ?? false,
+                    DroughtResistant = planted.Plant.IsDroughtResistant ?? false,
+                    DaysSincePlanted = (float)(log.ObservationDate.DayNumber - planted.DatePlanted.DayNumber),
+                    Month = log.ObservationDate.Month,
+                    ReminderDelay = avgDelay
+                });
+            }
+        }
+
+        return result;
     }
 
-    public async Task<List<HealthPredictionRecord>> GetUserHealthPredictionInputData(int userId)
+    public async Task<List<HealthPredictionRecord>> GetUserHealthPredictionInputData(int userId, int? plantedId)
     {
-        return await context.Planteds
+        var query = context.Planteds
             .Where(p =>
                 p.Place != null &&
                 p.Plant != null &&
                 p.Plant.Family != null &&
                 p.DeletedAt == null &&
-                p.PlantStatusId != 3 &&
-                p.Place.UserId == userId)
+                p.PlantStatusId != 3);
+
+        if (plantedId.HasValue)
+        {
+            query = query.Where(p => p.Id == plantedId.Value);
+        }
+        else
+        {
+            query = query.Where(p => p.Place!.UserId == userId);
+        }
+
+        return await query
             .Select(p => new
             {
                 Planted = p,
@@ -72,6 +109,7 @@ public class MLRepository : IMLRepository
             {
                 PlantName = q.Planted.Name ?? q.Planted.Plant!.CommonName ?? q.Planted.Plant.BotanicalName,
                 PlaceName = q.Planted.Place!.Name,
+                PlantedId = q.Planted.Id,
 
                 SunlightIntensity = (float)q.Planted.Place!.SunlightIntensity,
                 HumidityIntensity = (float)q.Planted.Place.HumidityIntensity,
@@ -81,7 +119,7 @@ public class MLRepository : IMLRepository
                 SunlightList = q.Planted.Plant.Sunlights.ToList(),
                 MoistureList = q.Planted.Plant.Moistures.ToList(),
                 SeasonList = q.Planted.Plant.Seasons.ToList(),
-                LowMaintenace = q.Planted.Plant.IsLowMaintenance ?? false,
+                LowMaintenance = q.Planted.Plant.IsLowMaintenance ?? false,
                 DroughtResistant = q.Planted.Plant.IsDroughtResistant ?? false,
                 Month = (float)DateTime.UtcNow.Month,
                 DaysSincePlanted = (float)(DateOnly.FromDateTime(DateTime.UtcNow).DayNumber - q.Planted.DatePlanted.DayNumber),

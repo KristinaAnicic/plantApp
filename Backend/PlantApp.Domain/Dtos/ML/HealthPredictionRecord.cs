@@ -7,6 +7,7 @@ public class HealthPredictionRecord
 {
     public string? PlantName { get; set; }
     public string? PlaceName { get; set; }
+    public int PlantedId { get; set; }
     public float SunlightIntensity {  get; set; }
     public float HumidityIntensity {  get; set; }
     public bool IsOutside {  get; set; }
@@ -16,7 +17,7 @@ public class HealthPredictionRecord
     public List<Sunlight> SunlightList { get; set; } = new();
     public List<Moisture> MoistureList { get; set; } = new();
     public List<Season> SeasonList { get; set; } = new();
-    public bool LowMaintenace { get; set; }
+    public bool LowMaintenance { get; set; }
     public bool DroughtResistant { get; set; }
     public float Month { get; set; }
     public float DaysSincePlanted { get; set; }

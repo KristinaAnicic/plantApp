@@ -63,3 +63,17 @@ export interface PlantHallOfFame
     mostResilientPlant: PlantedDto;
     numOfLateReminder: number;
 }
+
+export interface PlantedAnalyticsDto
+{
+    monthlyHealthPrediction: number[];
+    plantGrowthHeight: PlantGrowthHeight[];
+
+}
+
+export interface PlantGrowthHeight
+{
+    month: number;
+    height: number;
+    activeAttributes: string[];
+}
