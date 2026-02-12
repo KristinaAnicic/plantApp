@@ -1,6 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PlantApp.Domain.Models;
+using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Interfaces.Repository;
+using PlantApp.Domain.Models;
+using PlantApp.Domain.Utils;
+using System.Globalization;
+using System.Numerics;
 
 namespace PlantApp.Data.Repositories;
 
@@ -82,7 +86,9 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
                     q.Images.Any() ? q.Images.Select(i => i.Url).FirstOrDefault() : null),
             PlantStatus = q.PlantStatus,
             PlantStatusId = q.PlantStatusId,
-            CreatedAt = q.CreatedAt
+            CreatedAt = q.CreatedAt,
+            PlantGroup = q.PlantGroup,
+            PlantGroupId = q.PlantGroupId
         });
     }
 
@@ -122,6 +128,35 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
             g => g.ToList());
     }
 
+    public async Task<List<GroupedPlantedFamilyPlaceDto>> GetPlantedPlantsByUserIdGroupedByPlantFamilyAndPlace(int userId, bool filterByName = false)
+    {
+        var query = FilterPlantedByUserId(userId)
+            .Include(p => p.Reminders)
+            .Include(p => p.Place!.Country)
+            .AsQueryable();
+
+        query = OrderPlanted(query, filterByName);
+
+        return await query
+        .GroupBy(p => new { Place = p.Place, Family = p.Plant.Family })
+        .Select(g => new GroupedPlantedFamilyPlaceDto
+        {
+            Place = g.Key!.Place.MapPlaceToPlaceDto(),
+            Family = g.Key!.Family.MapReferenceToDto(),
+            Planted = g.Select(p =>
+                new PlantedDto
+                {
+                    Id = p.Id,
+                    Place = p.Place != null ? p.Place.Name : "Not specified",
+                    PlantName = p.Name ?? p.Plant.CommonName ?? p.Plant.BotanicalName,
+                    DatePlanted = p.DatePlanted.ToString("MMM dd, yyyy", CultureInfo.InvariantCulture),
+                    PlantStatus = p.PlantStatus.Name,
+                    Image = p.Image
+                }).ToList()
+        }).ToListAsync();
+
+    }
+
     public async Task DeletePlantedAsync(Planted planted)
     {
         var reminders = context.Reminders.Where(r => r.PlantedId == planted.Id);
@@ -131,6 +166,34 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
         context.GrowthLogs.RemoveRange(growthLogs);
         dbSet.Remove(planted);
         await context.SaveChangesAsync();
+    }
+
+    public async Task<List<Planted>> GetPlantedListByIdsAsync(List<int> ids)
+    {
+        if (ids == null || ids.Count == 0) return new List<Planted>();
+
+        return await dbSet
+            .Where(q => q.DeletedAt == null && ids.Contains(q.Id))
+            .Include(q => q.Place)
+            .ToListAsync();
+    }
+
+    public async Task<Planted?> GetPlantedForGrowthStatisticsAsync(int plantedId)
+    {
+        return await dbSet
+            .Where(p => p.Plant != null && 
+                p.Plant.HeightType != null && 
+                p.Plant.TimeToFullHeight != null)
+            .Include(p => p.Plant!)
+                .ThenInclude(pl => pl.HeightType)
+            .Include(p => p.Plant)
+                .ThenInclude(pl => pl.TimeToFullHeight)
+            .Include(p => p.Plant)
+                .ThenInclude(pl => pl.Seasons)
+            .Include(p => p.Plant)
+                .ThenInclude(pl => pl.PlantSeasonAttributes)
+                    .ThenInclude(pa => pa.PlantAttributeType)
+            .FirstOrDefaultAsync(p => p.Id == plantedId);
     }
 
     private IQueryable<Planted> FilterPlantedByUserId(int userId)

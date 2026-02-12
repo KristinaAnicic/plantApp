@@ -6,4 +6,5 @@ public class PlantedReferences
 {
     public List<ReferenceDto> Places { get; set; } = new List<ReferenceDto>();
     public List<ReferenceDto> PlantStatuses { get; set; } = new List<ReferenceDto>();
+    public List<ReferenceDto> PlantGroups { get; set; } = new List<ReferenceDto>();
 }

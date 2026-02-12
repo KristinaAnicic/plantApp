@@ -103,6 +103,7 @@ builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
 builder.Services.AddScoped<IGrowthLogRepository, GrowthLogRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPlantExchangeRepository, PlantExchangeRepository>();
+builder.Services.AddScoped<IPlantGroupRepository, PlantGroupRepository>();
 builder.Services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 builder.Services.AddScoped<IMLRepository, MLRepository>();
 
@@ -115,6 +116,7 @@ builder.Services.AddScoped<IGrowthLogService, GrowthLogService>();
 builder.Services.AddScoped<IPlantExchangeService, PlantExchangeService>();
 builder.Services.AddScoped<IUserRatingService, UserRatingService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IPlantGroupService, PlantGroupService>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMLHealthPredictionService, MLHealthPredictionService>();
@@ -150,6 +152,8 @@ using (var scope = app.Services.CreateScope())
 
     var seedTemp = services.GetRequiredService<SeedTemporaryDataService>();
     await seedTemp.SeedAllData();
+
+    //await seeder.SeedPlantAttributeData();
 }
 
 app.UseCors(allowedOrigins);

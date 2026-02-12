@@ -20,11 +20,29 @@ public class GrowthLogRepository(AppDbContext context) : Repository<GrowthLog>(c
         return await query.ToListAsync();
     }
 
-    public async Task<List<GrowthLog>> GetAllGrowthLogsByPlantedId(int plantedId)
+    public async Task<List<GrowthLog>> GetAllGrowthLogsByPlantGroupId(int plantGroupId)
     {
         var query = AddIncludes(dbSet.AsQueryable());
         query = query
-            .Where(q => q.PlantedId == plantedId && q.DeletedAt == null)
+            .Where(q =>
+                        q.DeletedAt == null &&
+                        (
+                            (q.PlantGroupId.HasValue && q.PlantGroupId.Value == plantGroupId) ||
+                            (q.Planted != null && q.Planted.PlantGroupId.HasValue && q.Planted.PlantGroupId.Value == plantGroupId)
+                        ))
+            .OrderByDescending(q => q.ObservationDate)
+            .ThenByDescending(q => q.CreatedAt);
+
+        return await query.ToListAsync();
+    }
+
+    public async Task<List<GrowthLog>> GetAllGrowthLogsByPlantedId(int plantedId, int? plantGroupId)
+    {
+        var query = AddIncludes(dbSet.AsQueryable());
+        query = query
+            .Where(q => q.DeletedAt == null && 
+                (q.PlantedId == plantedId || 
+                (plantGroupId.HasValue && q.PlantGroupId == plantGroupId.Value)))
             .OrderByDescending(q => q.ObservationDate)
             .ThenByDescending(q => q.CreatedAt);
 

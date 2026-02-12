@@ -10,6 +10,7 @@ using PlantApp.Domain.Models.Interfaces;
 using PlantApp.Domain.Utils;
 using PlantApp.Domain.Utils.Exceptions;
 using PlantBackend.ExceptionHandlers;
+using System.Numerics;
 
 namespace PlantApp.Domain.Services.Data;
 
@@ -17,8 +18,10 @@ public class PlantedService(
     IPlantedRepository repository,
     IImageService imageService,
     IPlantRepository plantRepo,
+    IGrowthLogRepository logRepo,
     IRepository<Place> placeRepo,
     IRepository<PlantStatus> plantStatusRepo,
+    IPlantGroupRepository plantGroupRepository,
     ICurrentUserContext userContext,
     ILogger<PlantedService> logger
 ) : IPlantedService
@@ -94,12 +97,17 @@ public class PlantedService(
         if (planted == null) 
             throw new NotFoundException("Planted plant", id, logger);
 
+        if (planted.Place == null || (planted.Place.UserId != CurrentUserId && !IsAdmin))
+            throw new UnauthorizedException("delete", "planted", logger);
+
         if (planted.Reminders != null && planted.Reminders.Any()) 
         { 
             planted.Reminders = planted.Reminders
                 .OrderBy(r => r.NextDueDate)
                 .ToList();
         }
+
+        planted.GrowthLogs = await logRepo.GetAllGrowthLogsByPlantedId(id, planted.PlantGroupId);
 
         if (planted.GrowthLogs != null && planted.GrowthLogs.Any())
         {
@@ -158,6 +166,9 @@ public class PlantedService(
         if (existingPlanted == null) 
             throw new NotFoundException("Planted plant", id, logger);
 
+        if (existingPlanted.Place == null || (existingPlanted.Place.UserId != CurrentUserId && !IsAdmin))
+            throw new UnauthorizedException("delete", "planted", logger);
+
         var place = await placeRepo.GetByIdAsync(dto.PlaceId);
 
         if (place == null) 
@@ -202,6 +213,9 @@ public class PlantedService(
         if (planted == null) 
             throw new NotFoundException("Planted plant", id, logger);
 
+        if (planted.Place == null || (planted.Place.UserId != CurrentUserId && !IsAdmin))
+            throw new UnauthorizedException("delete", "planted", logger);
+
         await repository.DeletePlantedAsync(planted);
         logger.LogInformation("Planted plant {PlantedId} deleted by user {UserId}", id, CurrentUserId);
     }
@@ -211,6 +225,9 @@ public class PlantedService(
         var planted = await repository.GetByIdAsync(plantedId);
         if (planted == null) 
             throw new NotFoundException("Planted plant", plantedId, logger);
+
+        if (planted.Place == null || (planted.Place.UserId != CurrentUserId && !IsAdmin))
+            throw new UnauthorizedException("add image", "planted", logger);
 
         await imageService.AddImagesToEntityAsync(planted, urls);
         await repository.UpdateAsync(planted);
@@ -224,7 +241,7 @@ public class PlantedService(
         if (planted == null) 
             throw new NotFoundException("Planted plant", plantedId, logger);
 
-        if (planted.Place != null && planted.Place.UserId != CurrentUserId && !IsAdmin) 
+        if (planted.Place == null || (planted.Place.UserId != CurrentUserId && !IsAdmin))
             throw new UnauthorizedException("remove image", "planted plant", logger);
 
         await imageService.RemoveImageFromEntityAsync(planted, imageId, repository);      
@@ -232,13 +249,16 @@ public class PlantedService(
 
     public async Task<PlantedReferences> GetReferences()
     {
-        var places = await placeRepo.GetAllByKeyAsync(p => p.UserId == CurrentUserId);
+        int userId = CurrentUserId;
+        var places = await placeRepo.GetAllByKeyAsync(p => p.UserId == userId);
         var plantStatuses = await plantStatusRepo.GetAllAsync();
+        var plantGroups = await plantGroupRepository.GetAllByKeyAsync(p => p.UserId == userId);
 
         return new PlantedReferences
         {
             Places = places.Select(p => p.MapReferenceToDto()).ToList(),
-            PlantStatuses = plantStatuses.Select(s => s.MapReferenceToDto()).ToList()
+            PlantStatuses = plantStatuses.Select(s => s.MapReferenceToDto()).ToList(),
+            PlantGroups = plantGroups.Select(s => s.MapReferenceToDto()).ToList()
         };
     }
 }

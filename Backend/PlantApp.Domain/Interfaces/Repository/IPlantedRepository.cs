@@ -11,4 +11,6 @@ public interface IPlantedRepository : IRepository<Planted>
     public Task<List<Planted>> GetPlantedPlantsByPlaceId(int placeId);
     public Task<Dictionary<Place, List<Planted>>> GetPlantedPlantsByUserIdGrouped(int userId, bool filterByName = false);
     public Task DeletePlantedAsync(Planted planted);
+    public Task<List<Planted>> GetPlantedListByIdsAsync(List<int> ids);
+    public Task<Planted?> GetPlantedForGrowthStatisticsAsync(int plantedId);
 }

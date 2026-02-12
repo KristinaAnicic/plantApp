@@ -1,13 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
-using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.GrowthLog;
-using PlantApp.Domain.Dtos.Planted;
 using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Interfaces.Repository;
+using PlantApp.Domain.Models;
+using PlantApp.Domain.Models.Interfaces;
 using PlantApp.Domain.Utils;
 using PlantApp.Domain.Utils.Exceptions;
-using PlantApp.Domain.Models.Interfaces;
 
 namespace PlantApp.Domain.Services.Data;
 
@@ -15,6 +14,7 @@ public class GrowthLogService(
     IGrowthLogRepository repository,
     IRepository<PlantStatus> statusRepo,
     IPlantedRepository plantedRepo,
+    IPlantGroupRepository groupRepo,
     IImageService imageService,
     ICurrentUserContext userContext,
     ILogger<GrowthLogService> logger
@@ -32,7 +32,10 @@ public class GrowthLogService(
 
     public async Task<List<GrowthLogDto>> GetAllByPlantedIdAsync(int plantedId)
     {
-        var logs = await repository.GetAllGrowthLogsByPlantedId(plantedId);
+        var planted = await plantedRepo.GetByIdAsync(plantedId);
+        if (planted == null) return new();
+
+        var logs = await repository.GetAllGrowthLogsByPlantedId(plantedId, planted.PlantGroupId);
 
         var log = logs.FirstOrDefault();
 
@@ -54,25 +57,40 @@ public class GrowthLogService(
 
     public async Task AddAsync(UpsertGrowthLogDto dto)
     {
-
-        var planted = await plantedRepo.GetByIdAsync(dto.PlantedId);
-        if (planted == null)
-            throw new NotFoundException("Planted", dto.PlantedId, logger);
-
-        if (!await statusRepo.IdExistsAsync(dto.PlantStatusId))
-            throw new NotFoundException("Plant status", dto.PlantStatusId, logger);
-
-        if (planted.Place != null && planted.Place.UserId != CurrentUserId && !IsAdmin)
-            throw new UnauthorizedException("add log", $"Planted {dto.PlantedId}", logger);        
+        if (dto.PlantGroupId == null && dto.PlantedId == null)
+            throw new InvalidOperationAppException("Cannot add log without providing PlantGroupId or PlantedId", null, logger);
 
         var log = dto.MapUpsertGrowthLogDtoToGrowthLog();
+
+        if (dto.PlantedId != null)
+        {
+            var planted = await plantedRepo.GetByIdAsync(dto.PlantedId.Value);
+            if (planted == null)
+                throw new NotFoundException("Planted", dto.PlantedId, logger);
+
+            if (planted.Place != null && planted.Place.UserId != CurrentUserId && !IsAdmin)
+                throw new UnauthorizedException("add log", $"Planted {dto.PlantedId}", logger);
+
+            log.PlaceId = planted.PlaceId;
+        }
+        if (dto.PlantGroupId != null) {
+            var group = await groupRepo.GetByIdAsync(dto.PlantGroupId.Value);
+            if (group == null)
+                throw new NotFoundException("Plant Group", dto.PlantGroupId, logger);
+
+            if (group.UserId != CurrentUserId && !IsAdmin)
+                throw new UnauthorizedException("add log", $"Plant Group {dto.PlantGroupId}", logger);
+        }
+      
+        if (!await statusRepo.IdExistsAsync(dto.PlantStatusId))
+            throw new NotFoundException("Plant status", dto.PlantStatusId, logger);
 
         if (dto.Images != null && dto.Images.Any())
         {
             log.Images.Clear();
             await imageService.AddImagesSafeAsync(log, dto.Images);
         }
-        log.PlaceId = planted.PlaceId;
+        
 
         await repository.AddAsync(log);
         logger.LogInformation("Growth log {LogId} successfully created", log.Id);
@@ -83,19 +101,35 @@ public class GrowthLogService(
         if (id != dto.Id)
             throw new DtoIdMismatchException("GrowthLog", dto.Id, id, logger);
 
+        if (dto.PlantGroupId == null && dto.PlantedId == null)
+            throw new InvalidOperationAppException("Cannot add log without providing PlantGroupId or PlantedId", null, logger);
+
         var log = await repository.GetGrowthLogById(id);
 
         EnsureLogExistsAndAuthorized(log);
 
-        var planted = await plantedRepo.GetByIdAsync(dto.PlantedId);
-        if (planted == null)
-            throw new NotFoundException("Planted", dto.PlantedId, logger);
+        if (dto.PlantedId != null)
+        {
+            var planted = await plantedRepo.GetByIdAsync(dto.PlantedId.Value);
+            if (planted == null)
+                throw new NotFoundException("Planted", dto.PlantedId, logger);
+
+            if (planted.Place != null && planted.Place.UserId != CurrentUserId && !IsAdmin)
+                throw new UnauthorizedException("modify log", $"Planted {dto.PlantedId}", logger);
+        }
+        if (dto.PlantGroupId != null)
+        {
+            var group = await groupRepo.GetByIdAsync(dto.PlantGroupId.Value);
+            if (group == null)
+                throw new NotFoundException("Plant Group", dto.PlantGroupId, logger);
+
+            if (group.UserId != CurrentUserId && !IsAdmin)
+                throw new UnauthorizedException("modify log", $"Plant Group {dto.PlantGroupId}", logger);
+        }    
 
         if (!await statusRepo.IdExistsAsync(dto.PlantStatusId))
             throw new NotFoundException("Planted", dto.PlantedId, logger);
 
-        if (planted.Place != null && planted.Place.UserId != CurrentUserId && !IsAdmin)
-            throw new UnauthorizedException("modify log", $"Planted {dto.PlantedId}", logger);
 
         dto.MapUpsertGrowthLogDtoToGrowthLog(log);
 
@@ -147,7 +181,7 @@ public class GrowthLogService(
         if (log == null)
             throw new NotFoundException("Growth log", logger: logger);
 
-        if (log.Planted?.Place?.UserId != CurrentUserId && !IsAdmin)
+        if (log.Planted?.Place?.UserId != CurrentUserId && log.PlantGroup?.UserId != CurrentUserId && !IsAdmin)
         {
             throw new UnauthorizedException("access", $"GrowthLog {log.Id}", logger);
         }

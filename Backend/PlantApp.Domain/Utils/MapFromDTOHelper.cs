@@ -6,6 +6,7 @@ using PlantApp.Domain.Dtos.PlantExchange;
 using PlantApp.Domain.Dtos.PlantPlace;
 using PlantApp.Domain.Dtos.Reminder;
 using PlantApp.Domain.Dtos.User;
+using PlantApp.Domain.Dtos.PlantGroup;
 
 namespace PlantApp.Domain.Utils;
 
@@ -88,6 +89,7 @@ public static class MapFromDTOHelper
 
         planted.PlantId = dto.PlantId;
         planted.PlaceId = dto.PlaceId;
+        planted.PlantGroupId = dto.PlantGroupId;
         planted.DatePlanted = dto.DatePlanted ?? DateOnly.FromDateTime(DateTime.UtcNow);
         planted.Source = dto.Source;
         planted.Note = dto.Note;
@@ -115,6 +117,21 @@ public static class MapFromDTOHelper
         
         MapValuesUpsertPlaceDtoToPlace(dto, place);
         return place;
+    }
+
+    public static void MapValuesUpsertPlantGroupDtoToPlantGroup(UpsertPlantGroupDto dto, PlantGroup group)
+    {
+        group.Name = dto.Name;
+        group.Description = dto.Description;
+    }
+
+    public static PlantGroup MapUpsertPlantGroupDtoToPlantGroup(this UpsertPlantGroupDto dto, PlantGroup? group = null)
+    {
+        if (group == null)
+            group = new PlantGroup { Name = dto.Name };
+
+        MapValuesUpsertPlantGroupDtoToPlantGroup(dto, group);
+        return group;
     }
 
     public static void MapValuesUpsertReminderDtoToReminder(this UpsertReminderDto dto, Reminder reminder)
@@ -145,6 +162,7 @@ public static class MapFromDTOHelper
     public static void MapValuesUpsertGrowthLogDtoToGrowthLog(this UpsertGrowthLogDto dto, GrowthLog log)
     {
         log.PlantedId = dto.PlantedId;
+        log.PlantGroupId = dto.PlantGroupId;
         log.Note = dto.Note;
         log.PlantStatusId = dto.PlantStatusId;
         log.ObservationDate = dto.ObservationDate;

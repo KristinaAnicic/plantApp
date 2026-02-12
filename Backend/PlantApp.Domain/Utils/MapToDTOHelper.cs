@@ -11,6 +11,7 @@ using PlantApp.Domain.Dtos.PlantPlace;
 using PlantApp.Domain.Dtos.Reminder;
 using PlantApp.Domain.Dtos.User;
 using System.Globalization;
+using PlantApp.Domain.Dtos.PlantGroup;
 
 namespace PlantApp.Domain.Utils;
 
@@ -163,7 +164,7 @@ public static class MapToDTOHelper
             Id = planted.Id,
             Place = planted.Place != null
                 ? planted.Place.Name : "Not specified",
-            PlantName = planted.Name !=  null ? 
+            PlantName = planted.Name != null ?
                         planted.Name :
                         planted.Plant != null
                             ? $"{planted.Plant.CommonName}"
@@ -171,7 +172,9 @@ public static class MapToDTOHelper
             PlantStatus = planted.PlantStatus?.Name ?? "Not specified",
             DatePlanted = planted.DatePlanted.ToString("MMM dd, yyyy", CultureInfo.InvariantCulture),
             Image = planted.Image
-
+                ?? planted.Plant?.Images?.FirstOrDefault()?.Url
+                ?? null,
+            PlantGroup = planted.PlantGroup != null ? planted.PlantGroup.MapReferenceToDto() : null
         };
     }
 
@@ -197,24 +200,17 @@ public static class MapToDTOHelper
                 //?? planted.Images?.FirstOrDefault()?.Url
                 ?? planted.Plant?.Images?.FirstOrDefault()?.Url
                 ?? null,
-            UserId = planted.Place?.UserId
+            UserId = planted.Place?.UserId,
+            PlantGroup = planted.PlantGroup != null ? planted.PlantGroup.MapReferenceToDto() : null
         };
     }
-
-    /*public static GroupedPlantedDto MapPlantedToGroupedPlantedDto(this Dictionary<Place, List<Planted>> planted)
-    {
-        return new GroupedPlantedDto
-        {
-            Place = planted.K
-        };
-    }*/
 
     public static ReminderDto MapReminderToReminderDto(this Reminder reminder)
     {
         return new ReminderDto
         {
             Id = reminder.Id,
-            Plant = reminder.Planted.Name != null ? reminder.Planted.Name : reminder.Planted.Plant.CommonName ?? reminder.Planted.Plant.BotanicalName,
+            Plant = (reminder.Planted != null && reminder.Planted.Name != null) ? reminder.Planted.Name : reminder.Planted.Plant.CommonName ?? reminder.Planted.Plant.BotanicalName,
             PlantedId = reminder.PlantedId,
             Place = reminder.Planted.Place.Name,
             ReminderType = reminder.ReminderType?.Name,
@@ -234,7 +230,7 @@ public static class MapToDTOHelper
             NextDueDate = reminder.NextDueDate,
             OriginalDueDate = reminder.OriginalDueDate,
             Note = reminder.Note,
-            PlantedName = reminder.Planted.Name ?? $"{reminder.Planted.Plant?.BotanicalName} ({reminder.Planted.Plant?.CommonName})",
+            PlantedName = reminder.Planted.Name ?? reminder.Planted.Plant?.CommonName ?? reminder.Planted.Plant?.BotanicalName,
             //Frequency = $"every {reminder.FrequencyNum} {reminder.FrequencyType.Name}"
             FrequencyType = reminder.FrequencyType.MapReferenceToDto(),
             FrequencyNum = reminder.FrequencyNum,
@@ -253,6 +249,7 @@ public static class MapToDTOHelper
             ObservationDate = log.ObservationDate,
             Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList(),
             PlantedId = log.PlantedId,
+            PlantGroupId = log.PlantGroupId,
             Plant = log.Planted != null ? log.Planted.Name : null
         };
     }
@@ -268,7 +265,8 @@ public static class MapToDTOHelper
             ObservationDate = log.ObservationDate,
             Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList(),
             PlantedId = log.PlantedId,
-            Plant = log.Planted != null ? log.Planted.Name : null,
+            PlantGroupId = log.PlantGroupId,
+            Plant = log.Planted != null ? (log.Planted.Name ?? log.Planted.Plant?.CommonName ?? log.Planted.Plant?.BotanicalName) : null,
         };
     }
 
@@ -335,6 +333,29 @@ public static class MapToDTOHelper
         {
             Id = reference.Id,
             Name = reference.Name
+        };
+    }
+
+    public static PlantGroupDto MapPlantGroupToPlantGroupDto(this PlantGroup group)
+    {
+        return new PlantGroupDto
+        {
+            Id = group.Id,
+            Name = group.Name,
+            Description = group.Description,
+            NumOfPlants = group.PlantedList.Count,
+        };
+    }
+
+    public static PlantGroupGetDto MapPlantGroupToPlantGroupGetDto(this PlantGroup group)
+    {
+        return new PlantGroupGetDto
+        {
+            Id = group.Id,
+            Name = group.Name,
+            Description = group.Description,
+            Planted = group.PlantedList.Select(p => p.MapPlantedToPlantedDto()).ToList(),
+            GrowthLogs = group.GrowthLogs.Select(l => l.MapGrowthLogToGrowthLogGetDto()).ToList()
         };
     }
 
