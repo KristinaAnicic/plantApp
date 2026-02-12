@@ -127,7 +127,7 @@ namespace PlantApp.Data.Migrations
                 columns: new[] { "id", "name", "min_height", "max_height", "unit" },
                 values: new object[,]
                 {
-                    { 1, "Up to 10cm", 0, 10m, "cm" },
+                    { 1, "Up to 10cm", 0, 0.1m, "m" },
                     { 2, "0.1-0.5 metres", 0.1m, 0.5m, "m" },
                     { 3, "0.5–1 metres", 0.5m, 1m, "m" },
                     { 4, "1–1.5 metres" , 1m, 1.5m, "m" },

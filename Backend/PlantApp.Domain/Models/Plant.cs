@@ -62,5 +62,6 @@ public class Plant : BaseEntity, IHasImages
     public ICollection<Exposure> Exposures { get; set; } = new List<Exposure>();
     public ICollection<Habit> Habits { get; set; } = new List<Habit>();
     public ICollection<Season> Seasons { get; set; } = new List<Season>();
+    public ICollection<PlantSeasonAttribute> PlantSeasonAttributes { get; set; } = new List<PlantSeasonAttribute>();
     public ICollection<Planted> PlantedList { get; set; } = new List<Planted>();
 }

@@ -2,6 +2,7 @@
 using Microsoft.VisualBasic.FileIO;
 using PlantApp.Data;
 using PlantApp.Domain.Models;
+using PlantApp.Domain.Models.Categories;
 
 namespace PlantApp.Domain.Services;
 
@@ -81,6 +82,66 @@ public class SeedCsvDataService
                 id, name);
         }
     }
+
+    public async Task SeedPlantAttributeData()
+    {
+        var colorWithAttributeFile = Path.Combine(csvPath, "plant_colorWithAttribute.csv");
+        var mappingFile = Path.Combine(csvPath, "plant_id_mapping.csv");
+
+        var idMapping = File.ReadAllLines(mappingFile)
+                            .Skip(1) //skip header
+                            .Select(line => line.Split(','))
+                            .ToDictionary(parts => int.Parse(parts[0]), parts => int.Parse(parts[1]));
+
+        var plantIdsInDb = await context.Plants.Select(p => p.Id).ToListAsync();
+        var plantIdsSet = new HashSet<int>(plantIdsInDb);
+
+        using (var parser = new TextFieldParser(colorWithAttributeFile))
+        {
+            parser.TextFieldType = FieldType.Delimited;
+            parser.SetDelimiters(",");
+            parser.ReadLine(); // skip header
+
+            var batchSize = 5000;
+            var plantAttributesToAdd = new List<PlantSeasonAttribute>(batchSize);
+            while (!parser.EndOfData)
+            {
+                var fields = parser.ReadFields();
+                var oldId = int.Parse(fields[0]);
+                var seasonId = int.Parse(fields[1]);
+                var colour = fields[2];
+                var attributeTypeId = int.Parse(fields[3]);
+
+                if (!idMapping.TryGetValue(oldId, out int newId))
+                    continue;
+
+                if (!plantIdsSet.Contains(newId))
+                    continue;
+
+                plantAttributesToAdd.Add(new PlantSeasonAttribute
+                {
+                    PlantId = newId,
+                    SeasonId = seasonId,
+                    Colour = colour,
+                    PlantAttributeTypeId = attributeTypeId
+                });
+
+                if (plantAttributesToAdd.Count >= batchSize)
+                {
+                    context.PlantSeasonAttributes.AddRange(plantAttributesToAdd);
+                    await context.SaveChangesAsync();
+                    plantAttributesToAdd.Clear();
+                }
+            }
+
+            if (plantAttributesToAdd.Any())
+            {
+                context.PlantSeasonAttributes.AddRange(plantAttributesToAdd);
+                await context.SaveChangesAsync();
+            }
+        }
+    }
+
 
     public async Task SeedPlantData()
     {

@@ -7,7 +7,7 @@ public class GrowthLog : BaseEntity, IHasImages
 {
     [ForeignKey(nameof(PlantedId))]
     public Planted? Planted { get; set; }
-    public required int PlantedId { get; set; }
+    public int? PlantedId { get; set; }
     public required string Title { get; set; }
     public string? Note { get; set; }
 
@@ -19,6 +19,10 @@ public class GrowthLog : BaseEntity, IHasImages
     [ForeignKey(nameof(PlaceId))]
     public int? PlaceId { get; set; }
     public Place? Place { get; set; }
+
+    [ForeignKey(nameof(PlantGroupId))]
+    public PlantGroup? PlantGroup { get; set; }
+    public int? PlantGroupId { get; set; }
 
     public ICollection<Image> Images { get; set; } = new List<Image>();
 }

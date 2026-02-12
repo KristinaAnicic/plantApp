@@ -39,6 +39,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Frequency> Frequencies { get; set; }
     public DbSet<ReminderHistory> ReminderHistory { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<PlantGroup> PlantGroups { get; set; }
+    public DbSet<PlaceHistory> PlaceHistory { get; set; }
+    public DbSet<PlantAttributeType> PlantAttributeTypes { get; set; }
+    public DbSet<PlantSeasonAttribute> PlantSeasonAttributes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -230,18 +230,24 @@ public class SeedTemporaryDataService(AppDbContext context)
 
         foreach (var log in growthLogs)
         {
+            var userId = 0;
             var imageCount = random.Next(0, 3); // 0–2 slike po logu
             if (imageCount == 0)
                 continue;
 
-            var planted = plantedDict[log.PlantedId];
+            if (log.PlantedId != null)
+            {
+                var planted = plantedDict[log.PlantedId.Value];
+                userId = planted.Place.UserId;
+            }
+            
 
             for (int i = 0; i < imageCount; i++)
             {
                 var image = new Image
                 {
                     Url = $"https://picsum.photos/seed/log-{Guid.NewGuid()}/400",
-                    UserId = planted.Place.UserId
+                    UserId = userId
                 };
 
                 log.Images.Add(image);

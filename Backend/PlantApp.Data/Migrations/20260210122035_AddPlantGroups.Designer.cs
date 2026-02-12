@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PlantApp.Data;
@@ -11,9 +12,11 @@ using PlantApp.Data;
 namespace PlantApp.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260210122035_AddPlantGroups")]
+    partial class AddPlantGroups
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -211,62 +214,6 @@ namespace PlantApp.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("frequencies");
-                });
-
-            modelBuilder.Entity("PlantApp.Domain.Models.Categories.PlantAttributeType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("plant_attribute_types");
-                });
-
-            modelBuilder.Entity("PlantApp.Domain.Models.Categories.PlantSeasonAttribute", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Colour")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("colour");
-
-                    b.Property<int>("PlantAttributeTypeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("plant_attribute_type_id");
-
-                    b.Property<int>("PlantId")
-                        .HasColumnType("integer")
-                        .HasColumnName("plant_id");
-
-                    b.Property<int>("SeasonId")
-                        .HasColumnType("integer")
-                        .HasColumnName("season_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlantAttributeTypeId");
-
-                    b.HasIndex("PlantId");
-
-                    b.HasIndex("SeasonId");
-
-                    b.ToTable("plant_season_attributes");
                 });
 
             modelBuilder.Entity("PlantApp.Domain.Models.Categories.Season", b =>
@@ -812,10 +759,6 @@ namespace PlantApp.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("pest_resistance");
 
-                    b.Property<int?>("PlantAttributeTypeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("plant_attribute_type_id");
-
                     b.Property<string>("Propagation")
                         .HasColumnType("text")
                         .HasColumnName("propagation");
@@ -853,8 +796,6 @@ namespace PlantApp.Data.Migrations
                     b.HasIndex("HardinessLevelId");
 
                     b.HasIndex("HeightTypeId");
-
-                    b.HasIndex("PlantAttributeTypeId");
 
                     b.HasIndex("SpreadTypeId");
 
@@ -1736,33 +1677,6 @@ namespace PlantApp.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PlantApp.Domain.Models.Categories.PlantSeasonAttribute", b =>
-                {
-                    b.HasOne("PlantApp.Domain.Models.Categories.PlantAttributeType", "PlantAttributeType")
-                        .WithMany()
-                        .HasForeignKey("PlantAttributeTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PlantApp.Domain.Models.Plant", "Plant")
-                        .WithMany("SeasPlantSeasonAttributes")
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PlantApp.Domain.Models.Categories.Season", "Season")
-                        .WithMany()
-                        .HasForeignKey("SeasonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Plant");
-
-                    b.Navigation("PlantAttributeType");
-
-                    b.Navigation("Season");
-                });
-
             modelBuilder.Entity("PlantApp.Domain.Models.City", b =>
                 {
                     b.HasOne("PlantApp.Domain.Models.Country", "Country")
@@ -1867,10 +1781,6 @@ namespace PlantApp.Data.Migrations
                     b.HasOne("PlantApp.Domain.Models.HeightType", "HeightType")
                         .WithMany("Plants")
                         .HasForeignKey("HeightTypeId");
-
-                    b.HasOne("PlantApp.Domain.Models.Categories.PlantAttributeType", null)
-                        .WithMany("Plants")
-                        .HasForeignKey("PlantAttributeTypeId");
 
                     b.HasOne("PlantApp.Domain.Models.SpreadType", "SpreadType")
                         .WithMany("Plants")
@@ -2128,11 +2038,6 @@ namespace PlantApp.Data.Migrations
                     b.Navigation("Reminders");
                 });
 
-            modelBuilder.Entity("PlantApp.Domain.Models.Categories.PlantAttributeType", b =>
-                {
-                    b.Navigation("Plants");
-                });
-
             modelBuilder.Entity("PlantApp.Domain.Models.Country", b =>
                 {
                     b.Navigation("Cities");
@@ -2168,8 +2073,6 @@ namespace PlantApp.Data.Migrations
             modelBuilder.Entity("PlantApp.Domain.Models.Plant", b =>
                 {
                     b.Navigation("PlantedList");
-
-                    b.Navigation("SeasPlantSeasonAttributes");
 
                     b.Navigation("Synonyms");
                 });
