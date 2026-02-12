@@ -3,7 +3,8 @@ import { Reference } from "./reference.interface";
 
 export interface GrowthLogDto {
     id: number;
-    plantedId: number;
+    plantedId?: number;
+    plantGroupId?: number;
     plant?: string;
     note?: string;
     title: string;
@@ -14,7 +15,8 @@ export interface GrowthLogDto {
 
 export interface GrowthLogGetDto {
     id: number;
-    plantedId: number;
+    plantedId?: number;
+    plantGroupId?: number;
     title: string;
     plant?: string;
     note?: string;
@@ -25,7 +27,8 @@ export interface GrowthLogGetDto {
 
 export interface UpsertGrowthLogDto {
     id?: number;  
-    plantedId: number;
+    plantedId?: number;
+    plantGroupId?: number;
     title: string;
     note?: string;
     plantStatusId: number;

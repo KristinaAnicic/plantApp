@@ -1,0 +1,155 @@
+<div class="flex flex-col px-10 py-5 gap-y-5">
+    <div class="flex flex-wrap sm:flex-row-reverse rounded-md px-5 bg-white shadow-md shadow-gray-200">
+        <div class="flex flex-col flex-1 min-w-0 sm:pl-5 pt-5 sm:py-5 gap-y-5 justify-between pb-5">
+            <div class="flex flex-col gap-y-5">
+                <div class="flex flex-wrap gap-x-2 justify-between">
+                    <div class="flex flex-col">
+                        <div class="flex gap-x-1 items-end text-end">
+                            <img src="/assets/images/icons/fern.svg" class="w-8 h-8 -translate-y-1"/>
+                            <h1 class="font-bold text-2xl text-end capitalize">{{ group()?.name }}</h1>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="cursor-pointer" (click)="deleteGroup()">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-red-800">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <p class="italic">{{ group()?.description ?? 'No notes provided.'}}</p>
+                
+            </div>
+            <div class="flex flex-col md:flex-row gap-2">
+                <button (click)="addLog()" type="button" class="flex-1 lg:flex-none bg-green-900 text-white cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">Add Growth Log</button>
+                <button (click)="addReminder()" type="button" class="flex flex-1 md:flex-none items-center gap-x-1 justify-center border border-green-900 cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
+                    </svg>
+                    Set reminder
+                </button>
+                <button (click)="editGroup()" type="button" class="flex flex-1 lg:flex-none items-center justify-center gap-x-1 bg-gray-200 text-gray-500 cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                    </svg>
+                    Edit Details</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-5">
+        <div class="flex flex-col gap-5 w-full md:w-1/3">
+            <div class="flex flex-col bg-white shadow-md shadow-gray-200 rounded-md w-full gap-x-3 text-sm">
+                <div class="flex flex-col">
+                    <div class="flex justify-between gap-3 p-5 py-3 border-b border-b-gray-200 items-center">
+                        <h3 class="font-semibold text-base">Plants in this group</h3>
+                        <button (click)="togglePlantsModal()" class="underline text-green-900 px-2 py-2 cursor-pointer">Manage plants</button>
+                    </div>
+                    
+                    @if(group()?.planted?.length ?? 0 > 0){
+                        @for(plant of group()?.planted; track plant.id){
+                            <div (click)="openPlanted(plant.id)" class="flex gap-3 justify-between items-center hover:bg-gray-100 p-3 cursor-pointer border-b border-b-gray-200">
+                                <div class="flex gap-3 items-center">
+                                    <div class="relative h-12 sm:h-12 aspect-square overflow-hidden rounded-lg bg-gray-100 flex-shrink-0 content-center border border-gray-300">
+                                        @if (plant.image) {
+                                            <img [src]="plant.image" (error)="plant.image = 'assets/icons/placeholder.svg'" class="w-full h-full object-cover"/>
+                                        } @else {
+                                            <svg class="lucide lucide-sprout-icon lucide-sprout w-7 h-7 text-gray-400 mx-auto" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"/><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4"/><path d="M5 21h14"/>
+                                            </svg>
+                                        }
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <p class="capitalize font-medium text-md">"{{ plant.plantName }}"</p>
+                                        <div class="flex gap-x-1 items-start">
+                                            <svg class="h-5 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                <path fill-rule="evenodd" d="m11.54 22.351.07.04.028.016a.76.76 0 0 0 .723 0l.028-.015.071-.041a16.975 16.975 0 0 0 1.144-.742 19.58 19.58 0 0 0 2.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 0 0-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 0 0 2.682 2.282 16.975 16.975 0 0 0 1.145.742ZM12 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd" />
+                                            </svg>
+                                            <p class="text-green-900">{{ plant.place }}</p>
+                                        </div>  
+                                    </div>
+                                </div>
+                                <svg class="h-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                </svg>
+                            </div>
+                        }
+                    }
+                    @else {
+                        <p class="italic p-3 text-gray-400">There are no plants in this group</p>
+                    }                    
+                </div>
+
+            </div>
+            <div class="flex flex-col p-5 bg-white shadow-md shadow-gray-200 rounded-md w-full gap-y-3">
+                <div class="flex items-center gap-x-2">
+                    <svg class="h-5 w-5 text-green-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+                    </svg>
+                    <h2 class="font-medium text-lg">Upcoming reminders</h2>                   
+                </div>  
+                <div class="max-h-80 overflow-y-auto pr-2">
+                    <app-planted-reminders [reminders]="group()?.reminders" (editReminder)="editReminder($event)" (reminderEdited)="loadGroup()" [isGroup]="true"></app-planted-reminders>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col p-5 bg-white shadow-md shadow-gray-200 rounded-md w-full md:w-2/3 max-h-[650px] overflow-y-auto items-start gap-y-5">
+            <div class="flex items-center justify-between w-full">
+                <div class="flex flex-1 items-center gap-x-2">
+                    <svg class="w-5 h-5 text-green-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                    </svg>
+                    <h2 class="font-medium text-lg">Growth History</h2>                   
+                </div>
+                <div class="flex items-center gap-2">
+                    <p class="flex items-center gap-2 text-gray-400">
+                        Show only group logs</p>
+                    <div class="relative inline-block w-11 h-5">
+                        <input id="onlyGroupLogs" 
+                            [checked]="showOnlyGroupLogs()" 
+                            (change)="toggleShowLogsModal()"
+                            type="checkbox" class="peer border border-gray-300 appearance-none w-9 h-5 bg-gray-300 rounded-full checked:bg-blue-600 cursor-pointer transition-colors duration-300" />
+                        <label for="onlyGroupLogs" class="absolute top-0 left-0 w-5 h-5 bg-white rounded-full border border-gray-300 shadow-sm transition-transform duration-300 peer-checked:translate-x-4 peer-checked:border-blue-600 cursor-pointer">
+                        </label>
+                    </div>
+                </div>
+            </div>  
+            <div class="w-full">
+                <app-planted-growth-log [logs]="filteredlogs()" (editLog)="editLog($event)" (logEdited)="loadGroup()"></app-planted-growth-log>
+            </div>          
+        </div>
+    </div>
+</div>
+
+@if (isEditGroupModalOpen()) {
+    <div class="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm transition-opacity" (click)="toggleAddGroupModal()">
+        <div class="fixed inset-0 z-60 flex justify-center items-center h-full max-h-full content-center overflow-y-auto">
+            <app-add-edit-group-modal (close)="toggleAddGroupModal()" (groupAdded)="loadGroup()" [editGroup]="groupToEdit()"></app-add-edit-group-modal>
+        </div>
+    </div>
+}
+
+@if (isLogModalOpen()) {
+    <div class="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm transition-opacity" (click)="toggleLogModal()">
+        <div class="fixed inset-0 z-60 flex justify-center items-center h-full max-h-full content-center overflow-y-auto">
+            <app-add-edit-log-modal (close)="toggleLogModal()" (logEdited)="loadGroup()" [editLog]="logToEdit()" [groupId]="currentGroupId()"></app-add-edit-log-modal>
+        </div>
+    </div>
+}
+
+@if (isManagePlantsModalOpen() && currentGroupId() !== null) {
+    <div class="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm transition-opacity" (click)="togglePlantsModal()">
+        <div class="fixed inset-0 z-60 flex justify-center items-center h-full max-h-full content-center overflow-y-auto">
+            <app-plant-group-list (close)="togglePlantsModal()" (addedPlants)="loadGroup()" [groupId]="currentGroupId()!"></app-plant-group-list>
+        </div>
+    </div>
+}
+
+<!--@if (isReminderModalOpen()) {
+    <div class="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity" (click)="toggleReminderModal()">
+        <div class="fixed inset-0 z-50 flex justify-center items-center h-full max-h-full content-center overflow-y-auto">
+            <app-add-edit-reminder-modal (close)="toggleReminderModal()" (reminderEdited)="loadPlanted()" [editReminder]="reminderToEdit()" [plantedId]="+id"></app-add-edit-reminder-modal>
+        </div>
+    </div>
+}-->

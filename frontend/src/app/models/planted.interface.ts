@@ -12,6 +12,7 @@ export interface PlantedDto {
     place: string;
     datePlanted: string;
     plantStatus: string;
+    plantGroup?: Reference;
     image: string;
 }
 
@@ -27,6 +28,7 @@ export interface PlantedGetDto {
     note?: string;
     isOutside: boolean;
     plantStatus?: Reference;
+    plantGroup?: Reference;
     nextReminders?: ReminderGetDto[];
     growthLogs?: GrowthLogGetDto[];
     images?: ImageDto[];
@@ -43,6 +45,7 @@ export interface UpsertPlantedDto {
     name?: string;
     plantId: number;
     placeId: number;
+    plantGroupId?: number;
     datePlanted?: string; 
     source?: string;
     note?: string;
@@ -54,7 +57,8 @@ export interface UpsertPlantedDto {
 
 export interface PlantedReference {
     places: Reference[],
-    plantStatuses: Reference[]
+    plantStatuses: Reference[],
+    plantGroups: Reference[]
 }
 
 export interface PlantedWithAnyDeadBoolDto

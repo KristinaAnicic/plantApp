@@ -6,7 +6,7 @@
                 <!--Start of log information details-->
                 <div class="flex justify-between pb-6">
                     <div>
-                        <h2 class="font-medium text-base">{{ log.title }}</h2>
+                        <h2 class="font-medium text-base">{{ log.title }} <span class="capitalize">{{ getTextForLog(log) }}</span></h2>
                         <div class="flex gap-2 pb-3">
                             <p class="text-gray-500">{{ log.observationDate | date: 'MMMM dd, yyy' }}</p>
                             <p>•</p>

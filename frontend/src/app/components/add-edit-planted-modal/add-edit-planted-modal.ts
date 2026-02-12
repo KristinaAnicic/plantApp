@@ -66,6 +66,7 @@ export class AddEditPlantedModal implements OnInit {
     name: new FormControl<string | undefined>('', { nonNullable: true }),
     plantId: new FormControl<number | null>(this.plantId(), { nonNullable: true }),
     placeId: new FormControl<number | string>("", { nonNullable: true }),
+    plantGroupId: new FormControl<number | undefined>(undefined, { nonNullable: true }),
     datePlanted: new FormControl(new Date().toISOString().split('T')[0], { nonNullable: true }),
     source: new FormControl('', { nonNullable: true }),
     note: new FormControl('', { nonNullable: true }),
@@ -90,6 +91,7 @@ export class AddEditPlantedModal implements OnInit {
     const cleanData: UpsertPlantedDto = {
       ...data, 
       plantId: Number(data.plantId ?? 0),
+      plantGroupId: data.plantGroupId,
       placeId: Number(data.placeId),
       plantStatusId: Number(data.plantStatusId),
       datePlanted: data.datePlanted || undefined,

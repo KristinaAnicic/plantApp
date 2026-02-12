@@ -75,6 +75,18 @@
                     </div> 
                 </div> 
                 <div class="flex flex-col flex-1 gap-3">
+                    <div class="w-full">
+                        <label for="group" class="block text-sm font-medium text-heading px-1 py-1">Add to a plant group (Optional)</label>         
+                        <div class="block w-full p-2 ps-2 border border-gray-300 rounded-lg  bg-gray-50">
+                            <select id="group" formControlName="plantGroupId" class="w-full text-heading text-sm">
+                                <option [ngValue]="null">None / Not Specified</option>
+                                @for(status of this.references()?.plantGroups; track status.id){
+                                    <option [ngValue]="status.id">{{ status.name }}</option>
+                                }
+                            </select>
+                        </div> 
+                    </div>
+
                     <div>
                         <label for="source" class="block text-sm font-medium text-heading px-1 py-1">Source (Optional)</label>
                         <input type="text" id="source" formControlName="source" placeholder="e.g. Gift, Field Trip" autocomplete="off" />

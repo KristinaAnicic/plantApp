@@ -7,6 +7,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NumbersOnlyDirective } from '../../directives/numbers-only.directive';
 import { map } from 'rxjs';
+import { Router, RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-planted-reminders',
@@ -17,10 +18,14 @@ import { map } from 'rxjs';
 export class PlantedReminders {
   service = inject(ReminderService);
   notif = inject(NotificationService);
+  router = inject(Router);
+  
   reminders = input<ReminderGetDto[] | undefined>();
-  openedReminderMenuId = signal<number | null>(null);
+  isGroup = input<boolean | null>(null);
   editReminder = output<number>();
   reminderEdited = output<void>();
+
+  openedReminderMenuId = signal<number | null>(null);
   isDelayModalOpen = signal(false);
   previewDate: Date = new Date();
 
@@ -117,5 +122,9 @@ export class PlantedReminders {
   setNewDelayValue(del: number){
     this.delayForm.patchValue({delay: del.toString()});
     this.delayForm.get('delay')?.markAsDirty();
+  }
+
+  navigateToPlanted(plantedId : number){
+    this.router.navigate(['my-plants', plantedId]);
   }
 }

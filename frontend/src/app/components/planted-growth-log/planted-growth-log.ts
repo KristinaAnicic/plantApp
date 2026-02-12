@@ -1,9 +1,10 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { GrowthLogDto, GrowthLogGetDto } from '../../models/growth-log.interface';
 import { DatePipe } from '@angular/common';
 import { PLANT_STATUS_MAP, PlantStatusCategory } from '../../enums/plant-status.constants';
 import { GrowthLogService } from '../../services/growth-log.service';
 import { NotificationService } from '../../services/notification.service';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-planted-growth-log',
@@ -55,4 +56,11 @@ export class PlantedGrowthLog {
     });
     this.openedLogMenuId.set(null);
   }
+
+  getTextForLog(log: GrowthLogGetDto): string | null {
+    if (!log.plantedId) return '(Group log)';
+
+    return log.plant ? '('+log.plant+')' : null;
+  }
+
 }

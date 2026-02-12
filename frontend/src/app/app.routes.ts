@@ -32,7 +32,7 @@ export const routes: Routes = [
     {
         path: 'my-plants',
         loadComponent: () =>
-            import('./pages/user-plants/user-plants').then((m) => m.UserPlants),
+            import('./pages/user-plants-new/user-plants-new').then((m) => m.UserPlantsNew),
         canActivate: [authGuard]
     },
     {
@@ -94,6 +94,12 @@ export const routes: Routes = [
         path: 'my-analytics',
         loadComponent: () =>
             import('./pages/analytics/analytics').then((m) => m.Analytics),
+        canActivate: [authGuard]
+    },
+    {
+        path: 'group/:id',
+        loadComponent: () =>
+            import('./pages/plant-group/plant-group').then((m) => m.PlantGroup),
         canActivate: [authGuard]
     }
 ];
