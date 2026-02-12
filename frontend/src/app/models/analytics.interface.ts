@@ -77,3 +77,21 @@ export interface PlantGrowthHeight
     height: number;
     activeAttributes: string[];
 }
+
+export interface GroupedGrowthAnalytics
+{
+    planted: PlantedDto;
+    plantGrowthHeight: PlantGrowthHeight[];
+}
+
+export interface PlantGroupLogAnalytics
+{ 
+    month: number;
+    avgHealth: number;
+}
+
+export interface PlantGroupAnalytics
+{
+    groupLogAnalytics: PlantGroupLogAnalytics[];
+    growthAnalytics: GroupedGrowthAnalytics[];
+}

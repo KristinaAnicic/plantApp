@@ -1,4 +1,4 @@
-import { Component, computed, inject, Input, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, Input, OnInit, Signal, signal } from '@angular/core';
 import { PlantGroupService } from '../../services/plant-group.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
@@ -10,10 +10,31 @@ import { AddEditGroupModal } from "../../components/add-edit-group-modal/add-edi
 import { PlantedGrowthLog } from "../../components/planted-growth-log/planted-growth-log";
 import { PlantGroupList } from "../../components/plant-group-list/plant-group-list";
 import { PlantedReminders } from "../../components/planted-reminders/planted-reminders";
+import { PlantGroupAnalytics } from '../../models/analytics.interface';
+import { AnalyticsService } from '../../services/analytics.service';
+import { NgApexchartsModule, ApexPlotOptions, ApexChart, ChartComponent } from "ng-apexcharts";
+
+export type ChartOptions = {
+  series: any;
+  chart: ApexChart;
+  plotOptions: ApexPlotOptions;
+  legend?: ApexLegend;
+  dataLabels?: any;
+  fill?: any;
+  responsive?: ApexResponsive[];
+  labels?: any;
+  colors?: any;
+  stroke?: any;
+  xaxis?: any;
+  yaxis?: any;
+  grid?: any;
+  markers?: any;
+  tooltip?: any;
+};
 
 @Component({
   selector: 'app-plant-group',
-  imports: [AddEditLogModal, AddEditGroupModal, PlantedGrowthLog, PlantGroupList, PlantedReminders],
+  imports: [AddEditLogModal, AddEditGroupModal, PlantedGrowthLog, PlantGroupList, PlantedReminders, ChartComponent],
   templateUrl: './plant-group.html',
   styleUrl: './plant-group.css',
 })
@@ -22,6 +43,7 @@ export class PlantGroup implements OnInit {
   currentGroupId = signal<number | null>(null);
 
   service = inject(PlantGroupService);
+  analyticsService = inject(AnalyticsService);
   private router = inject(Router);
   public notif = inject(NotificationService);
   private route = inject(ActivatedRoute);
@@ -36,11 +58,36 @@ export class PlantGroup implements OnInit {
   reminderToEdit = signal<UpsertReminderDto | null>(null);
   showOnlyGroupLogs = signal(false);
 
+  groupAnalytics = signal<PlantGroupAnalytics | null>(null);
+
+  selectedYear = signal<number>(2025);
+  availableYears = signal<number[]>([
+    2023,
+    2024,
+    2025,
+    2026
+  ]);
+
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const id = +params['id'];
       this.currentGroupId.set(id);
       this.loadGroup();
+      this.loadAnalytics();
+    })
+  }
+
+  loadAnalytics(){
+    const id = this.currentGroupId();
+    if (!id) return;
+
+    this.analyticsService.getGroupAnalytics(id, this.selectedYear()).subscribe({
+      next: (result) => {
+        this.groupAnalytics.set(result);
+      },
+      error: (err) => {
+        console.log("Error while fetching analytics: ", err);
+      }
     })
   }
 
@@ -149,4 +196,108 @@ export class PlantGroup implements OnInit {
     }
     return logs;
   })
+
+  onYearChange(event: Event) {
+    const year = Number((event.target as HTMLSelectElement).value);
+    this.selectedYear.set(year);
+    this.loadAnalytics();
+  }
+
+
+  predictionPlantLineChartOptions: Signal<ChartOptions> = computed(() => {
+    const analytics = this.groupAnalytics()?.groupLogAnalytics ?? []; 
+
+    return {
+      series: [
+        {
+          name: "Health Score",
+          data: analytics.map(a => a.avgHealth)
+        }
+      ],
+      chart: {
+        height: 300,
+        width: '100%',
+        type: "bar",
+        toolbar: { show: false },
+        zoom: { enabled: false },
+      },
+      colors: ['#39735a'],
+      plotOptions: {},
+      dataLabels: { enabled: false },
+      stroke: {
+        curve: "smooth",
+        width: 4
+      },
+      markers: {
+        size: 4,
+        hover: {
+          size: 10
+        }
+      },
+      grid: {
+        clipMarkers: false,
+        borderColor: '#f1f5f9'
+      },
+      xaxis: {
+        type: "category",
+        categories: analytics.map(p => new Date(0, p.month - 1).toLocaleString('en', { month: 'short' })),
+      },
+      yaxis: {
+        min: 0,
+        max: 100,
+        tickAmount: 5,
+        labels: {
+          formatter: (val: any) => `${val.toFixed(0)}%`,
+          style: { colors: '#64748b' }
+        }
+      },
+    }
+  });
+
+
+  plantGrowthLineChartOptions: Signal<ChartOptions> = computed(() => {
+    const growthData = this.groupAnalytics()?.growthAnalytics ?? [];
+
+    const firstWithData = growthData.find(g => g.plantGrowthHeight?.length);
+    const categories = firstWithData?.plantGrowthHeight.map(h =>
+      new Date(0, h.month - 1).toLocaleString('en', { month: 'short' })
+    ) ?? ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+    const series = growthData.map(g => {
+      const monthMap = new Map((g.plantGrowthHeight ?? []).map(h => [h.month, Number(h.height.toFixed(2))]));
+      const data = Array.from({length: 12}, (_, i) => monthMap.get(i + 1) ?? null);
+
+      return{
+        name: g.planted?.plantName ?? "Unknown Plant",
+        data
+      }
+    });
+
+    return {
+      chart: {
+        type: 'area',
+        height: 300,
+        width: '100%',
+        toolbar: { show: false }
+      },
+      series: series,
+      stroke: {
+        curve: "smooth",
+        width: 3
+      },
+      dataLabels: { enabled: false },
+      xaxis: {
+        categories
+      },
+      tooltip: {
+        shared: true,
+        intersect: false,
+      },
+      plotOptions: {},
+      grid: {
+        clipMarkers: false,
+        borderColor: '#f1f5f9'
+      },
+    }
+  });
 }

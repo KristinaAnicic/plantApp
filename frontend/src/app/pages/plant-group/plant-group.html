@@ -46,6 +46,7 @@
                         <button (click)="togglePlantsModal()" class="underline text-green-900 px-2 py-2 cursor-pointer">Manage plants</button>
                     </div>
                     
+                    <div class="max-h-80 overflow-y-auto">
                     @if(group()?.planted?.length ?? 0 > 0){
                         @for(plant of group()?.planted; track plant.id){
                             <div (click)="openPlanted(plant.id)" class="flex gap-3 justify-between items-center hover:bg-gray-100 p-3 cursor-pointer border-b border-b-gray-200">
@@ -77,7 +78,8 @@
                     }
                     @else {
                         <p class="italic p-3 text-gray-400">There are no plants in this group</p>
-                    }                    
+                    }      
+                    </div>              
                 </div>
 
             </div>
@@ -118,6 +120,72 @@
             <div class="w-full">
                 <app-planted-growth-log [logs]="filteredlogs()" (editLog)="editLog($event)" (logEdited)="loadGroup()"></app-planted-growth-log>
             </div>          
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="flex flex-col min-w-0">
+            <div class="flex items-center justify-between py-1">
+            <h2 class="font-bold text-lg">Group Log Status Analytics</h2>
+                <!--<select
+                    class="border rounded-lg px-3 py-1 text-sm border-gray-300"
+                    [value]="selectedYear()"
+                    (change)="onYearChange($event)">
+                    @for(year of availableYears(); track year) {
+                    <option [value]="year">{{ year }}</option>
+                    }
+                </select>-->
+            </div>
+            <div class="bg-white w-full border border-gray-200 px-6 py-6 rounded-xl shadow shadow-sm">
+                @if((groupAnalytics()?.groupLogAnalytics?.length ?? 0) > 0) {
+                    <div class="w-full h-full">
+                        <apx-chart
+                            [series]="predictionPlantLineChartOptions().series"
+                            [chart]="predictionPlantLineChartOptions().chart"
+                            [stroke]="predictionPlantLineChartOptions().stroke"
+                            [fill]="predictionPlantLineChartOptions().fill"
+                            [dataLabels]="predictionPlantLineChartOptions().dataLabels"
+                            [xaxis]="predictionPlantLineChartOptions().xaxis"
+                            [yaxis]="predictionPlantLineChartOptions().yaxis"
+                            [colors]="predictionPlantLineChartOptions().colors"
+                            [markers]="predictionPlantLineChartOptions().markers">    
+                        </apx-chart>
+                    </div>
+                }
+                @else {
+                    <div class="flex items-center h-full justify-center">
+                        <p class="italic text-gray-400 self-center justify-self-center py-15">There is currently no info to analyse.</p>
+                    </div>
+                } 
+            </div>
+        </div>
+
+        <div class="flex flex-col min-w-0">
+            <h2 class="font-bold text-lg py-1">Plant Growth Estimation</h2>
+            <div class="bg-white w-full border border-gray-200 px-6 py-6 rounded-xl shadow shadow-sm">
+                @if((groupAnalytics()?.growthAnalytics?.length ?? 0) > 0) {
+                    <div class="w-full h-full">
+                        <apx-chart
+                            [series]="plantGrowthLineChartOptions().series"
+                            [chart]="plantGrowthLineChartOptions().chart"
+                            [stroke]="plantGrowthLineChartOptions().stroke"
+                            [fill]="plantGrowthLineChartOptions().fill"
+                            [dataLabels]="plantGrowthLineChartOptions().dataLabels"
+                            [xaxis]="plantGrowthLineChartOptions().xaxis"
+                            [yaxis]="plantGrowthLineChartOptions().yaxis"
+                            [colors]="plantGrowthLineChartOptions().colors"
+                            [markers]="plantGrowthLineChartOptions().markers"
+                            [grid]="plantGrowthLineChartOptions().grid"
+                            [tooltip]="plantGrowthLineChartOptions().tooltip">    
+                        </apx-chart>
+                    </div>
+                }
+                @else {
+                    <div class="flex items-center h-full justify-center">
+                        <p class="italic text-gray-400 self-center justify-self-center py-15">There is currently no info to analyse.</p>
+                    </div>
+                } 
+            </div>
         </div>
     </div>
 </div>

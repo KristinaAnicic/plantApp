@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { AnalyticsDto, PlantedAnalyticsDto } from '../models/analytics.interface';
+import { AnalyticsDto, PlantedAnalyticsDto, PlantGroupAnalytics } from '../models/analytics.interface';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 
@@ -16,5 +16,9 @@ export class AnalyticsService {
 
   getPlantedAnalytics(plantedId: number): Observable<PlantedAnalyticsDto> {
     return this.http.get<PlantedAnalyticsDto>(`${environment.apiUrl}/analytics/${plantedId}`);
+  }
+
+  getGroupAnalytics(groupId: number, year?: number): Observable<PlantGroupAnalytics> {
+    return this.http.get<PlantGroupAnalytics>(`${environment.apiUrl}/analytics/group/${groupId}/${year}`);
   }
 }

@@ -1,4 +1,5 @@
 ﻿using Appwrite;
+using Appwrite.Models;
 using Microsoft.Extensions.Logging;
 using PlantApp.Domain.Dtos.Analytics;
 using PlantApp.Domain.Dtos.ML;
@@ -19,6 +20,8 @@ public class AnalyticsService(
     IMLRecommendationService mlRecService,
     IPlantedRepository plantedRepo,
     IPlantRepository plantRepo,
+    IGrowthLogRepository logRepo,
+    IPlantGroupRepository groupRepo,
     ILogger<AnalyticsService> logger
 ) : IAnalyticsService
 {
@@ -72,6 +75,106 @@ public class AnalyticsService(
             MonthlyHealthPrediction = healthPrediction,
             PlantGrowthHeight = growthStats
         };
+    }
+
+    public async Task<PlantGroupAnalytics> GetPlantedGroupAnalytics(int plantGroupId, int? year = null)
+    {
+        var userId = CurrentUserId;
+        var group = await groupRepo.GetPlantGroupById(plantGroupId);
+
+        if (group == null)
+            throw new NotFoundException("Plant group", plantGroupId, logger);
+
+        if (group.UserId != userId && !IsAdmin)
+            throw new UnauthorizedException("access", "group", logger);
+
+        var growthList = await GetGroupedPlantGrowthAnalytics(group, DateTime.UtcNow.Year);
+        var monthlyAvgPerMonth = await GetGroupedLogAnalytics(plantGroupId);
+
+        return new PlantGroupAnalytics { 
+            GroupLogAnalytics = monthlyAvgPerMonth,
+            GrowthAnalytics = growthList
+        };
+    }
+
+    private float MapStatusToScore(GrowthLog log) => log.PlantStatusId switch
+    {
+        6 or 7 or 9 => 100f,
+        1 or 5 => 85f,
+        8 => 75f,
+        11 => 70f,
+        12 => 50f,
+        10 => 40f,
+        4 => 20f,
+        2 => 10f,
+        3 => 0f,
+        _ => 50f
+    };
+
+    private async Task<List<GroupedGrowthAnalytics>> GetGroupedPlantGrowthAnalytics(PlantGroup group, int year)
+    {
+        var growthList = new List<GroupedGrowthAnalytics>();
+
+        foreach (var planted in group.PlantedList)
+        {
+            var growthStats = await GetPlantGrowthOverYearAsync(planted.Id, year);
+            growthList.Add(new GroupedGrowthAnalytics
+            {
+                Planted = planted.MapPlantedToPlantedDto(),
+                PlantGrowthHeight = growthStats
+            });
+        }
+
+        return growthList;
+    }
+
+    private async Task<List<PlantGroupLogAnalytics>> GetGroupedLogAnalytics(int plantGroupId)
+    {
+        var logs = await logRepo.GetAllGrowthLogsByPlantGroupId(plantGroupId);
+        var logsOrdered = logs.OrderBy(l => l.ObservationDate).ToList();
+
+        float lastKnownHealth = 0f;
+        var monthlyAnalytics = new List<PlantGroupLogAnalytics>();
+
+        if (logsOrdered.Any())
+        {
+            var startDate = new DateTime(logsOrdered.First().ObservationDate.Year, logsOrdered.First().ObservationDate.Month, 1);
+            var endDate = new DateTime(logsOrdered.Last().ObservationDate.Year, logsOrdered.Last().ObservationDate.Month, 1);
+
+            var currentDate = startDate;
+
+            while (currentDate <= endDate)
+            {
+                var logsThisMonth = logsOrdered
+                    .Where(l => l.ObservationDate.Year == currentDate.Year && l.ObservationDate.Month == currentDate.Month)
+                    .ToList();
+
+                float avgHealth = logsThisMonth.Any()
+                    ? logsThisMonth.Select(MapStatusToScore).Average()
+                    : lastKnownHealth;
+
+                monthlyAnalytics.Add(new PlantGroupLogAnalytics
+                {
+                    Month = currentDate.Month,
+                    AvgHealth = avgHealth
+                });
+
+                lastKnownHealth = avgHealth;
+                currentDate = currentDate.AddMonths(1);
+            }
+        }
+
+        var monthlyAvgPerMonth = monthlyAnalytics
+            .GroupBy(m => m.Month)
+            .Select(g => new PlantGroupLogAnalytics
+            {
+                Month = g.Key,
+                AvgHealth = g.Average(x => x.AvgHealth)
+            })
+            .OrderBy(m => m.Month)
+            .ToList();
+
+        return monthlyAvgPerMonth;
     }
 
     private async Task<List<float>> GetHealthScorePredictionsForPlanted(int userId, int plantedId)
@@ -340,7 +443,7 @@ public class AnalyticsService(
         if (monthsSinceSeasonStart <= 0) monthsSinceSeasonStart = 0;
 
         int seasonLength = lastActiveMonth - firstActiveMonth + 1;
-        if (seasonLength <= 0) seasonLength += 12;
+        if (seasonLength <= 0) seasonLength = 12;
 
         /*decimal estimatedHeight = avgHeight * monthsSinceSeasonStart / seasonLength;
         if (estimatedHeight > maxHeight) estimatedHeight = avgHeight;*/

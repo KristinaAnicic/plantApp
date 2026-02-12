@@ -21,13 +21,21 @@ public class AnalyticsController(
         return Ok(result);
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpGet("{plantedId}")]
     public async Task<IActionResult> GetAnalyticsForPlanted(int plantedId)
     {
         var result = await service.GetPlantedAnalytics(plantedId);
         return Ok(result);
     }
+
+    [HttpGet("group/{groupId}/{year}")]
+    public async Task<IActionResult> GetAnalyticsForPlantGroup(int groupId, int? year = null)
+    {
+        var result = await service.GetPlantedGroupAnalytics(groupId, year);
+        return Ok(result);
+    }
+
+    //[Authorize(Roles = "Admin")]
     [HttpPost("train/health_prediction")]
     public async Task<IActionResult> TrainHealthPrediction()
     {
