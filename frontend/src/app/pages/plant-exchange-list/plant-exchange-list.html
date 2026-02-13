@@ -1,17 +1,17 @@
 <div class="flex flex-col w-full px-10">
-    <h2 class="pt-3 font-bold text-2xl">Plant Trade</h2>
+    <h2 class="pt-3 font-bold text-2xl">{{ 'trade.title' | translate }}</h2>
     <div class="w-full flex justify-between py-5 items-end">
         <div class="w-full flex flex-wrap gap-2">
             <div class="w-full max-w-md">
-                <app-search-component (searchTriggered)="search($event)" [currentText]="currentSearchTerm()" [placeholder]="'Search listings...'"></app-search-component>
+                <app-search-component (searchTriggered)="search($event)" [currentText]="currentSearchTerm()" [placeholder]="'trade.search' | translate"></app-search-component>
             </div>
             <div class="w-full max-w-xs">
-                <app-search-component (searchTriggered)="searchCity($event)" [currentText]="currentCitySearchTerm()" [placeholder]="'Search cities...'" [iconType]="'location'"></app-search-component>
+                <app-search-component (searchTriggered)="searchCity($event)" [currentText]="currentCitySearchTerm()" [placeholder]="'trade.searchCity' | translate" [iconType]="'location'"></app-search-component>
             </div>
         </div>
 
         <div class="flex-none">
-            <button [routerLink]="['/trade-form']" type="button" class="bg-green-900 text-white cursor-pointer font-medium rounded text-xs px-5 py-3 focus:outline-none">Add Trade</button>
+            <button [routerLink]="['/trade-form']" type="button" class="bg-green-900 text-white cursor-pointer font-medium rounded text-xs px-5 py-3 focus:outline-none">{{ 'trade.add' | translate }}</button>
         </div>
     </div>
 
@@ -29,7 +29,7 @@
 
                     <div class="absolute top-0 left-1 flex">
                         <p [class]="'text-sm text-gray-700 mt-1 py-1 px-3 rounded-full ' + getExchangeClass(exchange.exchangeType?.name)">
-                            {{exchange.exchangeType?.name}}
+                            {{exchange.exchangeType?.name | translate }}
                         </p>
                     </div>
                 </div>           
@@ -46,7 +46,7 @@
                     
                     <div class="flex justify-between items-center gap-x-1 border-t border-gray-200 pt-2">
                         <p class="italic text-gray-400">{{ exchange.createdAt | timeAgo }}</p>
-                        <a href="/plant/{{exchange.id}}" class="font-semibold text-sm text-green-900 opacity-75">View Details</a>
+                        <a href="/plant/{{exchange.id}}" class="font-semibold text-sm text-green-900 opacity-75">{{"common.viewDetails" | translate }}</a>
                     </div>
                 </div>
                 

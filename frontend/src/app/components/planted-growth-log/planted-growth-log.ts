@@ -5,17 +5,21 @@ import { PLANT_STATUS_MAP, PlantStatusCategory } from '../../enums/plant-status.
 import { GrowthLogService } from '../../services/growth-log.service';
 import { NotificationService } from '../../services/notification.service';
 import { combineLatest } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-planted-growth-log',
-  imports: [DatePipe],
+  imports: [DatePipe, TranslateModule],
   templateUrl: './planted-growth-log.html',
   styleUrl: './planted-growth-log.css',
 })
 export class PlantedGrowthLog {
   service = inject(GrowthLogService);
   notification = inject(NotificationService);
+  private translate = inject(TranslateService);
+
   logs = input<GrowthLogGetDto[] | undefined>();
+  openedFromGroup = input<boolean>(false);
   editLog = output<number>();
   logEdited = output<void>();
 
@@ -58,7 +62,7 @@ export class PlantedGrowthLog {
   }
 
   getTextForLog(log: GrowthLogGetDto): string | null {
-    if (!log.plantedId) return '(Group log)';
+    if (log.plantGroupId) return '('+ this.translate.instant('log.groupLog') + ')';
 
     return log.plant ? '('+log.plant+')' : null;
   }

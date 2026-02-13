@@ -17,8 +17,8 @@
                 @if (isGroup()){
                     <p class="font-medium text-base cursor-pointer hover:underline hover:text-blue-500 capitalize" (click)="navigateToPlanted(reminder.plantedId)">{{ reminder.plantedName }}</p>  
                 }                                                                                                                        
-                <p class="font-medium text-sm pt-2">Due: {{ reminder.nextDueDate | date:'MMM dd, yyyy'}}</p>
-                <p class="text-gray-600 italic text-sm">{{ reminder.note ?? "No notes provided"}}</p>
+                <p class="font-medium text-sm pt-2">{{ 'reminder.due' | translate }}: {{ reminder.nextDueDate | date:'MMM dd, yyyy'}}</p>
+                <p class="text-gray-600 italic text-sm">{{ reminder.note ?? ('reminder.noNotes' | translate)}}</p>
             </div>
         }
         @else {
@@ -34,27 +34,27 @@
                 @if (isGroup()){
                     <p class="font-medium text-base cursor-pointer hover:underline hover:text-blue-500 capitalize" (click)="navigateToPlanted(reminder.plantedId)">{{ reminder.plantedName }}</p>  
                 } 
-                <p class="font-medium text-sm pt-2">Due: {{ reminder.nextDueDate | date:'MMM dd yyyy, HH:mm'}}</p>
-                <p class="text-gray-600 italic text-sm">{{ reminder.note ?? "No notes provided"}}</p>
+                <p class="font-medium text-sm pt-2">{{ 'reminder.due' | translate }}: {{ reminder.nextDueDate | date:'MMM dd yyyy, HH:mm'}}</p>
+                <p class="text-gray-600 italic text-sm">{{ reminder.note ?? ('reminder.noNotes' | translate) }}</p>
             </div>
         } 
         
         @if(openedReminderMenuId() === reminder.id){
             <div class="fixed inset-0 z-10" (click)="toggleReminderMenu(reminder.id, $event)"></div> 
             <div class="absolute top-9 mb-2 right-2 z-20 bg-white flex flex-col justify-start items-center text-sm rounded-md border border-gray-200">
-                <button (click)="markAsDone(reminder.id)" class="px-2 py-1.5 w-full text-end border-b border-b-gray-100 hover:bg-gray-50 cursor-pointer">Mark as done</button>
+                <button (click)="markAsDone(reminder.id)" class="px-2 py-1.5 w-full text-end border-b border-b-gray-100 hover:bg-gray-50 cursor-pointer">{{ 'reminder.done' | translate }}</button>
                 @if(isDue(reminder)){
-                    <button (click)="toggleDelayModal()" class="px-2 py-1.5 w-full text-end border-b border-b-gray-100 hover:bg-gray-50 cursor-pointer">Delay</button>
+                    <button (click)="toggleDelayModal()" class="px-2 py-1.5 w-full text-end border-b border-b-gray-100 hover:bg-gray-50 cursor-pointer">{{ 'reminder.delay' | translate }}</button>
                 }
-                <button (click)="editReminderClick(reminder.id)" class="px-2 py-1.5 w-full text-end border-b border-b-gray-100 hover:bg-gray-50 cursor-pointer">Edit</button>
-                <button (click)="deleteReminder(reminder.id)" class="px-2 py-1.5 w-full text-end hover:bg-gray-50 cursor-pointer">Delete</button>
+                <button (click)="editReminderClick(reminder.id)" class="px-2 py-1.5 w-full text-end border-b border-b-gray-100 hover:bg-gray-50 cursor-pointer">{{ 'actions.edit' | translate }}</button>
+                <button (click)="deleteReminder(reminder.id)" class="px-2 py-1.5 w-full text-end hover:bg-gray-50 cursor-pointer">{{ 'actions.delete' | translate }}</button>
             </div>
         }                      
         </div>
     }    
 }    
 @else {
-    <p class="italic text-gray-400">There are currently no reminders.</p>
+    <p class="italic text-gray-400">{{ 'reminder.noReminders' | translate }}</p>
 } 
 
 

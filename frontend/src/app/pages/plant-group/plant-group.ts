@@ -13,6 +13,7 @@ import { PlantedReminders } from "../../components/planted-reminders/planted-rem
 import { PlantGroupAnalytics } from '../../models/analytics.interface';
 import { AnalyticsService } from '../../services/analytics.service';
 import { NgApexchartsModule, ApexPlotOptions, ApexChart, ChartComponent } from "ng-apexcharts";
+import { TranslateModule } from '@ngx-translate/core';
 
 export type ChartOptions = {
   series: any;
@@ -34,7 +35,7 @@ export type ChartOptions = {
 
 @Component({
   selector: 'app-plant-group',
-  imports: [AddEditLogModal, AddEditGroupModal, PlantedGrowthLog, PlantGroupList, PlantedReminders, ChartComponent],
+  imports: [AddEditLogModal, AddEditGroupModal, PlantedGrowthLog, PlantGroupList, PlantedReminders, ChartComponent, TranslateModule],
   templateUrl: './plant-group.html',
   styleUrl: './plant-group.css',
 })
@@ -192,7 +193,7 @@ export class PlantGroup implements OnInit {
     const logs = this.group()?.growthLogs ?? [];
 
     if (this.showOnlyGroupLogs()){
-      return logs.filter(l => l.plantedId === null)
+      return logs.filter(l => l.plantGroupId !== null)
     }
     return logs;
   })

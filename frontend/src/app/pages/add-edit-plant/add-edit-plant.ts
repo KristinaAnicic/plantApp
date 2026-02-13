@@ -7,10 +7,11 @@ import { ImageForm } from '../../models/image.interface';
 import { Router } from '@angular/router';
 import { ImageUploadService } from '../../services/image-upload.service';
 import { NotificationService } from '../../services/notification.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-edit-plant',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './add-edit-plant.html',
   styleUrl: './add-edit-plant.css',
 })
@@ -20,6 +21,7 @@ export class AddEditPlant implements OnInit{
   private imageService = inject(ImageUploadService);
   private notificationService = inject(NotificationService);
   private router = inject(Router);
+  private translate = inject(TranslateService);
 
   singleReference = signal<OnePlantAttributesDto | null>(null);
   multiReference = signal<ManyPlantAttributesDto | null>(null);
@@ -29,8 +31,8 @@ export class AddEditPlant implements OnInit{
   errorMessage = signal('');
 
   isEditing = computed(() => !!this.editPlant());
-  headerText = computed(() => this.isEditing() ? 'Edit Plant' : 'New Botanical Entry');
-  buttonText = computed(() => this.isEditing() ? 'Save changes' : 'Add plant');
+  headerText = computed(() => this.isEditing() ? this.translate.instant('plantForm.editPlant') : this.translate.instant('plantForm.newEntry'));
+  buttonText = computed(() => this.isEditing() ? this.translate.instant('forms.saveChanges') : this.translate.instant('plantDetails.add'));
 
   images = signal<ImageForm[]>([]);
 

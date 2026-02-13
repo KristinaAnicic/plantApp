@@ -2,10 +2,11 @@ import { Component, computed, inject, input, output, signal } from '@angular/cor
 import { UpsertPlantGroupDto } from '../../models/plant-group.interface';
 import { PlantGroupService } from '../../services/plant-group.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-edit-group-modal',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './add-edit-group-modal.html',
   styleUrl: './add-edit-group-modal.css',
 })
@@ -15,12 +16,14 @@ export class AddEditGroupModal {
   editGroup = input<UpsertPlantGroupDto | null>(null);
 
   plantGroupService = inject(PlantGroupService);
+  translate = inject(TranslateService);
+
   showWarning = signal(false);
   errorMessage = signal('');
 
   isEditing = computed(() => !!this.editGroup());
-  headerText = computed(() => this.isEditing() ? 'Edit group' : 'Add a new group');
-  buttonText = computed(() => this.isEditing() ? 'Save changes' : 'Add group');
+  headerText = computed(() => this.isEditing() ? this.translate.instant('group.editGroup') : this.translate.instant('group.addGroupTitle'));
+  buttonText = computed(() => this.isEditing() ? this.translate.instant('forms.saveChanges') : this.translate.instant('group.addGroup'));
 
   groupForm = new FormGroup({
     id: new FormControl(0, { nonNullable: true }),

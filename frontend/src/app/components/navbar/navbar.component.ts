@@ -1,14 +1,14 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { LoginModal } from '../login-modal/login-modal';
 import { Router, RouterLink } from "@angular/router";
 import { ReminderService } from '../../services/reminder.service';
 import { ReminderDto } from '../../models/reminder.interface';
 import { DatePipe } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-navbar',
-  imports: [LoginModal, RouterLink, DatePipe],
+  imports: [RouterLink, DatePipe, TranslateModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -17,6 +17,7 @@ export class NavbarComponent implements OnInit {
   public authService = inject(AuthService);
   public reminderService = inject(ReminderService);
   public router = inject(Router);
+  translate = inject(TranslateService)
   
   isUserMenuOpen = signal(false);
   isLoginOpen: boolean = false;
@@ -25,6 +26,7 @@ export class NavbarComponent implements OnInit {
   showReminders = signal(false);
 
   ngOnInit(): void {
+    console.log('Trenutni jezik:', this.translate.currentLang);
     this.loadPendingReminders();
   }
 

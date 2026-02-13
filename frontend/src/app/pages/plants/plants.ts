@@ -7,10 +7,11 @@ import { catchError, debounceTime, distinctUntilChanged, Observable, of, Subject
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { Pagination } from "../../components/pagination/pagination";
 import { AuthService } from '../../services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-plants',
-  imports: [SearchComponent, RouterLink, Pagination],
+  imports: [SearchComponent, RouterLink, Pagination, TranslateModule],
   encapsulation: ViewEncapsulation.None,
   templateUrl: './plants.html',
   styleUrl: './plants.css',

@@ -1,8 +1,9 @@
 import { Component, effect, EventEmitter, input, OnInit, output, Output, signal, ViewEncapsulation } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search-component',
-  imports: [],
+  imports: [TranslateModule],
   encapsulation: ViewEncapsulation.None,
   templateUrl: './search-component.html',
   styleUrl: './search-component.css',
@@ -12,7 +13,7 @@ export class SearchComponent {
   searchTriggered = output<string>();
   currentText = input<string>('');
   searchQuery = signal<string>('');
-  placeholder = input<string>("Search...");
+  placeholder = input<string | null>(null);
   iconType = input<'search' | 'location'>('search');
   
   constructor() {

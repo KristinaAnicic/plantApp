@@ -5,10 +5,11 @@ import { UpsertPlaceDto } from '../../models/place.interface';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SUN_LEVELS } from '../../constants/sunlight.constants';
 import { HUMIDITY_LEVELS } from '../../constants/humidity.constants';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-update-place-modal',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './add-update-place-modal.html',
   styleUrl: './add-update-place-modal.css',
 })
@@ -18,6 +19,8 @@ export class AddUpdatePlaceModal implements OnInit {
   editPlace = input<UpsertPlaceDto | null>(null);
 
   placeService = inject(PlaceService);
+  translate = inject(TranslateService);
+  
   countries = this.placeService.countries;
   showWarning = signal(false);
   errorMessage = signal('');
@@ -26,8 +29,8 @@ export class AddUpdatePlaceModal implements OnInit {
   humidityLevels = HUMIDITY_LEVELS;
 
   isEditing = computed(() => !!this.editPlace());
-  headerText = computed(() => this.isEditing() ? 'Edit location' : 'Add a new location');
-  buttonText = computed(() => this.isEditing() ? 'Save changes' : 'Add place');
+  headerText = computed(() => this.isEditing() ? this.translate.instant('placeForm.editPlace') : this.translate.instant('placeForm.addPlaceTitle'));
+  buttonText = computed(() => this.isEditing() ? this.translate.instant('forms.saveChanges') : this.translate.instant('placeForm.addPlace'));
 
   placeForm = new FormGroup({
     id: new FormControl(0, { nonNullable: true }),

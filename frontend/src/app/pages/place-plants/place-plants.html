@@ -10,12 +10,12 @@
                 <div class="flex gap-4 items-center pb-3 -translate-x-2">   
                     <div class="flex items-center gap-2 bg-yellow-50 px-3 py-0.5 rounded-full border border-yellow-100">
                         <p class="text-lg">{{ sunLevels[place()?.sunlightIntensity ?? 0].icon }}</p>
-                        <p class="text-xs font-bold text-yellow-800">{{ sunLevels[place()?.sunlightIntensity ?? 0].title }}</p>
+                        <p class="text-xs font-bold text-yellow-800">{{ sunLevels[place()?.sunlightIntensity ?? 0].titleKey | translate }}</p>
                     </div>
 
                     <div class="flex items-center gap-2 bg-blue-50 px-3 py-0.5 rounded-full border border-blue-100">
                         <p class="text-lg">{{ humidityLevels[place()?.humidityIntensity ?? 0].icon }}</p>
-                        <p class="text-xs font-bold text-blue-800">{{ humidityLevels[place()?.humidityIntensity ?? 0].title }}</p>
+                        <p class="text-xs font-bold text-blue-800">{{ humidityLevels[place()?.humidityIntensity ?? 0].titleKey | translate }}</p>
                     </div>
                 </div>
                 
@@ -40,21 +40,21 @@
                     @if(place()?.note){
                     <div class="flex">
                         <div class="pl-3 pt-3 pb-5 items-start pr-10 border-l border-l-3 border-l-green-800 bg-gray-100 rounded-md">
-                            <p class="text-base text-sm text-green-900">NOTE</p>
-                            <p class="text-base">{{ place()?.note }}</p>
+                            <p class="text-base text-sm text-green-900 uppercase">{{"place.note" | translate }}</p>
+                            <p class="text-base upp">{{ place()?.note }}</p>
                         </div>                 
                     </div>
                     }
                 </div>
                 
                 <div class="flex flex-1 flex-row md:flex-col gap-x-1 gap-y-1 w-full md:w-fit md:items-end min-w-[150px] self-end">                
-                    <button (click)="editPlace()" type="button" class="flex-1 md:flex-none hover:bg-brand-strong box-border cursor-pointer border border-green-900 shadow-xs font-medium leading-5 rounded text-xs px-5 py-2 focus:outline-none">Edit Place</button>
-                    <button [routerLink]="['']" type="button" class="flex-1 md:flex-none bg-green-900 text-white hover:bg-brand-strong cursor-pointer box-border border border-transparent shadow-xs font-medium leading-5 rounded text-xs px-5 py-2 focus:outline-none">Add Plant</button>
+                    <button (click)="editPlace()" type="button" class="flex-1 md:flex-none hover:bg-brand-strong box-border cursor-pointer border border-green-900 shadow-xs font-medium leading-5 rounded text-xs px-5 py-2 focus:outline-none">{{"place.edit" | translate }}</button>
+                    <button (click)="togglePlaceModal()" type="button" class="flex-1 md:flex-none bg-green-900 text-white hover:bg-brand-strong cursor-pointer box-border border border-transparent shadow-xs font-medium leading-5 rounded text-xs px-5 py-2 focus:outline-none">{{"place.add" | translate }}</button>
                 </div> 
             </div>
         </div>
         
-        <h2 class="text-2xl font-semibold pb-3">Planted Collection</h2>
+        <h2 class="text-2xl font-semibold pb-3">{{"place.plantedCollection" | translate }}</h2>
         @if(place()?.planted?.length ?? 0 > 0){
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-3 justify-center">    
             @for (plant of place()?.planted; track plant.id){
@@ -78,7 +78,7 @@
                             <h2 class="font-bold text-green-900 leading-tight capitalize">{{plant.plantName}}</h2>
                             <div class="flex flex-col gap-y-1 pt-5">
                                 <div class="flex flex-col flex-wrap gap-x-1">
-                                    <p class="text-gray-500 text-xs">PLANTED</p>
+                                    <p class="text-gray-500 text-xs uppercase">{{"place.planted" | translate }}</p>
                                     <p class="text-sm">{{ plant.datePlanted }}</p>
                                 </div>
                             </div>

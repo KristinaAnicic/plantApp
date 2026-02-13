@@ -11,10 +11,11 @@ import { PlantGroupDto } from '../../models/plant-group.interface';
 import { AddEditGroupModal } from "../../components/add-edit-group-modal/add-edit-group-modal";
 import { PLANT_STATUS_MAP, PlantStatusCategory } from '../../enums/plant-status.constants';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-plants-new',
-  imports: [ImageDiseasePrediction, AddUpdatePlaceModal, RouterLink, AddEditGroupModal, CommonModule],
+  imports: [ImageDiseasePrediction, AddUpdatePlaceModal, RouterLink, AddEditGroupModal, CommonModule, TranslateModule],
   templateUrl: './user-plants-new.html',
   styleUrl: './user-plants-new.css',
 })

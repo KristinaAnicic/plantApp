@@ -1,0 +1,343 @@
+{
+    "LANGUAGE": "Jezik",
+    "CROATIAN": "Hrvatski",
+    "ENGLISH": "Engleski",
+    "search": "Pretraga",
+
+    "Free": "Besplatno",
+    "Sell": "Prodaja",
+    "Swap": "Zamjena",
+
+    "navigationBar": {
+        "plants": "Biljke",
+        "trade": "Razmjena biljaka",
+        "myPlants": "Moje biljke",
+        "analytics": "Analitika"
+    },
+
+    "plantCatalog": {
+        "find": "Pronađi svoju biljku",
+        "add": "Dodaj biljku"
+    },
+
+    "actions": {
+        "add": "Dodaj",
+        "edit": "Uredi",
+        "delete": "Obriši"
+    },
+
+    "common": {
+        "yes": "Da",
+        "no": "Ne",
+        "unknown": "Nepoznato",
+        "image": "Slika",
+        "name": "Naziv",
+        "status": "Status",
+        "location": "Lokacija",
+        "noNotes": "Nema bilješki",
+        "viewDetails": "Detaljnije",
+        "description": "Opis",
+        "title": "Naslov"
+    },
+
+
+    "forms": {
+        "imageUrl": "URL slike",
+        "pasteImage": "Zalijepi URL slike ovdje...",
+        "addImage": "Dodaj sliku",
+        "imagePlaceholder1": "Dodaj fotografije",
+        "imagePlaceholder2": "PNG, JPG ili HEIC do 10MB",
+        "none": "Nema / Nije navedeno",
+        "saveChanges": "Spremi promjene",
+        "country": "Država",
+        "city": "Grad",
+        "plantStatus": "Status biljke",
+        "note": "Bilješka"
+    },
+
+    "plantDetails": {
+        "plants": "biljke",
+        "plant": "biljka",
+        "description": "Opis biljke",
+        "plantDetails": "Detalji biljke",
+        "family": "Porodica",
+        "fragrance": "Miris",
+        "hardiness": "Otpornost",
+        "pollinator": "Privlači oprašivače",
+        "drought": "Otporno na sušu",
+        "lowMaintenance": "Lako za održavanje",
+        "spread": "Širina",
+        "height": "Visina",
+        "time": "Vrijeme do pune visine",
+        "toxicity": "Toksičnost",
+        "cultivation&care": "Uzgoj i njega",
+        "cultivation": "Uzgoj",
+        "pest": "Otpornost na štetočine",
+        "disease": "Otpornost na bolesti",
+        "pruning": "Orezivanje",
+        "propagation": "Razmnožavanje",
+        "growthConditions": "Uvjeti rasta",
+        "season": "Sezona",
+        "soil": "Vrsta tla",
+        "sunlight": "Sunčeva svjetlost",
+        "aspect": "Položaj",
+        "moisture": "Vlažnost",
+        "exposure": "Izloženost",
+        "habit": "Navika rasta",
+        "ph": "pH tla",
+        "add": "Dodaj biljku",
+        "noInfo": "Trenutno nema dostupnih informacija.",
+        "parentPlant": "Roditeljska biljka",
+        "synonym": "Sinonimne biljke"
+    },
+
+    "plantForm": {
+        "newEntry": "Novi botanički unos",
+        "editPlant": "Uredi biljku",
+        "section1": "Odjeljak 1: Osnovni podaci",
+        "section2": "Odjeljak 2: Rast i karakteristike",
+        "section3": "Odjeljak 3: Potrebe za okolišem",
+        "section4": "Odjeljak 4: Sezona i navika rasta",
+        "section5": "Odjeljak 5: Mediji",
+        "section6": "Odjeljak 6: Detaljni opisi",
+
+        "botanical": "Botanički naziv",
+        "common": "Poznat naziv",
+        "specie": "Je vrsta",
+        "genus": "Je rod",
+        "hardiness": "Razina otpornosti",
+        "spread": "Tip širine",
+        "height": "Tip visine",
+        "habit": "Navika rasta",
+        "entityDesc": "Opis entiteta",
+        "cultivation": "Detalji uzgoja",
+
+        "placeholder": {
+            "entityDesc": "Opći opis specifičnog kultivara...",
+            "cultivation": "Priprema tla, upute za sadnju,...",
+            "propagation": "Sjeme, reznice, dijeljenje,...",
+            "pest": "Uobičajeni štetnici i razina otpornosti...",
+            "disease": "Uobičajene bolesti i kako se biljka nosi s njima...",
+            "toxicity": "Toksičnost"
+        }    
+    },
+
+    "myPlants": {
+        "myLocations": "Moje lokacije",
+        "addLocation": "Kreiraj novu lokaciju",
+        "plantGroup": "Grupe biljaka",
+        "addGroup": "Dodaj grupu",
+        "allPlants": "Sve moje biljke",
+        "addPlants": "Dodaj biljku",
+        "graveyard": "Groblje",
+        "graveyardDesc": "U našim sjećanjima",
+        "checkHealth": "Provjeri zdravlje biljke",
+
+        "datePlanted": "Datum sadnje",
+        "group": "Grupa"
+    },
+
+    "place": {
+        "edit": "Uredi mjesto",
+        "add": "Dodaj mjesto",
+        "note": "Bilješka",
+        "plantedCollection": "Posađena kolekcija",
+        "planted": "Posađeno",
+        "graveyard": "Groblje biljaka",
+        "graveyardNoPlants": "Sve su tvoje biljke još uvijek žive i zdrave :)"
+    },
+
+    "login": {
+        "emailOrUsername": "Email ili korisničko ime",
+        "password": "Lozinka",
+        "login": "Prijava",
+        "notRegistered": "Niste registrirani?",
+        "createAccount": "Kreiraj račun",
+        "incorrect": "Neispravno korisničko ime ili lozinka."
+    },
+
+    "register": {
+        "name": "Ime",
+        "email": "Email",
+        "username": "Korisničko ime",
+        "passwordConfirm": "Potvrdi lozinku",
+        "contact": "Kontakt",
+        "male": "Muško",
+        "female": "Žensko",
+        "other": "Ostalo",
+        "invalidEmail": "Neispravan email.",
+        "passwordLength": "Lozinka mora imati najmanje 8 znakova.",
+        "passwordMismatch": "Lozinke se ne podudaraju.",
+        "ageReq": "Moraš imati najmanje 13 godina!",
+        "mandatory": "Polja označena sa * su obavezna.",
+        "haveAccount": "Već imaš račun?",
+        "signIn": "Prijavi se",
+        "register": "Registracija"
+    },
+
+    "userPlantDetails": {
+        "growthStatus": "Status rasta",
+        "lastUpdate": "Zadnje ažuriranje",
+        "plantingInfo": "Informacije o sadnji",
+        "source": "Izvor",
+        "note": "Početna bilješka",
+        "noNote": "Nema bilješki",
+        "editDetails": "Uredi detalje",
+        "indoor": "Unutra",
+        "outdoor": "Vani",
+        "healthChart": "Sezonska predikcija zdravlja",
+        "growthChart": "Procjena rasta biljke",
+        "coverImage": "Odaberi naslovnu sliku"
+    },
+
+    "reminder": {
+        "setReminder": "Postavi podsjetnik",
+        "reminders": "Predstojeći podsjetnici",
+        "due": "Rok",
+        "overdue": "Zakašnjelo",
+        "noNotes": "Nema bilješki",
+        "done": "Obavljeno",
+        "delay": "Odgodi",
+        "noReminders": "Trenutno nema podsjetnika."
+    },
+
+    "log": {
+        "addLog": "Dodaj zapis o rastu",
+        "growthHistory": "Povijest rasta",
+        "noLogs": "Trenutno nema zapisa.",
+        "groupLog": "Grupni zapis",
+        "show": "Prikaži samo grupne zapise"
+    },
+
+    "group": {
+        "show": "Prikaži samo grupne zapise",
+        "groupPlants": "Biljke u ovoj grupi",
+        "manage": "Upravljanje biljkama",
+        "noPlants": "Nema biljaka u ovoj grupi",
+        "saveList": "Spremi popis",
+        "addGroup": "Dodaj grupu",
+        "addGroupTitle": "Dodaj novu grupu",
+        "editGroup": "Uredi grupu"
+    },
+
+    "analytics": {
+        "noInfo": "Trenutno nema podataka za analizu."
+    },
+
+    "timeAgo": {
+        "justNow": "upravo sada",
+        "singleYear": "prije 1 godinu",
+        "pluralSmallYear": "prije {{count}} godine",
+        "pluralLargeYear": "prije {{count}} godina",
+        "singleMonth": "prije 1 mjesec",
+        "pluralSmallMonth": "prije {{count}} mjeseca",
+        "pluralLargeMonth": "prije {{count}} mjeseci",
+        "singleWeek": "prije 1 tjedan",
+        "pluralSmallWeek": "prije {{count}} tjedna",
+        "pluralLargeWeek": "prije {{count}} tjedana",
+        "singleDay": "prije 1 dan",
+        "pluralSmallDay": "prije {{count}} dana",
+        "pluralLargeDay": "prije {{count}} dana",
+        "singleHour": "prije 1 sat",
+        "pluralSmallHour": "prije {{count}} sata",
+        "pluralLargeHour": "prije {{count}} sati",
+        "singleMinute": "prije 1 minutu",
+        "pluralSmallMinute": "prije {{count}} minute",
+        "pluralLargeMinute": "prije {{count}} minuta",
+        "singleSecond": "prije 1 sekundu",
+        "pluralSmallSecond": "prije {{count}} sekunde",
+        "pluralLargeSecond": "prije {{count}} sekundi"
+    },
+
+    "trade": {
+        "title": "Razmjena biljaka",
+        "search": "Pretraži oglase",
+        "searchCity": "Pretraži gradove",
+        "add": "Dodaj oglas",
+        "shipping": "Dostava",
+        "contactInfo": "Kontakt informacije"
+    },
+
+    "tradeForm": {
+        "createTrade": "Kreiraj novi oglas",
+        "editTrade": "Uredi oglas",
+        "basicInfo": "Osnovne informacije",
+        "location&Type": "Lokacija i tip",
+        "exchangeFor": "Zamjena za",
+        "exchangeType": "Tip razmjene",
+        "contact": "Način kontakta",
+        "price": "Cijena",
+        "shipping": "Opcije dostave",
+        "media": "Mediji",
+        "imageWarning": "Molimo odaberi barem jednu sliku kao glavnu fotografiju koristeći ikonu zvjezdice.",
+        "selectPlant": "Odaberi povezanu biljku (opcionalno)",
+        "createListing": "Kreiraj oglas",
+
+        "placeholder": {
+            "description": "Opiši stanje biljke, veličinu i potrebe za njegu...",
+            "status": "npr. Dobro ukorijenjeno, Cvate",
+            "city": "Unesi svoj grad",
+            "contact": "Email, telefon ili društvena mreža",
+            "shipping": "npr. Samo osobno preuzimanje, Dostava 5€"
+        }
+    },
+
+    "review": {
+        "reviewsFor": "Recenzije korisnika",
+        "reviewsText": "Dijeljenje iskustva s ovim članom pomaže u izgradnji povjerenja u zajednici.",
+        "add": "Dodaj recenziju"
+    },
+
+    "placeForm": {
+        "addPlaceTitle": "Dodaj novu lokaciju",
+        "address": "Adresa",
+        "addPlace": "Dodaj mjesto",
+        "editPlace": "Uredi mjesto"
+    },
+
+    "humidity": {
+        "level1": {
+            "title": "Vrlo suho",
+            "desc": "Niska vlažnost (ispod 30%). Idealno za kaktuse i sukulente."
+        },
+        "level2": {
+            "title": "Suho",
+            "desc": "Standardni zrak u prostoriji. Tipično za grijane prostorije zimi."
+        },
+        "level3": {
+            "title": "Umjereno",
+            "desc": "Udobne razine (40-60%). Prikladno za većinu sobnih biljaka."
+        },
+        "level4": {
+            "title": "Visoko",
+            "desc": "Vlažan zrak (60-80%). Savršeno za tropske biljke i paprati."
+        },
+        "level5": {
+            "title": "Vrlo visoko",
+            "desc": "Zasićeni uvjeti (80%+). Zahtijeva ovlaživač ili staklenik."
+        }
+    },
+
+    "sun": {
+        "level1": {
+            "title": "Potpuna sjena",
+            "desc": "Bez izravne sunčeve svjetlosti. Idealno za paprati."
+        },
+        "level2": {
+            "title": "Slabo svjetlo",
+            "desc": "Neizravno svjetlo, daleko od prozora."
+        },
+        "level3": {
+            "title": "Polusjena",
+            "desc": "Svijetlo neizravno svjetlo ili blago jutarnje sunce."
+        },
+        "level4": {
+            "title": "Djelomično sunce",
+            "desc": "4-6 sati sunčeve svjetlosti s popodnevnom sjenom."
+        },
+        "level5": {
+            "title": "Puno sunce",
+            "desc": "6+ sati intenzivne, izravne sunčeve svjetlosti."
+        }
+    }
+}

@@ -2,7 +2,9 @@
     @if(plant()){
         @if(authService.isAuthenticated()){
             <div class="z-40 fixed bottom-5 right-30 rounded-full w-8 h-8 m-0 p-0">
-                <button (click)="toggleAddPlantedModal()" class="px-5 whitespace-nowrap text-base mx-auto rounded-lg hover:bg-green-800/90 text-white bg-green-900/90 border-1 shadow-md shadow-green-900/30 border-green-900 px-3 py-2 cursor-pointer">Add Plant</button>
+                <button (click)="toggleAddPlantedModal()" class="px-5 whitespace-nowrap text-base mx-auto rounded-lg hover:bg-green-800/90 text-white bg-green-900/90 border-1 shadow-md shadow-green-900/30 border-green-900 px-3 py-2 cursor-pointer">
+                    {{"plantDetails.add" | translate }}
+                </button>
             </div>
         }
         <div class="flex flex-col lg:flex-row gap-x-5 gap-y-3">
@@ -25,18 +27,18 @@
                 <!--<button (click)="toggleAddPlantedModal()" class="w-full sm:w-sm text-base mx-auto rounded-lg hover:bg-green-50/70 hover:text-black text-white bg-green-900/90 border-1 shadow-md shadow-green-900/30 border-green-900 px-3 py-2 cursor-pointer">Add Plant</button>
             -->
                 <div class="flex flex-col gap-y-1 bg-white rounded-lg px-3 py-5 border border-gray-100 shadow-sm shadow-gray-200">
-                    <h3 class="text-xl font-semibold">Plant Description</h3>
+                    <h3 class="text-xl font-semibold">{{"plantDetails.description" | translate }}</h3>
                     @if(plant()?.entityDescription){
                         <p class="text-sm/4">{{ plant()?.entityDescription }}</p>
                     }
                     @else {
-                        <p class="text-gray-400">No information available at this time.</p>
+                        <p class="text-gray-400">{{"plantDetails.noInfo" | translate }}</p>
                     }                   
                 </div>
 
                 @if(plant()?.parentPlant){
                     <div class="flex items-baseline gap-x-2 rounded-lg px-3 py-5 border border-gray-100">
-                        <h3 class="text-lg font-semibold pb-3">Parent plant </h3>
+                        <h3 class="text-lg font-semibold pb-3">{{"plantDetails.parentPlant" | translate }}</h3>
                         <a href="/plant/{{ plant()?.parentPlant?.id }}" class="font-medium text-fg-brand underline hover:no-underline">{{ plant()?.parentPlant?.name }}</a>
                     </div>
                 }
@@ -68,7 +70,7 @@
 
                 @if((plant()?.synonyms?.length ?? 0) > 1){
                     <div>
-                        <h3 class="text-xl font-semibold pb-3">Synonym plants</h3>
+                        <h3 class="text-xl font-semibold pb-3">{{"plantDetails.synonym" | translate }}</h3>
                         @for(synonym of plant()?.synonyms; track synonym.id){
                             <a href="#" class="font-medium text-fg-brand underline hover:no-underline">{{ synonym.name }}</a>
                         }
@@ -81,7 +83,7 @@
             <div class="flex flex-col gap-y-3">
                 <div class="relative bg-white rounded-lg px-8 py-6 border border-gray-100 shadow-sm shadow-gray-200">
                     <div class="flex justify-between">
-                        <h3 class="text-xl font-semibold pb-2">Plant Details</h3>
+                        <h3 class="text-xl font-semibold pb-2">{{"plantDetails.plantDetails" | translate }}</h3>
                         @if (authService.isAdmin()) {
                         <div (click)="toggleOptionsMenu()" class="absolute top-4 right-4 cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
@@ -93,8 +95,8 @@
                     @if(isOptionsMenuOpened()){
                         <div class="fixed inset-0 z-10" (click)="toggleOptionsMenu()"></div> 
                         <div class="absolute top-10 mb-2 right-3 z-20 bg-white flex flex-col justify-start items-center text-sm rounded-md border border-gray-200">
-                            <button (click)="editPlant()" class="px-8 py-1.5 w-full text-end border-b border-b-gray-100 hover:bg-gray-50 cursor-pointer">Edit</button>
-                            <button (click)="deletePlant()" class="px-8 py-1.5 w-full text-end hover:bg-gray-50 cursor-pointer">Delete</button>
+                            <button (click)="editPlant()" class="px-8 py-1.5 w-full text-end border-b border-b-gray-100 hover:bg-gray-50 cursor-pointer">{{"actions.edit" | translate }}</button>
+                            <button (click)="deletePlant()" class="px-8 py-1.5 w-full text-end hover:bg-gray-50 cursor-pointer">{{"actions.delete" | translate }}</button>
                         </div>
                     }
                     
@@ -138,14 +140,14 @@
                     <div class="bg-red-100 rounded-xl p-3 shadow shadow-sm shadow-red-200">                    
                         <div class="flex items-center">
                             <img src="assets/images/icons/warning.svg" class="w-8 h-8">
-                            <p class="text-base font-semibold">Toxicity</p>
+                            <p class="text-base font-semibold">{{"plantDetails.toxicity" | translate }}</p>
                         </div>
                         <p class="text-sm px-2">{{ plant()?.toxicity }}</p>
                     </div>
                 }
 
                 <div class="bg-white rounded-lg px-5 py-6 border border-gray-100 shadow-sm shadow-gray-200">
-                    <h3 class="text-xl font-semibold pb-3">Cultivation & Care</h3>
+                    <h3 class="text-xl font-semibold pb-3">{{"plantDetails.cultivation&care" | translate }}</h3>
                     @if(options().length > 0){
                         <div class="gap-x-1 pb-3 overflow-hidden ">
                             @for(option of options(); track option){
@@ -159,13 +161,13 @@
                         </div>
                     }
                     @else {
-                        <p class="text-gray-400">No information available at this time.</p>
+                        <p class="text-gray-400">{{"plantDetails.noInfo" | translate }}</p>
                     }
                     <p>{{ optionText() }}</p>
                 </div>
                 
                 <div class="bg-white rounded-lg px-5 py-6 border border-gray-100 shadow-sm shadow-gray-200">
-                    <h3 class="text-xl font-semibold pb-3">Growth Conditions</h3>
+                    <h3 class="text-xl font-semibold pb-3">{{"plantDetails.growthConditions" | translate }}</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-5 gap-x-5">
                         @for(condition of growthConditions(); track condition.label){
                             <div class="flex items-baseline gap-x-2">

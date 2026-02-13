@@ -8,10 +8,11 @@ import { Router } from '@angular/router';
 import { PlantExchangeService } from '../../services/plant-exchange.service';
 import { PlaceService } from '../../services/place.service';
 import { ExchangeType } from '../../enums/plant-exchange-type.enum';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-edit-exchange',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './add-edit-exchange.html',
   styleUrl: './add-edit-exchange.css',
 })
@@ -22,13 +23,14 @@ export class AddEditExchange implements OnInit {
   private imageService = inject(ImageUploadService);
   private notificationService = inject(NotificationService);
   private router = inject(Router);
+  private translate = inject(TranslateService);
 
   references = signal<PlantExchangeReference | null>(null);
   countries = this.placeService.countries;
 
   isEditing = computed(() => !!this.editTrade());
-  headerText = computed(() => this.isEditing() ? 'Edit Plant Exchange' : 'Create New Plant Exchange');
-  buttonText = computed(() => this.isEditing() ? 'Save changes' : 'Create listing');
+  headerText = computed(() => this.isEditing() ? this.translate.instant('tradeForm.editTrade') : this.translate.instant('tradeForm.createTrade'));
+  buttonText = computed(() => this.isEditing() ? this.translate.instant('forms.saveChanges') : this.translate.instant('tradeForm.createListing'));
 
   images = signal<ImageForm[]>([]);
 

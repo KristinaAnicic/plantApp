@@ -2,10 +2,11 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PlantedService } from '../../services/planted.service';
 import { PlantedDto } from '../../models/planted.interface';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-plant-graveyard',
-  imports: [RouterLink],
+  imports: [RouterLink, TranslateModule],
   templateUrl: './plant-graveyard.html',
   styleUrl: './plant-graveyard.css',
 })

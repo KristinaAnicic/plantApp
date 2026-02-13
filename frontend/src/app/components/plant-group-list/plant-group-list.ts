@@ -3,10 +3,11 @@ import { PlantedService } from '../../services/planted.service';
 import { PlantedDto, PlantedWithAnyDeadBoolDto } from '../../models/planted.interface';
 import { PlantGroupService } from '../../services/plant-group.service';
 import { NotificationService } from '../../services/notification.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-plant-group-list',
-  imports: [],
+  imports: [TranslateModule],
   templateUrl: './plant-group-list.html',
   styleUrl: './plant-group-list.css',
 })

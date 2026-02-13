@@ -13,41 +13,41 @@
         }
 
         <form [formGroup]="registerForm" ngNativeValidate (ngSubmit)="register()" class="flex flex-col gap-y-2">
-            <input type="text" id="name" formControlName="displayName" class="block w-full p-2.5 ps-5 border border-green-900 text-heading text-sm rounded-full focus:ring-2 shadow-xs placeholder:text-body" placeholder="Name*" autocomplete="off" required />
-            <input type="email" id="email" formControlName="email" class="block w-full p-2.5 ps-5 border border-green-900 text-heading text-sm rounded-full focus:ring-2 shadow-xs placeholder:text-body" placeholder="Email*" autocomplete="off" required />
+            <input type="text" id="name" formControlName="displayName" class="block w-full p-2.5 ps-5 border border-green-900 text-heading text-sm rounded-full focus:ring-2 shadow-xs placeholder:text-body" [placeholder]="('register.name' | translate) + '*'" autocomplete="off" required />
+            <input type="email" id="email" formControlName="email" class="block w-full p-2.5 ps-5 border border-green-900 text-heading text-sm rounded-full focus:ring-2 shadow-xs placeholder:text-body" [placeholder]="('register.email' | translate) + '*'" autocomplete="off" required />
             @if (registerForm.get('email')?.errors?.['email']) {
-                <p class="text-xs text-red-600 ml-2 -mt-1">Invalid email.</p>
+                <p class="text-xs text-red-600 ml-2 -mt-1">{{ 'register.invalidEmail' | translate }}</p>
             }
-            <input type="text" id="username" formControlName="username" class="block w-full p-2.5 ps-5 border border-green-900 text-heading text-sm rounded-full focus:ring-2 shadow-xs placeholder:text-body" placeholder="Username*" autocomplete="off" required />
-            <input type="password" id="password" formControlName="password" class="block w-full p-2.5 ps-5 border border-green-900 text-heading text-sm rounded-full focus:ring-2 shadow-xs placeholder:text-body" placeholder="Password*" autocomplete="off" required />
+            <input type="text" id="username" formControlName="username" class="block w-full p-2.5 ps-5 border border-green-900 text-heading text-sm rounded-full focus:ring-2 shadow-xs placeholder:text-body" [placeholder]="('register.username' | translate) + '*'" autocomplete="off" required />
+            <input type="password" id="password" formControlName="password" class="block w-full p-2.5 ps-5 border border-green-900 text-heading text-sm rounded-full focus:ring-2 shadow-xs placeholder:text-body" [placeholder]="('login.password' | translate) + '*'" autocomplete="off" required />
             @if (registerForm.get('password')?.errors?.['minlength']) {
-                <p class="text-xs text-red-600 ml-2 -mt-1">Password must be at least 8 characters long.</p>
+                <p class="text-xs text-red-600 ml-2 -mt-1">{{ 'register.passwordLength' | translate }}</p>
             }
-            <input type="password" id="password_confirm" formControlName="passwordConfirm" class="block w-full p-2.5 ps-5 border border-green-900 text-heading text-sm rounded-full focus:ring-2 shadow-xs placeholder:text-body" placeholder="Confirm password*" autocomplete="off" required />
+            <input type="password" id="password_confirm" formControlName="passwordConfirm" class="block w-full p-2.5 ps-5 border border-green-900 text-heading text-sm rounded-full focus:ring-2 shadow-xs placeholder:text-body" [placeholder]="('register.passwordConfirm' | translate) + '*'" autocomplete="off" required />
             @if (registerForm.get('passwordConfirm')?.errors?.['mismatch']) {
-                <p class="text-xs text-red-600 ml-2 -mt-1">Passwords do not match.</p>
+                <p class="text-xs text-red-600 ml-2 -mt-1">{{ 'register.passwordMismatch' | translate }}</p>
             }
-            <input type="text" id="contact" formControlName="contact" class="block w-full p-2.5 ps-5 border border-green-900 text-heading text-sm rounded-full focus:ring-2 shadow-xs placeholder:text-body" placeholder="Contact" autocomplete="off" />
+            <input type="text" id="contact" formControlName="contact" class="block w-full p-2.5 ps-5 border border-green-900 text-heading text-sm rounded-full focus:ring-2 shadow-xs placeholder:text-body" [placeholder]="('register.contact' | translate) + '*'" autocomplete="off" />
             <input type="date" id="dateOfBirth" formControlName="dateOfBirth" [max]="maxDate" class="p-2.5 text-sm rounded-full border border-green-900" required>
             @if (registerForm.get('dateOfBirth')?.errors?.['tooYoung'] && registerForm.get('dateOfBirth')?.dirty) {
-                <p class="text-xs text-red-600 ml-2 -mt-1">You have to be at least 13 years old!</p>
+                <p class="text-xs text-red-600 ml-2 -mt-1">{{ 'register.ageReq' | translate }}</p>
             }
             <div class="block w-full p-2.5 ps-5 border border-green-900  rounded-full">
                 <select formControlName="gender" class=" w-full text-heading text-sm">
-                    <option value="F">Female</option>
-                    <option value="M">Male</option>
-                    <option value="O">Other</option>
+                    <option value="F">{{ 'register.female' | translate }}</option>
+                    <option value="M">{{ 'register.male' | translate }}</option>
+                    <option value="O">{{ 'register.other' | translate }}</option>
                 </select>
             </div>
             @if (hasRequiredErrors()) {
-                <p class="text-xs text-red-600 ml-2 mt-2 -mb-4">Fields marked with * are mandatory.</p>
+                <p class="text-xs text-red-600 ml-2 mt-2 -mb-4">{{ 'register.mandatory' | translate }}</p>
             }
             <button type="submit" class="mt-4 w-full bg-green-900 hover:bg-green-800 text-white text-sm py-2 px-4 border disabled:bg-gray-200 disabled:text-gray-400 disabled:border-gray-300 rounded-full transition-all cursor-pointer">
-                Register
+                {{ 'register.register' | translate }}
             </button>
         </form>
         
-        <div class="text-sm font-medium text-body self-center">Already have an account? <a href="/login" class="text-fg-brand text-blue-700 hover:underline">Sign in</a></div>
+        <div class="text-sm font-medium text-body self-center">{{ 'register.haveAccount' | translate }} <a href="/login" class="text-fg-brand text-blue-700 hover:underline">{{ 'register.signIn' | translate }}</a></div>
         
     </div>
 </div>

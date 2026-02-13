@@ -1,13 +1,13 @@
 export interface LevelInfo {
-    title: string;
-    desc: string;
+    titleKey: string;
+    descKey: string;
     icon: string;
 }
 
 export const SUN_LEVELS: Record<number, LevelInfo> = {
-    1: { title: "Full Shade", desc: "No direct sunlight. Ideal for ferns.", icon: "🌑" },
-    2: { title: "Low Light", desc: "Indirect light, far from windows.", icon: "☁️" },
-    3: { title: "Partial Shade", desc: "Bright indirect light or soft morning sun.", icon: "⛅" },
-    4: { title: "Partial Sun", desc: "4-6 hours of sunlight with afternoon shade.", icon: "🌤️" },
-    5: { title: "Full Sun", desc: "6+ hours of intense, direct sunlight.", icon: "☀️" }
+    1: { titleKey: "sun.level1.title", descKey: "sun.level1.desc", icon: "🌑" },
+    2: { titleKey: "sun.level2.title", descKey: "sun.level2.desc", icon: "☁️" },
+    3: { titleKey: "sun.level3.title", descKey: "sun.level3.desc", icon: "⛅" },
+    4: { titleKey: "sun.level4.title", descKey: "sun.level4.desc", icon: "🌤️" },
+    5: { titleKey: "sun.level5.title", descKey: "sun.level5.desc", icon: "☀️" }
 };

@@ -25,17 +25,17 @@
             <div class="hidden sm:ml-6 sm:flex sm:flex-1 sm:justify-center">
                 <div class="flex space-x-4">
                     <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
-                        <a href="#" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">Plants</a>
+                        <a href="#" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.plants" | translate }}</a>
                     </div>                 
                     <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
-                        <a href="/trade" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">Trade</a>
+                        <a href="/trade" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.trade" | translate }}</a>
                     </div>  
                     @if(authService.isAuthenticated()) {
                     <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
-                        <a href="/my-plants" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">My Plants</a>
+                        <a href="/my-plants" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.myPlants" | translate }}</a>
                     </div>
                     <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
-                        <a href="/my-analytics" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">Analytics</a>
+                        <a href="/my-analytics" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.analytics" | translate }}</a>
                     </div>  
                     }                         
                 </div>
@@ -94,7 +94,7 @@
             }
             @else {
                 <button [routerLink]="['/login']" class="bg-green-900 hover:opacity-80 text-white text-base font-semibold py-2 px-4 rounded-full cursor-pointer" >
-                    Login
+                    {{ 'login.login' | translate }}
                 </button>              
             }        
             </div>
@@ -104,11 +104,11 @@
     @if (isMobileMenuOpen()) {
     <div id="mobile-menu" class="block">
         <div class="space-y-0 px-2 pt-2 pb-3">
-        <a href="/" (click)="closeMenu()" aria-current="page" class="block rounded-md bg-green-900 px-3 py-2 text-base font-medium text-white">Plants</a>
-        <a href="/trade" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">Community</a>
+        <a href="/" (click)="closeMenu()" aria-current="page" class="block rounded-md bg-green-900 px-3 py-2 text-base font-medium text-white">{{"navigationBar.plants" | translate }}</a>
+        <a href="/trade" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">{{"navigationBar.trade" | translate }}</a>
         @if(authService.isAuthenticated()){
-            <a href="/my-plants" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">My Plants</a>
-            <a href="/my-analytics" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">Analytics</a>
+            <a href="/my-plants" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">{{"navigationBar.myPlants" | translate }}</a>
+            <a href="/my-analytics" (click)="closeMenu()" class="block rounded-md px-3 py-2 text-base font-medium text-green-900 hover:bg-[#b4c0b5] hover:text-green-950">{{"navigationBar.analytics" | translate }}</a>
         }    
     </div>
     </div>

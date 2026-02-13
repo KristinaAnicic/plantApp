@@ -1,11 +1,11 @@
 <div class="flex flex-col w-full px-10 py-5 gap-y-8">
     <div>
         <div class="flex flex-col items-center p-5 border border-gray-100 shadow-lg shadow-gray-300/50 rounded-xl mb-8 py-10">
-            <h2 class="text-2xl font-semibold pb-3 break-all min-w-0">Plant Graveyard</h2>
-            <p class="text-base italic">In our memories</p>
+            <h2 class="text-2xl font-semibold pb-3 break-all min-w-0">{{"place.graveyard" | translate }}</h2>
+            <p class="text-base italic">{{"myPlants.graveyardDesc" | translate }}</p>
         </div>
         
-        <h2 class="text-2xl font-semibold pb-3">Planted Collection</h2>
+        <h2 class="text-2xl font-semibold pb-3">{{"place.plantedCollection" | translate }}</h2>
         @if(plants()?.length ?? 0 > 0){
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-3 justify-center">    
             @for (plant of plants(); track plant.id){
@@ -29,7 +29,7 @@
                             <h2 class="font-bold text-green-900 leading-tight capitalize">{{plant.plantName}}</h2>
                             <div class="flex flex-col gap-y-1 pt-5">
                                 <div class="flex flex-col flex-wrap gap-x-1">
-                                    <p class="text-gray-500 text-xs">PLANTED</p>
+                                    <p class="text-gray-500 text-xs uppercase">{{"place.planted" | translate }}</p>
                                     <p class="text-sm">{{ plant.datePlanted }}</p>
                                 </div>
                             </div>
@@ -41,7 +41,7 @@
             </div>
         }
         @else {
-            <p class="text-md text-gray-400">All your plants are still well :)</p>
+            <p class="text-md text-gray-400">{{"place.graveyardNoPlants" | translate }}</p>
         }
     </div>
 </div>

@@ -9,10 +9,11 @@ import { NotificationService } from '../../services/notification.service';
 import { AddEditReviewModal } from '../../components/add-edit-review-modal/add-edit-review-modal';
 import { UpdateUserRatingDto, UserRatingDto } from '../../models/user-rating.interface';
 import { UserRatingService } from '../../services/user-rating.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-plant-exchange',
-  imports: [DecimalPipe, TimeAgoPipe, AddEditReviewModal],
+  imports: [DecimalPipe, TimeAgoPipe, AddEditReviewModal, TranslateModule],
   templateUrl: './plant-exchange.html',
   styleUrl: './plant-exchange.css',
 })

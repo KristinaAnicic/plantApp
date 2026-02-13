@@ -14,6 +14,7 @@ import { NotificationService } from '../../services/notification.service';
 import { AnalyticsService } from '../../services/analytics.service';
 import { PlantedAnalyticsDto } from '../../models/analytics.interface';
 import { NgApexchartsModule, ApexPlotOptions, ApexChart } from "ng-apexcharts";
+import { TranslateModule } from '@ngx-translate/core';
 
 export type ChartOptions = {
   series: any;
@@ -35,7 +36,7 @@ export type ChartOptions = {
 
 @Component({
   selector: 'app-user-plant',
-  imports: [PlantedGrowthLog, PlantedReminders, AddEditPlantedModal, AddEditLogModal, AddEditReminderModal, NgApexchartsModule],
+  imports: [PlantedGrowthLog, PlantedReminders, AddEditPlantedModal, AddEditLogModal, AddEditReminderModal, NgApexchartsModule, TranslateModule],
   templateUrl: './user-plant.html',
   styleUrl: './user-plant.css',
 })

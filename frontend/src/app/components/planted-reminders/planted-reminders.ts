@@ -8,10 +8,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NumbersOnlyDirective } from '../../directives/numbers-only.directive';
 import { map } from 'rxjs';
 import { Router, RouterLink } from "@angular/router";
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-planted-reminders',
-  imports: [DatePipe, ReactiveFormsModule, NumbersOnlyDirective],
+  imports: [DatePipe, ReactiveFormsModule, NumbersOnlyDirective, TranslateModule],
   templateUrl: './planted-reminders.html',
   styleUrl: './planted-reminders.css',
 })

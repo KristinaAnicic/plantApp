@@ -7,10 +7,11 @@ import { AddUpdatePlaceModal } from "../../components/add-update-place-modal/add
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SUN_LEVELS } from '../../constants/sunlight.constants';
 import { HUMIDITY_LEVELS } from '../../constants/humidity.constants';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-place-plants',
-  imports: [RouterLink, AddUpdatePlaceModal],
+  imports: [RouterLink, AddUpdatePlaceModal, TranslateModule],
   templateUrl: './place-plants.html',
   styleUrl: './place-plants.css',
 })

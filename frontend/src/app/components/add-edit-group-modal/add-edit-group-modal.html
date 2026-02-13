@@ -24,12 +24,12 @@
         }
         <form [formGroup]="groupForm" (ngSubmit)="addEditGroup()" ngNativeValidate class="flex flex-col gap-y-2 pt-5">
             <div>
-                <label for="name" class="block text-sm font-medium text-heading px-1 py-1">Name*</label>
+                <label for="name" class="block text-sm font-medium text-heading px-1 py-1">{{ 'common.name' | translate }}*</label>
                 <input type="text" id="name" formControlName="name" class="block w-full p-2 ps-2 border border-gray-300 text-sm rounded-lg focus:ring-2 shadow-xs bg-gray-50 placeholder:text-body" placeholder="Name" autocomplete="off" required />
             </div>  
             <div>
-                <label for="note" class="block text-sm font-medium text-heading px-1 py-1">Description</label>
-                <textarea id="note" formControlName="description" class="block w-full p-2 ps-2 border border-gray-300 text-sm rounded-lg focus:ring-2 shadow-xs bg-gray-50" placeholder="Common pests and level of resistance..." rows="4"></textarea>
+                <label for="note" class="block text-sm font-medium text-heading px-1 py-1">{{ 'common.description' | translate }}</label>
+                <textarea id="note" formControlName="description" class="block w-full p-2 ps-2 border border-gray-300 text-sm rounded-lg focus:ring-2 shadow-xs bg-gray-50" [placeholder]="('common.description' | translate) + '...'" rows="4"></textarea>
             </div>   
             <button type="submit" class="mt-7 w-full bg-green-900 hover:bg-green-800 text-white text-sm py-2 px-4 rounded-full transition-all cursor-pointer">
                 {{ buttonText() }}

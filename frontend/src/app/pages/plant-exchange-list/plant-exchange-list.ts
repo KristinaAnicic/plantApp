@@ -8,10 +8,11 @@ import { catchError, debounceTime, distinctUntilChanged, Observable, of, Subject
 import { Pagination } from "../../components/pagination/pagination";
 import { SearchComponent } from "../../components/search-component/search-component";
 import { TimeAgoPipe } from "../../utils/time-ago.pipe";
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-plant-exchange-list',
-  imports: [Pagination, RouterLink, SearchComponent, TimeAgoPipe],
+  imports: [Pagination, RouterLink, SearchComponent, TimeAgoPipe, TranslateModule],
   templateUrl: './plant-exchange-list.html',
   styleUrl: './plant-exchange-list.css',
 })

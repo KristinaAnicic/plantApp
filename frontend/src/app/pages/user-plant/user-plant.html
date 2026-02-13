@@ -11,7 +11,7 @@
                             <svg class="w-4 h-4 text-gray-500 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M11.293 3.293a1 1 0 0 1 1.414 0l6 6 2 2a1 1 0 0 1-1.414 1.414L19 12.414V19a2 2 0 0 1-2 2h-3a1 1 0 0 1-1-1v-3h-2v3a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2v-6.586l-.293.293a1 1 0 0 1-1.414-1.414l2-2 6-6Z" clip-rule="evenodd"/>
                             </svg>
-                            <p class="text-xs text-gray-500">{{ planted()?.isOutside ? "Outdoor" : "Indoor" }}</p>
+                            <p class="text-xs text-gray-500">{{ (planted()?.isOutside ? "userPlantDetails.outdoor" : "userPlantDetails.indoor") | translate }}</p>
                         </div>
                     </div>
                     <div>
@@ -37,36 +37,37 @@
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 py-5 border-y border-y-gray-200">
                     <div>
-                        <p class="uppercase text-xs text-gray-500">Date planted</p>
+                        <p class="uppercase text-xs text-gray-500">{{ 'myPlants.datePlanted' | translate }}</p>
                         <p>{{ planted()?.datePlantedString }}</p>
                     </div>
                     <div>
-                        <p class="uppercase text-xs text-gray-500">Growth status</p>
+                        <p class="uppercase text-xs text-gray-500">{{ 'userPlantDetails.growthStatus' | translate }}</p>
                         <p>{{ planted()?.plantStatus?.name }}</p>
                     </div>
                     <div>
-                        <p class="uppercase text-xs text-gray-500">Last update</p>
+                        <p class="uppercase text-xs text-gray-500">{{ 'userPlantDetails.lastUpdate' | translate }}</p>
                         <p>{{ planted()?.lastUpdate }}</p>
                     </div>
                     <div>
-                        <p class="uppercase text-xs text-gray-500">Group</p>
+                        <p class="uppercase text-xs text-gray-500">{{ 'myPlants.group' | translate }}</p>
                         <p>{{ planted()?.plantGroup?.name ?? '/' }}</p>
                     </div>
                 </div>
             </div>
             <div class="flex flex-col md:flex-row gap-2">
-                <button (click)="addLog()" type="button" class="flex-1 lg:flex-none bg-green-900 text-white cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">Add Growth Log</button>
+                <button (click)="addLog()" type="button" class="flex-1 lg:flex-none bg-green-900 text-white cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">
+                    {{ 'log.addLog' | translate }}</button>
                 <button (click)="addReminder()" type="button" class="flex flex-1 md:flex-none items-center gap-x-1 justify-center border border-green-900 cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">
                     <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
                     </svg>
-                    Set reminder
+                    {{ 'reminder.setReminder' | translate }}
                 </button>
                 <button (click)="editPlanted()" type="button" class="flex flex-1 lg:flex-none items-center justify-center gap-x-1 bg-gray-200 text-gray-500 cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
                     </svg>
-                    Edit Details</button>
+                    {{ 'userPlantDetails.editDetails' | translate }}</button>
             </div>
         </div>
 
@@ -84,7 +85,7 @@
                                 [style.mask]="'url(' + '/assets/images/icons/no-image-svgrepo-com.svg' + ') no-repeat center / contain'"
                                 [style.webkit-mask]="'url(' + '/assets/images/icons/no-image-svgrepo-com.svg' + ') no-repeat center / contain'">
                             </div>
-                            <p class="text-gray-400">Choose your cover image</p>
+                            <p class="text-gray-400">{{ 'userPlantDetails.coverImage' | translate }}</p>
                         </div>
                     }
 
@@ -115,10 +116,10 @@
                     <svg class="h-5 w-5 text-green-900" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 0 1 .67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 1 1-.671-1.34l.041-.022ZM12 9a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
                     </svg>
-                    <h2 class="font-medium text-lg">Planting Info</h2>
+                    <h2 class="font-medium text-lg">{{ 'userPlantDetails.plantingInfo' | translate }}</h2>
                 </div>
                 <div class="flex flex-wrap items-center gap-x-2 justify-between border-b border-b-gray-200 py-3">
-                    <h3 class="text-gray-400">Location</h3>
+                    <h3 class="text-gray-400">{{ 'common.location' | translate }}</h3>
                     <div class="flex gap-x-1 items-start">
                         <svg class="h-5 w-4 text-green-900" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                             <path fill-rule="evenodd" d="m11.54 22.351.07.04.028.016a.76.76 0 0 0 .723 0l.028-.015.071-.041a16.975 16.975 0 0 0 1.144-.742 19.58 19.58 0 0 0 2.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 0 0-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 0 0 2.682 2.282 16.975 16.975 0 0 0 1.145.742ZM12 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd" />
@@ -127,13 +128,13 @@
                     </div>                 
                 </div>
                 <div class="flex flex-wrap items-center gap-x-2 justify-between border-b border-b-gray-200 py-3">
-                    <h3 class="text-gray-400">Source</h3>
+                    <h3 class="text-gray-400">{{ 'userPlantDetails.source' | translate }}</h3>
                     <div class="flex gap-x-1 items-center">
-                        <p>{{ planted()?.source ?? 'Unknown'}}</p>
+                        <p>{{ planted()?.source ?? ('common.unknown' | translate) }}</p>
                     </div>                 
                 </div>
                 <div class="flex flex-col pt-3">
-                    <h3 class="text-gray-400">Initial Note</h3>
+                    <h3 class="text-gray-400">{{ 'userPlantDetails.note' | translate }}</h3>
                     <div class="flex gap-x-1 items-center">
                         <p class="italic">{{ planted()?.note ?? 'No notes provided.'}}</p>
                     </div>                 
@@ -145,7 +146,7 @@
                     <svg class="h-5 w-5 text-green-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
                     </svg>
-                    <h2 class="font-medium text-lg">Upcoming reminders</h2>                   
+                    <h2 class="font-medium text-lg">{{ 'reminder.reminders' | translate }}</h2>                   
                 </div>  
                 <div>
                     <app-planted-reminders [reminders]="planted()?.nextReminders" (editReminder)="editReminder($event)" (reminderEdited)="loadPlanted()"></app-planted-reminders>
@@ -159,7 +160,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
                 </svg>
 
-                <h2 class="font-medium text-lg">Growth History</h2>                   
+                <h2 class="font-medium text-lg">{{ 'log.growthHistory' | translate }}</h2>                   
             </div>  
             <div class="w-full">
                 <app-planted-growth-log [logs]="planted()?.growthLogs" (editLog)="editLog($event)" (logEdited)="loadPlanted()"></app-planted-growth-log>
@@ -169,7 +170,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-[repeat(2,1fr)] gap-5">
         <div class="flex flex-col min-w-0">
-            <h2 class="font-bold text-lg py-1">Seasonal Health Prediction</h2>
+            <h2 class="font-bold text-lg py-1">{{ 'userPlantDetails.healthChart' | translate }}</h2>
             <div class="bg-white w-full border border-gray-200 px-6 py-6 rounded-xl shadow shadow-sm">
                 @if((plantedAnalytics()?.monthlyHealthPrediction?.length ?? 0) > 0) {
                     <div class="w-full h-full">
@@ -188,14 +189,14 @@
                 }
                 @else {
                     <div class="flex items-center h-full justify-center">
-                        <p class="italic text-gray-400 self-center justify-self-center py-15">There is currently no info to analyse.</p>
+                        <p class="italic text-gray-400 self-center justify-self-center py-15">{{ 'analytics.noInfo' | translate }}</p>
                     </div>
                 } 
             </div>
         </div>
 
         <div class="flex flex-col min-w-0">
-            <h2 class="font-bold text-lg py-1">Plant Growth Estimation</h2>
+            <h2 class="font-bold text-lg py-1">{{ 'userPlantDetails.growthChart' | translate }}</h2>
             <div class="bg-white w-full border border-gray-200 px-6 py-6 rounded-xl shadow shadow-sm">
                 @if((plantedAnalytics()?.plantGrowthHeight?.length ?? 0) > 0) {
                     <div class="w-full h-full">
@@ -216,7 +217,7 @@
                 }
                 @else {
                     <div class="flex items-center h-full justify-center">
-                        <p class="italic text-gray-400 self-center justify-self-center py-15">There is currently no info to analyse.</p>
+                        <p class="italic text-gray-400 self-center justify-self-center py-15">{{ 'analytics.noInfo' | translate }}</p>
                     </div>
                 } 
             </div>

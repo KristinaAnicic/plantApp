@@ -3,10 +3,11 @@ import { AbstractControl, Form, FormControl, FormGroup, ReactiveFormsModule, Val
 import { AddUserDto } from '../../models/user.interface';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
