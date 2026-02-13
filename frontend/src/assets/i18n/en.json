@@ -4,9 +4,37 @@
     "ENGLISH": "English",
     "search": "Search",
 
-    "Free": "Free",
-    "Sell": "Sell",
-    "Swap": "Swap",
+    "free": "Free",
+    "sell": "Sell",
+    "swap": "Swap",
+
+    "late": "Late",
+    "on time": "On Time",
+    "delayed": "Delayed",
+
+    "healthy": "Healthy",
+    "dormant": "Dormant",
+    "stressed": "Stressed",
+    "sick": "Sick",
+    "dead": "Dead",
+    "wilting": "Wilting",
+    "growing": "Growing",
+    "flowering": "Flowering",
+    "fruiting": "Fruiting",
+    "seedling": "seedling",
+    "harvested": "harvested",
+    "transplanted": "transplanted",
+
+    "watering": "Watering",
+    "fertilizing": "Fertilizing",
+    "pruning": "Pruning",
+    "repotting": "Repotting",
+    "pest control": "Pest control",
+    "harvesting": "Harvesting",
+    "check growth": "Check growth",
+    "flower care": "Flower care",
+    "dormancy preparation": "Dormancy preparation",
+    "other": "Other",
 
     "navigationBar": {
         "plants": "Plants",
@@ -37,7 +65,8 @@
         "noNotes": "No notes provided",
         "viewDetails": "View details",
         "description": "Description",
-        "title": "Title"
+        "title": "Title",
+        "processing": "Processing"
     },
 
     "forms": {
@@ -51,7 +80,10 @@
         "country": "Country",
         "city": "City",
         "plantStatus": "Plant status",
-        "note": "Note"
+        "note": "Note",
+        "optional": "Optional",
+        "required": "Required",
+        "cancel": "Cancel"
     },
 
     "plantDetails": {
@@ -184,7 +216,7 @@
         "editDetails": "Edit details",
         "indoor": "Indoor",
         "outdoor": "Outdoor",
-        "healthChart": "Seasonal health prediction",
+        "healthChart": "Plant health prediction",
         "growthChart": "Plant growth estimation",
         "coverImage": "Choose your cover image"
     },
@@ -219,7 +251,34 @@
     },
 
     "analytics": {
-        "noInfo": "There is currently no info to analyse."
+        "noInfo": "There is currently no info to analyse.",
+        "groupStatus": "Average monthly health score",
+        "groupGrowth": "Grouped monthly growth",
+        "recommendation": "Top 5 plant recommendations",
+        "total": "Total plants",
+        "active": "Active plants",
+        "survival": "Survival rate",
+        "gardening": "Gardening since",
+        "logSummary": "Log summary",
+        "totalLogs": "Total logs",
+        "logsYear": "Logs this year",
+
+        "care&Health": "Care & Health Visualization",
+        "reminderPerformance": "Reminder Performance",
+        "healthDistributrion": "Health distribution",
+        "actionFrequency": "Action Frequency",
+        "seasonalPlantings": "Number of planted plants by month",
+        "logActivity": "Growth log activity",
+        "healthPrediction": "Plant health prediction",
+        "hallOfFame": "Plant hall of fame",
+        "oldestPlant": "Oldest plant",
+        "legacyMaster": "Legacy master",
+        "resilientPlant": "Most resilient plant",
+        "survivor": "Survivor icon",
+        "missedTasks": "Missed tasks",
+        "recoveries": "Recoveries",
+        "endurance": "Endurance",
+        "daysAlive": "Days alive"
     },
 
     "timeAgo": {
@@ -283,7 +342,15 @@
     "review": {
         "reviewsFor": "Reviews for",
         "reviewsText": "Sharing your experience with this member helps build trusted commuity.",
-        "add": "Add review"
+        "add": "Add review",
+        "submitReview": "Submit review",
+        "addTitle": "Add Review for",
+        "editTitle": "Edit Review for",
+        "experience": "How would you rate your experience?",
+        "more": "Tell us more about the exchange",
+        "commentWarning": "Please share your experience with a comment",
+        "shortComment": "Comment must be at least 10 characters.",
+        "longComment": "Comment cannot exceed 200 characters."
     },
 
     "placeForm": {
@@ -291,6 +358,42 @@
         "address": "Address",
         "addPlace": "Add place",
         "editPlace": "Edit place"
+    },
+
+    "plantedForm": {
+        "nickname": "Nickname",
+        "addPlantGroup": "Add plant to group",
+        "currentStatus": "Current status",
+        "outdoorsQuestion": "Is it places outdoors?",
+        "sourcePlaceholder": "e.g. Gift, Field trip",
+        "editPlanted": "Edit planted",
+        "addPlantedTitle": "Add planted specie",
+        "addPlanted": "Add planted"
+    },
+
+    "reminderForm": {
+        "reminderType": "Reminder type",
+        "reocurrence": "Reocurrence frequency",
+        "repeat": "Repeat every",
+        "nextDueDate": "Next due date",
+        "notePlaceholder": "e.g. Use distilled water only, avoid wetting the leaves,...",
+        "addReminderTitle": "Set new reminder"
+    },
+
+    "logForm": {
+        "editLog": "Edit Growth Log Entry",
+        "addLogTitle": "Add New Growth Log Entry",
+        "addLog": "Add log",
+        "observationDate": "Observation date",
+        "titlePlaceholder": "e.g. Noticed first buds",
+        "notePlaceholder": "Describe growth rate, leaf texture, color variations,...",
+        "titleWarning": "Title is required and cannot be empty."
+    },
+
+    "healthCheck": {
+        "title": "Check your plant",
+        "result": "Analasys results",
+        "checkPlant": "Check plant"
     },
 
     "humidity": {

@@ -2,10 +2,11 @@ import { Component, inject, output, signal } from '@angular/core';
 import { DiseaseService } from '../../services/disease.service';
 import { DiseasePredictionResponse } from '../../models/disease-prediction-response.interface';
 import { NotificationService } from '../../services/notification.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-image-disease-prediction',
-  imports: [],
+  imports: [TranslateModule],
   templateUrl: './image-disease-prediction.html',
   styleUrl: './image-disease-prediction.css',
 })

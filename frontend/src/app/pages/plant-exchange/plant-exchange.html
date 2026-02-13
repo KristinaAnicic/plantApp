@@ -37,7 +37,7 @@
         <div class="relative md:mt-5 w-full md:w-1/2 flex flex-col flex-1 gap-3 py-5 bg-white px-5 rounded-lg shadow shadow-sm">
             <div class="flex gap-1 items-center justify-between">
                 <div class="flex">
-                    <p class="rounded-full px-5 py-1 bg-gray-100 text-green-900 border border-gray-500">{{ exchange()?.exchangeType?.name | translate }}</p>
+                    <p class="rounded-full px-5 py-1 bg-gray-100 text-green-900 border border-gray-500 capitalize">{{ exchange()?.exchangeType?.name?.toLowerCase() | translate }}</p>
                 </div>
                 @if (exchange()?.user?.id === authService.currentUser()?.id || authService.isAdmin()) {
                     <div (click)="toggleMenu()" class="cursor-pointer">

@@ -5,8 +5,8 @@
             <div class="w-full bg-red-50 border-l-3 border-l-red-800 p-3 rounded-r-md border-b border-b-red-800/70">
                 <div class="w-full flex justify-between">
                     <div class="flex flex-wrap-reverse gap-x-2 gap-y-1 items-center">
-                        <p class="font-medium text-red-700 text-base">{{ reminder.reminderType?.name }}</p>  
-                        <p class="text-white text-xs bg-red-700 opacity-60 py-0.5 px-2 rounded-sm">OVERDUE</p>
+                        <p class="font-medium text-red-700 text-base">{{ reminder.reminderType?.name?.toLowerCase() | translate }}</p>  
+                        <p class="text-white text-xs bg-red-700 opacity-60 py-0.5 px-2 rounded-sm uppercase">{{ 'reminder.overdue' | translate}}</p>
                     </div>
                     <div (click)="toggleReminderMenu(reminder.id, $event)" class="cursor-pointer">
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -24,7 +24,7 @@
         @else {
             <div class="w-full bg-gray-50 border-l-3 border-l-green-800 p-3 rounded-r-md border-b border-b-green-800/70">
                 <div class="flex justify-between">
-                    <p class="font-medium text-green-800 text-base">{{ reminder.reminderType?.name }}</p>
+                    <p class="font-medium text-green-800 text-base">{{ reminder.reminderType?.name?.toLowerCase() | translate }}</p>
                     <div (click)="toggleReminderMenu(reminder.id, $event)" class="cursor-pointer">
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                             <path fill-rule="evenodd" d="M4.5 12a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z" clip-rule="evenodd" />

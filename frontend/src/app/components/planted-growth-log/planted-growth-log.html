@@ -10,7 +10,7 @@
                         <div class="flex gap-2 pb-3">
                             <p class="text-gray-500">{{ log.observationDate | date: 'MMMM dd, yyy' }}</p>
                             <p>•</p>
-                            <p [class]="'uppercase '+ plantStatusTextColor(log.plantStatus?.name)">{{ log.plantStatus?.name }}</p>
+                            <p [class]="'uppercase '+ plantStatusTextColor(log.plantStatus?.name)">{{ log.plantStatus?.name?.toLowerCase() | translate }}</p>
                         </div>
                         <p class="text-gray-500">{{ log.note }}</p>
                         

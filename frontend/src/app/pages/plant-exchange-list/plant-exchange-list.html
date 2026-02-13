@@ -28,8 +28,8 @@
                     }
 
                     <div class="absolute top-0 left-1 flex">
-                        <p [class]="'text-sm text-gray-700 mt-1 py-1 px-3 rounded-full ' + getExchangeClass(exchange.exchangeType?.name)">
-                            {{exchange.exchangeType?.name | translate }}
+                        <p [class]="'text-sm text-gray-700 mt-1 py-1 px-3 rounded-full capitalize ' + getExchangeClass(exchange.exchangeType?.name)">
+                            {{exchange.exchangeType?.name?.toLowerCase() | translate }}
                         </p>
                     </div>
                 </div>           

@@ -4,6 +4,7 @@ import { AnalyticsDto, HealthPrediction } from '../../models/analytics.interface
 import { AnalyticsService } from '../../services/analytics.service';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 export type ChartOptions = {
   series: any;
@@ -24,7 +25,7 @@ export type ChartOptions = {
 
 @Component({
   selector: 'app-analytics',
-  imports: [NgApexchartsModule, DatePipe],
+  imports: [NgApexchartsModule, DatePipe, TranslateModule],
   templateUrl: './analytics.html',
   styleUrl: './analytics.css',
 })

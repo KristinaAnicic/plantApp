@@ -5,7 +5,7 @@
                 <div class="flex flex-wrap gap-x-2 justify-between">
                     <div class="flex flex-wrap gap-x-2">
                         <div [class]="'flex items-center rounded-full px-3 py-1 ' + statusInfo().color">
-                            <p class="text-xs">{{ statusInfo().category }}</p>
+                            <p class="text-xs">{{ statusInfo().category.toLowerCase() | translate }}</p>
                         </div>
                         <div class="flex items-center bg-gray-100 rounded-full px-2 py-1 border border-gray-200 gap-x-1">
                             <svg class="w-4 h-4 text-gray-500 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -42,7 +42,7 @@
                     </div>
                     <div>
                         <p class="uppercase text-xs text-gray-500">{{ 'userPlantDetails.growthStatus' | translate }}</p>
-                        <p>{{ planted()?.plantStatus?.name }}</p>
+                        <p>{{ planted()?.plantStatus?.name?.toLowerCase() | translate }}</p>
                     </div>
                     <div>
                         <p class="uppercase text-xs text-gray-500">{{ 'userPlantDetails.lastUpdate' | translate }}</p>

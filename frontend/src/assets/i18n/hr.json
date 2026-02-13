@@ -4,9 +4,37 @@
     "ENGLISH": "Engleski",
     "search": "Pretraga",
 
-    "Free": "Besplatno",
-    "Sell": "Prodaja",
-    "Swap": "Zamjena",
+    "free": "Besplatno",
+    "sell": "Prodaja",
+    "swap": "Zamjena",
+
+    "late": "Kasni",
+    "on time": "Na vrijeme",
+    "delayed": "Odgođeno",
+
+    "healthy": "Zdrava",
+    "dormant": "U mirovanju",
+    "stressed": "Pod stresom",
+    "sick": "Bolesno",
+    "dead": "Uginulo",
+    "wilting": "Venuće",
+    "growing": "Raste",
+    "flowering": "Cvate",
+    "fruiting": "Plodovi",
+    "seedling": "Sadnica",
+    "harvested": "Pobrano",
+    "transplanted": "Presađeno",
+
+    "watering": "Zalijevanje",
+    "fertilizing": "Gnojidba",
+    "pruning": "Orezivanje",
+    "repotting": "Presađivanje",
+    "pest control": "Kontrola štetočina",
+    "harvesting": "Berba",
+    "check growth": "Provjera rasta",
+    "flower care": "Njega cvijeća",
+    "dormancy preparation": "Priprema za mirovanje",
+    "other": "Ostalo",
 
     "navigationBar": {
         "plants": "Biljke",
@@ -37,7 +65,8 @@
         "noNotes": "Nema bilješki",
         "viewDetails": "Detaljnije",
         "description": "Opis",
-        "title": "Naslov"
+        "title": "Naslov",
+        "processing": "Obrađivanje"
     },
 
 
@@ -52,7 +81,10 @@
         "country": "Država",
         "city": "Grad",
         "plantStatus": "Status biljke",
-        "note": "Bilješka"
+        "note": "Bilješka",
+        "optional": "Opcionalno",
+        "required": "Obavezno",
+        "cancel": "Otkaži"
     },
 
     "plantDetails": {
@@ -185,7 +217,7 @@
         "editDetails": "Uredi detalje",
         "indoor": "Unutra",
         "outdoor": "Vani",
-        "healthChart": "Sezonska predikcija zdravlja",
+        "healthChart": "Predikcija zdravlja biljke",
         "growthChart": "Procjena rasta biljke",
         "coverImage": "Odaberi naslovnu sliku"
     },
@@ -221,7 +253,34 @@
     },
 
     "analytics": {
-        "noInfo": "Trenutno nema podataka za analizu."
+        "noInfo": "Trenutno nema podataka za analizu.",
+        "groupStatus": "Prosječna mjesečna ocjena zdravlja",
+        "groupGrowth": "Grupirani mjesečni rast",
+        "recommendation": "Top 5 preporuka biljaka",
+        "total": "Ukupno biljaka",
+        "active": "Aktivne biljke",
+        "survival": "Stopa preživljavanja",
+        "gardening": "Vrtlari od",
+        "logSummary": "Sažetak zapisa",
+        "totalLogs": "Ukupno zapisa",
+        "logsYear": "Zapisa ove godine",
+
+        "care&Health": "Vizualizacija njege i zdravlja",
+        "reminderPerformance": "Učinkovitost izvršavanja podsjetnika",
+        "healthDistribution": "Distribucija zdravlja",
+        "actionFrequency": "Učestalost radnji",
+        "seasonalPlantings": "Broj posađenih biljaka po mjesecima",
+        "logActivity": "Aktivnost zapisa o rastu",
+        "healthPrediction": "Predviđanje zdravlja biljke",
+        "hallOfFame": "Kuća slavnih biljaka",
+        "oldestPlant": "Najstarija biljka",
+        "legacyMaster": "Majstor naslijeđa",
+        "resilientPlant": "Najotpornija biljka",
+        "survivor": "Ikona preživljavanja",
+        "missedTasks": "Broj propuštenih zadataka",
+        "recoveries": "Oporavaka",
+        "endurance": "Izdržljivost",
+        "daysAlive": "Dana života"
     },
 
     "timeAgo": {
@@ -285,7 +344,15 @@
     "review": {
         "reviewsFor": "Recenzije korisnika",
         "reviewsText": "Dijeljenje iskustva s ovim članom pomaže u izgradnji povjerenja u zajednici.",
-        "add": "Dodaj recenziju"
+        "add": "Dodaj recenziju",
+        "submitReview": "Objavi recenziju",
+        "addTitle": "Dodaj recenziju za",
+        "editTitle": "Uredi recenziju za",
+        "experience": "Kako biste ocijenili svoje iskustvo?",
+        "more": "Recite nam više o razmjeni",
+        "commentWarning": "Podijelite svoje iskustvo s komentarom",
+        "shortComment": "Komentar mora imati najmanje 10 znakova.",
+        "longComment": "Komentar ne može biti duži od 200 znakova."
     },
 
     "placeForm": {
@@ -293,6 +360,40 @@
         "address": "Adresa",
         "addPlace": "Dodaj mjesto",
         "editPlace": "Uredi mjesto"
+    },
+
+    "plantedForm": {
+        "nickname": "Nadimak",
+        "addPlantGroup": "Dodaj biljku u grupu",
+        "currentStatus": "Trenutni status",
+        "outdoorsQuestion": "Je li smještena vani?",
+        "sourcePlaceholder": "npr. Poklon, Izlet",
+        "editPlanted": "Uredi svoju biljku",
+        "addPlantedTitle": "Dodaj posađenu biljku",
+        "addPlanted": "Dodaj biljku"
+    },
+    "reminderForm": {
+        "reminderType": "Tip podsjetnika",
+        "reocurrence": "Učestalost ponavljanja",
+        "repeat": "Ponovi svakih",
+        "nextDueDate": "Sljedeći rok",
+        "notePlaceholder": "npr. Koristiti samo destiliranu vodu, izbjegavati kvašenje lišća,...",
+        "addReminderTitle": "Postavi novi podsjetnik"
+    },
+
+    "logForm": {
+        "editLog": "Uredi zapis",
+        "addLogTitle": "Dodaj novi zapis",
+        "addLog": "Dodaj zapis",
+        "observationDate": "Datum promatranja",
+        "titlePlaceholder": "npr. Primijećeni prvi pupoljci",
+        "notePlaceholder": "Opiši brzinu rasta, teksturu lista, varijacije boja,...",
+        "titleWarning": "Naslov je obavezan i ne može biti prazan."
+    },
+    "healthCheck": {
+        "title": "Provjeri svoju biljku",
+        "result": "Rezultati analize",
+        "checkPlant": "Provjeri biljku"
     },
 
     "humidity": {

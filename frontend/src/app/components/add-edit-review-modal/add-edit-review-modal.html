@@ -16,7 +16,7 @@
         <form [formGroup]="reviewForm" (ngSubmit)="addEditReview()" ngNativeValidate class="flex flex-col gap-y-2 pt-5">
             <div class="flex flex-col gap-4">
                 <div class="w-full">
-                    <label for="comment" class="font-semibold text-base">How would you rate your experience?</label>         
+                    <label for="comment" class="font-semibold text-base">{{ 'review.experience' | translate}}</label>         
                     <div class="flex items-center space-x-1">
                     @for(i of [1, 2, 3, 4, 5]; track i){
                         <div (click)="setRating(i)" class="cursor-pointer">
@@ -30,22 +30,22 @@
                 </div>
 
                 <div class="w-full">
-                    <label for="comment" class="font-medium">Tell us more about the exchange</label>         
+                    <label for="comment" class="font-medium">{{ 'review.more' | translate}}</label>         
                     <textarea id="comment" formControlName="comment" class="block w-full mt- p-2 ps-2 border border-gray-300 text-sm rounded-lg focus:ring-2 shadow-xs bg-gray-50" rows="3"></textarea>
                     @if((reviewForm.get('comment')?.errors?.['required'] || !reviewForm.get('comment')?.value?.trim()) && reviewForm.get('comment')?.touched){
-                        <small class="text-red-800">Please share your experience with a comment</small>
+                        <small class="text-red-800">{{ 'review.commentWarning' | translate}}</small>
                     }
                     @if(reviewForm.get('comment')?.errors?.['minlength']){
-                        <small class="text-red-800">Comment must be at least 10 characters.</small>
+                        <small class="text-red-800">{{ 'review.shortComment' | translate}}</small>
                     }
                     @if(reviewForm.get('comment')?.errors?.['maxlength']){
-                        <small class="text-red-800">Comment cannot exceed 200 characters.</small>
+                        <small class="text-red-800">{{ 'review.longComment' | translate}}</small>
                     }
                 </div>
             </div>    
             <div class="w-full flex gap-2">
                 <button (click)="onCloseClick()" type="button" class="flex-1 mt-4 text-sm py-2 px-10 cursor-pointer bg-gray-100 rounded-full border border-gray-200">
-                    Cancel
+                    {{ 'forms.cancel' | translate}}
                 </button>
                 <button type="submit" class="whitespace-nowrap flex-1 mt-4 bg-green-900 hover:bg-green-800 text-white text-sm py-2 px-10 rounded-full transition-all cursor-pointer">
                     {{ buttonText() }}

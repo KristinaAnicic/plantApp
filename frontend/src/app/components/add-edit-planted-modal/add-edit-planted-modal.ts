@@ -6,10 +6,11 @@ import { ImageForm, UploadMapping } from '../../models/image.interface';
 import { ImageUploadService } from '../../services/image-upload.service';
 import { NotificationService } from '../../services/notification.service';
 import { AddUpdatePlaceModal } from "../add-update-place-modal/add-update-place-modal";
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-edit-planted-modal',
-  imports: [ReactiveFormsModule, AddUpdatePlaceModal],
+  imports: [ReactiveFormsModule, AddUpdatePlaceModal, TranslateModule],
   templateUrl: './add-edit-planted-modal.html',
   styleUrl: './add-edit-planted-modal.css',
 })
@@ -17,6 +18,7 @@ export class AddEditPlantedModal implements OnInit {
   private service = inject(PlantedService);
   private imageService = inject(ImageUploadService);
   private notificationService = inject(NotificationService);
+  private translate = inject(TranslateService);
 
   editPlanted = input<UpsertPlantedDto | null>(null);
   plantId = input<number | null>(null);
@@ -29,8 +31,8 @@ export class AddEditPlantedModal implements OnInit {
   images = signal<ImageForm[]>([]);
 
   isEditing = computed(() => !!this.editPlanted());
-  headerText = computed(() => this.isEditing() ? 'Edit Planted' : 'Add Planted Specie');
-  buttonText = computed(() => this.isEditing() ? 'Save changes' : 'Add planted');
+  headerText = computed(() => this.isEditing() ? this.translate.instant('plantedForm.editPlanted') : this.translate.instant('plantedForm.addPlantedTitle'));
+  buttonText = computed(() => this.isEditing() ? this.translate.instant('forms.saveChanges') : this.translate.instant('plantedForm.addPlanted'));
 
   ngOnInit(): void {
     if (!this.editPlanted() && !this.plantId()) {

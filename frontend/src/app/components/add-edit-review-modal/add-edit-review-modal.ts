@@ -4,24 +4,27 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Reference } from '../../models/reference.interface';
 import { UserRatingService } from '../../services/user-rating.service';
 import { NotificationService } from '../../services/notification.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-edit-review-modal',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './add-edit-review-modal.html',
   styleUrl: './add-edit-review-modal.css',
 })
 export class AddEditReviewModal implements OnInit {
   private service = inject(UserRatingService);
   private notif = inject(NotificationService);
+  private translate = inject(TranslateService);
+  
   editReview = input<UpdateUserRatingDto | null>(null);
   user = input.required<Reference | undefined>();
   close = output<void>();
   updateList = output<void>();
 
   isEditing = computed(() => !!this.editReview());
-  headerText = computed(() => (this.isEditing() ? 'Edit Review for ' : 'Add Review for ') + this.user()?.name);
-  buttonText = computed(() => this.isEditing() ? 'Save changes' : 'Submit Review');
+  headerText = computed(() => (this.isEditing() ? this.translate.instant('review.editTitle') : this.translate.instant('review.addTitle')) + ' ' + this.user()?.name);
+  buttonText = computed(() => this.isEditing() ? this.translate.instant('forms.saveChanges') : this.translate.instant('review.submitReview'));
 
   reviewForm = new FormGroup ({
     rating: new FormControl(4, { validators:Validators.min(1), nonNullable: true }),

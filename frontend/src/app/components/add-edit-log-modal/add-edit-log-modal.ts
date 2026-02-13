@@ -6,10 +6,11 @@ import { UpsertGrowthLogDto } from '../../models/growth-log.interface';
 import { ImageForm } from '../../models/image.interface';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PlantedService } from '../../services/planted.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-edit-log-modal',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './add-edit-log-modal.html',
   styleUrl: './add-edit-log-modal.css',
 })
@@ -18,6 +19,7 @@ export class AddEditLogModal /*implements OnInit*/{
   private plantedService = inject(PlantedService);
   private imageService = inject(ImageUploadService);
   private notificationService = inject(NotificationService);
+  private translate = inject(TranslateService);
 
   editLog = input<UpsertGrowthLogDto | null>(null);
   plantedId = input<number | null>(null);
@@ -31,9 +33,9 @@ export class AddEditLogModal /*implements OnInit*/{
   images = signal<ImageForm[]>([]);
 
   isEditing = computed(() => !!this.editLog());
-  headerText = computed(() => this.isEditing() ? 'Edit Growth Log Entry' : 'Add New Growth Log Entry');
-  logAddInfo = computed(() => !this.isEditing() && this.plantedId() == null ? '(GROUP)' : '(PLANT)');
-  buttonText = computed(() => this.isEditing() ? 'Save changes' : 'Add log');
+  headerText = computed(() => this.isEditing() ? this.translate.instant('logForm.editLog') : this.translate.instant('logForm.addLogTitle'));
+  logAddInfo = computed(() => !this.isEditing() && this.plantedId() == null ? this.translate.instant('myPlants.group') : this.translate.instant('plantDetails.plant'));
+  buttonText = computed(() => this.isEditing() ?  this.translate.instant('forms.saveChanges') : this.translate.instant('logForm.addLog'));
 
   logForm = new FormGroup({
     id: new FormControl(0, { nonNullable: true }),

@@ -5,16 +5,18 @@ import { UpsertReminderDto } from '../../models/reminder.interface';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NumbersOnlyDirective } from '../../directives/numbers-only.directive';
 import { DateUtils } from '../../utils/date-utils';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-edit-reminder-modal',
-  imports: [ReactiveFormsModule, NumbersOnlyDirective],
+  imports: [ReactiveFormsModule, NumbersOnlyDirective, TranslateModule],
   templateUrl: './add-edit-reminder-modal.html',
   styleUrl: './add-edit-reminder-modal.css',
 })
 export class AddEditReminderModal implements OnInit{
   private service = inject(ReminderService);
   private notificationService = inject(NotificationService);
+  private translate = inject(TranslateService);
 
   editReminder = input<UpsertReminderDto | null>(null);
   references = this.service.references;
@@ -26,8 +28,8 @@ export class AddEditReminderModal implements OnInit{
   minDate = DateUtils.formatDateForInput(new Date().toISOString());
 
   isEditing = computed(() => !!this.editReminder());
-  headerText = computed(() => this.isEditing() ? 'Edit Reminder' : 'Set new reminder');
-  buttonText = computed(() => this.isEditing() ? 'Save changes' : 'Set reminder');
+  headerText = computed(() => this.isEditing() ? this.translate.instant('reminder.editReminder') : this.translate.instant('reminderForm.addReminderTitle'));
+  buttonText = computed(() => this.isEditing() ? this.translate.instant('forms.saveChanges') : this.translate.instant('reminder.setReminder'));
 
   reminderForm = new FormGroup({
     id: new FormControl(0, { nonNullable: true }),
