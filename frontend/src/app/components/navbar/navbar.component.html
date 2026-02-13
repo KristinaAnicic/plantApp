@@ -41,7 +41,32 @@
                 </div>
             </div>
         </div>
-        <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">           
+        <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">  
+            <div class="relative inline-block text-left mr-2">
+                <button (click)="isLangOpen.set(!isLangOpen())" class="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 cursor-pointer">
+                    {{ languageService.getCurrentLanguage() === 'en' ? ('ENGLISH' | translate) : ('CROATIAN' | translate) }}
+                    <svg class="w-4 h-4 transition-transform duration-200"
+                        [class.rotate-180]="isLangOpen()"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                @if (isLangOpen()) {
+                    <div class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                        <button (click)="changeLang('en')" class="w-full text-left px-4 py-2 hover:bg-gray-100">
+                            {{'ENGLISH' | translate}}
+                        </button>
+
+                        <button (click)="changeLang('hr')"class="w-full text-left px-4 py-2 hover:bg-gray-100">
+                            {{ 'CROATIAN' | translate }}
+                        </button>
+                    </div>
+                }
+                </div>
+
             @if (authService.isAuthenticated()){
                 <button type="button" (click)="toggleShowReminders()" class="relative cursor-pointer rounded-full p-1 text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-green-900">
                     <span class="absolute -inset-1.5"></span>

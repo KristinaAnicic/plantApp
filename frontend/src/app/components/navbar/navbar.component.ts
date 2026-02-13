@@ -5,6 +5,7 @@ import { ReminderService } from '../../services/reminder.service';
 import { ReminderDto } from '../../models/reminder.interface';
 import { DatePipe } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-navbar',
@@ -18,12 +19,15 @@ export class NavbarComponent implements OnInit {
   public reminderService = inject(ReminderService);
   public router = inject(Router);
   translate = inject(TranslateService)
+  languageService = inject(LanguageService)
   
   isUserMenuOpen = signal(false);
   isLoginOpen: boolean = false;
   isMobileMenuOpen = signal(false);
   pendingReminders = signal<ReminderDto[] | null>(null);
   showReminders = signal(false);
+  currentLang = signal<'en' | 'hr'>('en');
+  isLangOpen = signal(false);
 
   ngOnInit(): void {
     console.log('Trenutni jezik:', this.translate.currentLang);
@@ -72,6 +76,11 @@ export class NavbarComponent implements OnInit {
   }
   redirectToHome() {
     this.router.navigate(['/']);
+  }
+
+  changeLang(lang: string) {
+    this.languageService.changeLanguage(lang);
+    this.isLangOpen.set(false);
   }
   
 }
