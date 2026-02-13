@@ -1,6 +1,4 @@
-﻿using Appwrite;
-using Appwrite.Models;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using PlantApp.Domain.Dtos.Analytics;
 using PlantApp.Domain.Dtos.ML;
 using PlantApp.Domain.Interfaces;

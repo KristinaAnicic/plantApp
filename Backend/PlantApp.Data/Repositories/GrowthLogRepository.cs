@@ -10,10 +10,10 @@ public class GrowthLogRepository(AppDbContext context) : Repository<GrowthLog>(c
     {
         var query = AddIncludes(dbSet.AsQueryable());
         query = query
-            .Where(q => q.Planted != null && 
-                        q.Planted.Place != null && 
-                        q.Planted.Place.UserId == userId && 
-                        q.DeletedAt == null)
+            .Where(q => q.DeletedAt == null &&
+                        q.Planted
+                       .Any(pl => pl.Place != null &&
+                                   pl.Place.UserId == userId))
             .OrderByDescending(q => q.ObservationDate)
             .ThenByDescending(q => q.CreatedAt);
 
@@ -28,7 +28,9 @@ public class GrowthLogRepository(AppDbContext context) : Repository<GrowthLog>(c
                         q.DeletedAt == null &&
                         (
                             (q.PlantGroupId.HasValue && q.PlantGroupId.Value == plantGroupId) ||
-                            (q.Planted != null && q.Planted.PlantGroupId.HasValue && q.Planted.PlantGroupId.Value == plantGroupId)
+                            q.Planted.Any(pl =>
+                                pl.PlantGroupId.HasValue &&
+                                pl.PlantGroupId.Value == plantGroupId)
                         ))
             .OrderByDescending(q => q.ObservationDate)
             .ThenByDescending(q => q.CreatedAt);
@@ -40,9 +42,11 @@ public class GrowthLogRepository(AppDbContext context) : Repository<GrowthLog>(c
     {
         var query = AddIncludes(dbSet.AsQueryable());
         query = query
-            .Where(q => q.DeletedAt == null && 
-                (q.PlantedId == plantedId || 
-                (plantGroupId.HasValue && q.PlantGroupId == plantGroupId.Value)))
+            .Where(q => q.DeletedAt == null &&
+                     (
+                        q.Planted.Any(pl => pl.Id == plantedId) ||
+                        (plantGroupId.HasValue && q.PlantGroupId == plantGroupId.Value)
+                     ))
             .OrderByDescending(q => q.ObservationDate)
             .ThenByDescending(q => q.CreatedAt);
 
@@ -66,6 +70,7 @@ public class GrowthLogRepository(AppDbContext context) : Repository<GrowthLog>(c
             .ToListAsync();
 
         context.Images.RemoveRange(images);
+        log.Planted.Clear();
         dbSet.Remove(log);
 
         await context.SaveChangesAsync();

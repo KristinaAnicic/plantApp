@@ -61,6 +61,26 @@ public class PlantedService(
         return groupedDto;
     }
 
+    /*public async Task<List<GroupedPlantedDto>> GetAllByUserIdGroupedByPlantFamilyAsync(int? userId)
+    {
+        int actualUserId = userId ?? CurrentUserId;
+        if (actualUserId != CurrentUserId && !IsAdmin)
+            throw new UnauthorizedException("fetching plants in", "planted", logger);
+
+        logger.LogInformation("Fetching planted plants grouped by place for user {UserId}", actualUserId);
+
+        var planted = await repository.GetAllByUserIdGroupedByPlantFamilyAsync(actualUserId);
+        var groupedDto = planted
+            .Select(g => new GroupedPlantedDto
+            {
+                Place = g.Key.MapPlaceToPlaceDto(),
+                Planted = g.Value.Select(p => p.MapPlantedToPlantedDto()).ToList()
+            })
+            .ToList();
+
+        return groupedDto;
+    }*/
+
     public async Task<List<PlantedDto>> GetAllDeadPlantsAsync(int? userId)
     {
         int actualUserId = userId ?? CurrentUserId;

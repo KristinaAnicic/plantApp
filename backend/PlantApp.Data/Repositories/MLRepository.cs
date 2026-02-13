@@ -36,12 +36,10 @@ public class MLRepository : IMLRepository
                                 p.DeletedAt == null)
                     .ToListAsync());
             }
-            else if (log.Planted != null &&
-                log.Planted.Plant != null &&
-                log.Planted.Plant.Family != null &&
-                log.Planted.Place != null)
+            else if (log.Planted != null && log.Planted.Any())
             {
-                plants.Add(log.Planted);
+                plants.AddRange(log.Planted
+                    .Where(p => p != null && p.Plant != null && p.Plant.Family != null && p.Place != null));
             }
 
             foreach (var planted in plants)

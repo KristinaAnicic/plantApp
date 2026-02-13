@@ -161,7 +161,6 @@ public static class MapFromDTOHelper
 
     public static void MapValuesUpsertGrowthLogDtoToGrowthLog(this UpsertGrowthLogDto dto, GrowthLog log)
     {
-        log.PlantedId = dto.PlantedId;
         log.PlantGroupId = dto.PlantGroupId;
         log.Note = dto.Note;
         log.PlantStatusId = dto.PlantStatusId;
@@ -172,7 +171,7 @@ public static class MapFromDTOHelper
     public static GrowthLog MapUpsertGrowthLogDtoToGrowthLog(this UpsertGrowthLogDto dto, GrowthLog? log = null)
     {
         if (log == null)
-            log = new GrowthLog { Title = dto.Title, PlantedId = dto.PlantedId };
+            log = new GrowthLog { Title = dto.Title };
 
         MapValuesUpsertGrowthLogDtoToGrowthLog(dto, log);
         return log;

@@ -160,7 +160,7 @@ public class PlantedRepository(AppDbContext context) : Repository<Planted>(conte
     public async Task DeletePlantedAsync(Planted planted)
     {
         var reminders = context.Reminders.Where(r => r.PlantedId == planted.Id);
-        var growthLogs = context.GrowthLogs.Where(gl => gl.PlantedId == planted.Id);
+        var growthLogs = context.GrowthLogs.Where(gl => gl.Planted.Any(pgl => pgl.Id == planted.Id));
 
         context.Reminders.RemoveRange(reminders);
         context.GrowthLogs.RemoveRange(growthLogs);

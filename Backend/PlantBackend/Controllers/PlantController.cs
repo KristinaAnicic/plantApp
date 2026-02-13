@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using PlantApp.Domain.Dtos.Plant;
 using PlantApp.Domain.Interfaces.Data;
+using PlantApp.Domain.Models.Interfaces;
 
 namespace PlantBackend.Controllers;
 
 [Route("api/plant")]
 [ApiController]
-public class PlantController(IPlantService plantService) : Controller
+public class PlantController(IPlantService plantService, IImageService imageService) : Controller
 {
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int page = 1)
@@ -84,5 +85,13 @@ public class PlantController(IPlantService plantService) : Controller
     {
         var result = await plantService.GetSinglePlantReferenceDataAsync();
         return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("unused-images")]
+    public async Task<IActionResult> DeleteUnusedImages()
+    {
+        await imageService.RemoveUnusedImagesAsync();
+        return NoContent();
     }
 }

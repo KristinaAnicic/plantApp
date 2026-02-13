@@ -248,9 +248,8 @@ public static class MapToDTOHelper
             PlantStatus = log.PlantStatus?.Name,
             ObservationDate = log.ObservationDate,
             Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList(),
-            PlantedId = log.PlantedId,
             PlantGroupId = log.PlantGroupId,
-            Plant = log.Planted != null ? log.Planted.Name : null
+            Plant = log.Planted.Select(p => p.Name).FirstOrDefault()
         };
     }
 
@@ -264,9 +263,8 @@ public static class MapToDTOHelper
             PlantStatus = log.PlantStatus != null ? log.PlantStatus.MapReferenceToDto() : null,
             ObservationDate = log.ObservationDate,
             Images = log.Images?.Select(im => im.MapImageToImageDto()).ToList(),
-            PlantedId = log.PlantedId,
             PlantGroupId = log.PlantGroupId,
-            Plant = log.Planted != null ? (log.Planted.Name ?? log.Planted.Plant?.CommonName ?? log.Planted.Plant?.BotanicalName) : null,
+            Plant = log.Planted.Select(p => p.Name ?? p.Plant.CommonName ?? p.Plant.BotanicalName).FirstOrDefault(),
         };
     }
 

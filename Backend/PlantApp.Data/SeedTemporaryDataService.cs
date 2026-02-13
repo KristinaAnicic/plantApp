@@ -208,7 +208,6 @@ public class SeedTemporaryDataService(AppDbContext context)
                 growthLogs.Add(new GrowthLog
                 {
                     Title = $"Log update for {i + 1}",
-                    PlantedId = planted.Id,
                     Note = $"Growth update {i + 1} for {planted.Name}",
                     PlantStatusId = random.Next(1, 12),
                     CreatedAt = DateTime.UtcNow.AddDays(-random.Next(1, 90))
@@ -235,11 +234,11 @@ public class SeedTemporaryDataService(AppDbContext context)
             if (imageCount == 0)
                 continue;
 
-            if (log.PlantedId != null)
+            /*if (log.PlantedId != null)
             {
                 var planted = plantedDict[log.PlantedId.Value];
                 userId = planted.Place.UserId;
-            }
+            }*/
             
 
             for (int i = 0; i < imageCount; i++)

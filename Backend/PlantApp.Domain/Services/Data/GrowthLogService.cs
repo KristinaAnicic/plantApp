@@ -39,7 +39,7 @@ public class GrowthLogService(
 
         var log = logs.FirstOrDefault();
 
-        if (log != null && log.Planted != null && log.Planted.Place != null && log.Planted.Place.UserId != CurrentUserId && !IsAdmin)
+        if (log != null && planted.Place != null && planted.Place.UserId != CurrentUserId && !IsAdmin)
         {
             throw new UnauthorizedException("access", $"Planted {plantedId}", logger);
         }
@@ -71,6 +71,7 @@ public class GrowthLogService(
             if (planted.Place != null && planted.Place.UserId != CurrentUserId && !IsAdmin)
                 throw new UnauthorizedException("add log", $"Planted {dto.PlantedId}", logger);
 
+            log.Planted.Add(planted);
             log.PlaceId = planted.PlaceId;
         }
         if (dto.PlantGroupId != null) {
@@ -80,6 +81,11 @@ public class GrowthLogService(
 
             if (group.UserId != CurrentUserId && !IsAdmin)
                 throw new UnauthorizedException("add log", $"Plant Group {dto.PlantGroupId}", logger);
+
+            foreach(var plant in group.PlantedList)
+            {
+                log.Planted.Add(plant);
+            }
         }
       
         if (!await statusRepo.IdExistsAsync(dto.PlantStatusId))
@@ -128,7 +134,7 @@ public class GrowthLogService(
         }    
 
         if (!await statusRepo.IdExistsAsync(dto.PlantStatusId))
-            throw new NotFoundException("Planted", dto.PlantedId, logger);
+            throw new NotFoundException("Plant status", dto.PlantedId, logger);
 
 
         dto.MapUpsertGrowthLogDtoToGrowthLog(log);
@@ -181,7 +187,9 @@ public class GrowthLogService(
         if (log == null)
             throw new NotFoundException("Growth log", logger: logger);
 
-        if (log.Planted?.Place?.UserId != CurrentUserId && log.PlantGroup?.UserId != CurrentUserId && !IsAdmin)
+        bool isAuthorizedForPlanted = log.Planted.Any(p => p.Place.UserId == CurrentUserId);
+
+        if (!isAuthorizedForPlanted && log.PlantGroup?.UserId != CurrentUserId && !IsAdmin)
         {
             throw new UnauthorizedException("access", $"GrowthLog {log.Id}", logger);
         }

@@ -23,9 +23,8 @@ public class AnalyticsRepository : IAnalyticsRepository
 
         var baseQueryLog = context.GrowthLogs
             .Where(p => p.DeletedAt == null &&
-            p.Planted != null &&
-            p.Planted.Place != null &&
-            p.Planted.Place.UserId == userId);
+                        p.Planted.Any(pl => pl.Place != null &&
+                                           pl.Place.UserId == userId));
 
         var firstPlantedDate = await baseQueryPlanted
             .OrderBy(p => p.DatePlanted)
@@ -80,21 +79,23 @@ public class AnalyticsRepository : IAnalyticsRepository
 
         var logs = await context.GrowthLogs
             .Where(h =>
-                h.Planted != null &&
-                h.Planted.Place != null &&
-                h.Planted.Place.UserId == userId &&
                 h.CreatedAt >= date &&
                 h.PlantStatus != null &&
                 h.DeletedAt == null &&
-                h.PlantStatusId != 3
+                h.PlantStatusId != 3 &&
+                h.Planted.Any(pl =>
+                    pl.Place != null &&
+                    pl.Place.UserId == userId)
             )
-            .OrderBy(h => h.PlantedId)
-            .ThenBy(h => h.ObservationDate)
-            .Select(h => new {
-                h.PlantedId,
-                h.ObservationDate,
-                StatusName = h.PlantStatus.Name
-            })
+            .OrderBy(h => h.ObservationDate)
+            .SelectMany(h => h.Planted
+                .Where(pl => pl.Place.UserId == userId)
+                .Select(pgl => new
+                {
+                    PlantedId = pgl.Id,
+                    h.ObservationDate,
+                    StatusName = h.PlantStatus.Name
+                }))
             .ToListAsync();
 
         if (!logs.Any()) return new List<PercentageSegment>();
@@ -146,7 +147,11 @@ public class AnalyticsRepository : IAnalyticsRepository
     public async Task<List<MonthlyActivityDto>> GetGrowthLogStats(int userId, DateTime startDate)
     {
         return await context.GrowthLogs
-            .Where(log => log.Planted != null && log.Planted.Place != null && log.Planted.Place.UserId == userId && log.CreatedAt >= startDate && log.DeletedAt == null)
+            .Where(log => log.DeletedAt == null &&
+                      log.CreatedAt >= startDate &&
+                      log.Planted.Any(pl =>
+                          pl.Place != null &&
+                          pl.Place.UserId == userId))
             .GroupBy(log => new { log.CreatedAt.Year, log.CreatedAt.Month })
             .Select(g => new MonthlyActivityDto
             {
