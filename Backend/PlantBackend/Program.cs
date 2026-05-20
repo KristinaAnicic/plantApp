@@ -95,7 +95,11 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("MlApi", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:8000");
+});
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 builder.Services.AddScoped<IPlantedRepository, PlantedRepository>();
@@ -118,6 +122,7 @@ builder.Services.AddScoped<IUserRatingService, UserRatingService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IPlantGroupService, PlantGroupService>();
 builder.Services.AddScoped<IPlantNetService, PlantNetService>();
+builder.Services.AddScoped<IPlantDIseaseService, PlantDiseaseService>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMLHealthPredictionService, MLHealthPredictionService>();

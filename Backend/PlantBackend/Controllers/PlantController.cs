@@ -13,6 +13,7 @@ public class PlantController(
     IPlantService plantService, 
     IImageService imageService,
     IPlantNetService plantNetService,
+    IPlantDIseaseService plantDiseaseService) : Controller
 {
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int page = 1)
@@ -103,6 +104,13 @@ public class PlantController(
     public async Task<IActionResult> IdentifyPlant([FromForm] List<IFormFile> images)
     {
         var result = await plantNetService.IdentifyPlantAsync(images);
+        return Ok(result);
+    }
+
+    [HttpPost("disease")]
+    public async Task<IActionResult> IdentifyDisease([FromForm] IFormFile image)
+    {
+        var result = await plantDiseaseService.PredictAsync(image);
         return Ok(result);
     }
 }

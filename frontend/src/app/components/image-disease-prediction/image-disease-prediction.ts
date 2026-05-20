@@ -54,7 +54,7 @@ export class ImageDiseasePrediction {
       },
       error: (err) => {
         this.notificationService.showError(err.error.error);
-        console.log("Error on adding planted: ", err);
+        console.log("Error on identifying disease: ", err);
       }
     })
   }
