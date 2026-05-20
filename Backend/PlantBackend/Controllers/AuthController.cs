@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using PlantApp.Domain.Dtos.Authentication;
 using PlantApp.Domain.Dtos.User;
 using PlantApp.Domain.Interfaces;
@@ -27,6 +28,7 @@ public class AuthController(
         return NoContent();
     }
 
+    [EnableRateLimiting("login-policy")]
     [HttpPost("login")]
     public async Task<ActionResult<TokenResponseDto>> Login([FromBody] LoginDto dto) 
     {
