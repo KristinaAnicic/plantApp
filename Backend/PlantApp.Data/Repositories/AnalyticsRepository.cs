@@ -3,6 +3,7 @@ using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.Analytics;
 using PlantApp.Domain.Dtos.ML;
 using PlantApp.Domain.Interfaces.Repository;
+using PlantApp.Domain.Utils;
 
 namespace PlantApp.Data.Repositories;
 
@@ -239,6 +240,73 @@ public class AnalyticsRepository : IAnalyticsRepository
             .OrderBy(h => h.Year)
             .ThenBy(g => g.Month)
             .ToListAsync();
+    }
+
+    public async Task<List<PercentageSegment>> GetSuccessForGroups(int userId)
+    {
+        var logs = await context.GrowthLogs
+            .Where(l => l.DeletedAt == null &&
+                ((l.PlantGroupId.HasValue && l.PlantGroup.DeletedAt == null && l.PlantGroup.UserId == userId) ||
+                l.Planted.Any(pl => pl.DeletedAt == null && pl.PlantGroupId.HasValue && pl.Place.UserId == userId)))
+            .Include(l => l.PlantGroup)
+            .Include(l => l.Planted)
+            .ToListAsync();
+
+        var result = logs
+            .SelectMany(l =>
+                l.Planted.Any()
+                ? l.Planted.Select(pl => new
+                    {
+                        PlantGroupName = pl.PlantGroup?.Name ?? l.PlantGroup?.Name ?? "No Group",
+                        Score = l.PlantStatusId.MapStatusToScore()
+                    })
+                : new[] { new { 
+                    PlantGroupName = l.PlantGroup?.Name ?? "No Group", 
+                    Score = l.PlantStatusId.MapStatusToScore() 
+                } }
+            )
+            .GroupBy(x => x.PlantGroupName)
+            .Select(g => new PercentageSegment
+            {
+                Label = g.Key,
+                Percentage = (int)Math.Round(g.Average(x => x.Score)),
+            })
+            .OrderBy(g => g.Percentage)
+            .ToList();
+
+        return result;
+    }
+
+    public async Task<List<PercentageSegment>> GetSuccessForFamily(int userId)
+    {
+        var logs = await context.GrowthLogs
+            .Where(l => l.DeletedAt == null &&
+                l.Planted.Any(pl => pl.DeletedAt == null && 
+                pl.Plant != null && 
+                pl.Plant.FamilyId.HasValue && 
+                pl.Place.UserId == userId))
+            .Include(l => l.Planted)
+                .ThenInclude(p => p.Plant)
+                    .ThenInclude(pl => pl.Family)
+            .ToListAsync();
+
+        var result = logs
+            .SelectMany(l => l.Planted.Select(pl => new
+                {
+                    Family = pl.Plant?.Family?.Name ?? "Unknown",
+                    Score = l.PlantStatusId.MapStatusToScore()
+                })
+            )
+            .GroupBy(x => x.Family)
+            .Select(g => new PercentageSegment
+            {
+                Label = g.Key,
+                Percentage = (int)Math.Round(g.Average(x => x.Score)),
+            })
+            .OrderBy(g => g.Percentage)
+            .ToList();
+
+        return result;
     }
 
     private IQueryable<Planted> ProjectPlanted(IQueryable<Planted> query)

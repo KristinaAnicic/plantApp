@@ -10,10 +10,11 @@ public abstract class AppException : Exception
         : base(internalMessage ?? userMessage)
     {
         UserMessage = userMessage;
+        var logMessage = internalMessage ?? userMessage;
 
         if (logger != null)
         {
-            logger.LogWarning("{ExceptionType}: {InternalMessage}", GetType().Name, internalMessage ?? userMessage);
+            logger.LogWarning("{ExceptionType}: {InternalMessage}", GetType().Name, logMessage);
         }
     }
 }

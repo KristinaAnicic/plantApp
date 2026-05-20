@@ -39,6 +39,8 @@ public class AnalyticsService(
         var hallOfFame = await GetHallOfFame(userId);
         var healthPrediction = await GetHealthScorePredictions(userId);
         var recommendations = await GetPlantRecommendations(userId);
+        var groupSuccess = await repository.GetSuccessForGroups(userId);
+        var familySucess = await repository.GetSuccessForFamily(userId);
 
         return new AnalyticsDto
         {
@@ -50,7 +52,9 @@ public class AnalyticsService(
             HallOfFame = hallOfFame,
             SeasonalPlanting = sesonalPlantings,
             HealthPrediction = healthPrediction,
-            PlantRecommendations = recommendations
+            PlantRecommendations = recommendations,
+            GroupPlantSuccess = groupSuccess,
+            FamilyPlantSuccess = familySucess
         };
     }
 
@@ -95,20 +99,6 @@ public class AnalyticsService(
         };
     }
 
-    private float MapStatusToScore(GrowthLog log) => log.PlantStatusId switch
-    {
-        6 or 7 or 9 => 100f,
-        1 or 5 => 85f,
-        8 => 75f,
-        11 => 70f,
-        12 => 50f,
-        10 => 40f,
-        4 => 20f,
-        2 => 10f,
-        3 => 0f,
-        _ => 50f
-    };
-
     private async Task<List<GroupedGrowthAnalytics>> GetGroupedPlantGrowthAnalytics(PlantGroup group, int year)
     {
         var growthList = new List<GroupedGrowthAnalytics>();
@@ -148,7 +138,7 @@ public class AnalyticsService(
                     .ToList();
 
                 float avgHealth = logsThisMonth.Any()
-                    ? logsThisMonth.Select(MapStatusToScore).Average()
+                    ? logsThisMonth.Select(l => l.PlantStatusId.MapStatusToScore()).Average()
                     : lastKnownHealth;
 
                 monthlyAnalytics.Add(new PlantGroupLogAnalytics
@@ -418,7 +408,7 @@ public class AnalyticsService(
 
         foreach (var season in seasons)
         {
-            var (start, end) = SeasonIdToMonthRange(season.Id);
+            var (start, end) = season.Id.SeasonIdToMonthRange();
             if (end >= start)
             {
                 for (int m = start; m <= end; m++)
@@ -493,7 +483,7 @@ public class AnalyticsService(
             return CalculateHeight(planted, new DateOnly(year, 1, 1));
 
         var lastSeason = seasons
-            .Select(s => SeasonIdToMonthRange(s.Id))
+            .Select(s => (s.Id).SeasonIdToMonthRange())
             .OrderByDescending(r => r.End)
             .First();
 
@@ -503,14 +493,5 @@ public class AnalyticsService(
 
         return CalculateHeight(planted, lastActiveDate);
     }
-
-    (int Start, int End) SeasonIdToMonthRange(int seasonId) => seasonId switch
-    {
-        1 => (3, 5),   // Spring
-        2 => (6, 8),   // Summer
-        3 => (9, 11),  // Autumn
-        4 => (12, 2),  // Winter
-        _ => (1, 12)
-    };
 
 }

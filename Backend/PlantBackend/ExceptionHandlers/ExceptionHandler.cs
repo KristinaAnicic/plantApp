@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using PlantApp.Domain.Utils.Exceptions;
 
 namespace PlantBackend.ExceptionHandlers;
@@ -33,6 +34,12 @@ public class ExceptionHandler(ILogger<ExceptionHandler> logger) : IExceptionHand
             statusCode = StatusCodes.Status401Unauthorized;
             message = "Access denied";
             logger.LogWarning(accEx, "Unauthorized access attempt: {Message}", accEx.Message);
+        }
+        else if (exception is DbUpdateConcurrencyException dbEx)
+        {
+            statusCode = StatusCodes.Status409Conflict;
+            message = "Conflict detected. The record was modified by another user. Please reload and try again.";
+            logger.LogWarning(dbEx, "Optimistic concurrency conflict detected. Entries: {Entries}", dbEx.Entries.Select(e => e.Entity.GetType().Name).ToList());
         }
         else
         {

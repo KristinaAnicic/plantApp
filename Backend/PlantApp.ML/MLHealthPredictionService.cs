@@ -28,15 +28,15 @@ public class MLHealthPredictionService(IMLRepository MLRepository) : IMLHealthPr
             HumidityIntensity = d.HumidityIntensity,
             IsOutside = d.IsOutside,
             Family = d.Family,
-            Hardiness = d.Hardiness,
+            Hardiness = (float)d.Hardiness,
             PlantStatusId = d.PlantStatusId,
             SunlightList = d.SunlightList,
             MoistureList = d.MoistureList,
-            SeasonList = d.SeasonList,
+            SeasonList = d.Seasons,
             LowMaintenance = d.LowMaintenance,
             DroughtResistant = d.DroughtResistant,
             DaysSincePlanted = d.DaysSincePlanted,
-            ReminderDelay = d.ReminderDelay,
+            ReminderDelay = (float)d.ReminderDelay,
             Month = d.Month,
 
             HealthScore = CalculateAdjustedHealthScore(d)
@@ -113,7 +113,7 @@ public class MLHealthPredictionService(IMLRepository MLRepository) : IMLHealthPr
 
     
 
-    private float CalculateAdjustedHealthScore(HealthPredictionRecord log)
+    private float CalculateAdjustedHealthScore(PlantedGrowthLogOverviewDto log)
     {
         float baseScore = log.PlantStatusId switch
         {
@@ -138,7 +138,7 @@ public class MLHealthPredictionService(IMLRepository MLRepository) : IMLHealthPr
             _ => 0
         };
 
-        bool isActive = log.SeasonList.Any(s => s.Id == currentSeason);
+        bool isActive = log.Seasons.Any(s => s == currentSeason);
         if (!isActive)
             return 50f;
 
@@ -149,7 +149,7 @@ public class MLHealthPredictionService(IMLRepository MLRepository) : IMLHealthPr
 
         foreach (var sun in log.SunlightList)
         {
-            switch (sun.Id)
+            switch (sun)
             {
                 case 1: //full sun
                     minIdealSun = Math.Min(minIdealSun, 4f);
@@ -173,14 +173,12 @@ public class MLHealthPredictionService(IMLRepository MLRepository) : IMLHealthPr
         else 
             adjustment += 5f;
 
-
-        var moistureIds = log.MoistureList.Select(m => m.Id).ToList();
         float minIdealMoist = 5f;
         float maxIdealMoist = 1f;
 
         foreach (var moisture in log.MoistureList)
         {
-            switch (moisture.Id)
+            switch (moisture)
             {
                 case 1: //well–drained
                     minIdealMoist = Math.Min(minIdealMoist, 1f);

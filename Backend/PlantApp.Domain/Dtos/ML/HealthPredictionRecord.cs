@@ -14,9 +14,9 @@ public class HealthPredictionRecord
     public string Family {  get; set; }
     public float Hardiness {  get; set; }
     public int PlantStatusId {  get; set; }
-    public List<Sunlight> SunlightList { get; set; } = new();
-    public List<Moisture> MoistureList { get; set; } = new();
-    public List<Season> SeasonList { get; set; } = new();
+    public List<int> SunlightList { get; set; } = new();
+    public List<int> MoistureList { get; set; } = new();
+    public List<int> SeasonList { get; set; } = new();
     public bool LowMaintenance { get; set; }
     public bool DroughtResistant { get; set; }
     public float Month { get; set; }

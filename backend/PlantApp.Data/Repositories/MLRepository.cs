@@ -1,8 +1,10 @@
 ﻿using Appwrite.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.ML;
 using PlantApp.Domain.Dtos.ML;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Models;
+using System.Linq;
 
 namespace PlantApp.Data.Repositories;
 
@@ -60,9 +62,9 @@ public class MLRepository : IMLRepository
                 IsOutside = q.Planted.IsOutside,
                 Family = q.Planted.Plant!.Family!.Name,
                 Hardiness = (float?)q.Planted.Plant.HardinessLevelId ?? 1f,
-                SunlightList = q.Planted.Plant.Sunlights.ToList(),
-                MoistureList = q.Planted.Plant.Moistures.ToList(),
-                SeasonList = q.Planted.Plant.Seasons.ToList(),
+                SunlightList = q.Planted.Plant.Sunlights.Select(s=> s.Id).ToList(),
+                MoistureList = q.Planted.Plant.Moistures.Select(s => s.Id).ToList(),
+                SeasonList = q.Planted.Plant.Seasons.Select(s => s.Id).ToList(),
                 LowMaintenance = q.Planted.Plant.IsLowMaintenance ?? false,
                 DroughtResistant = q.Planted.Plant.IsDroughtResistant ?? false,
                 Month = (float)DateTime.UtcNow.Month,

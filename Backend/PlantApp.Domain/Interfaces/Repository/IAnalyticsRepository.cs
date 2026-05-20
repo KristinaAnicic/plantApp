@@ -1,6 +1,5 @@
 ﻿using PlantApp.Domain.Models;
 using PlantApp.Domain.Dtos.Analytics;
-using PlantApp.Domain.Dtos.ML;
 
 namespace PlantApp.Domain.Interfaces.Repository;
 
@@ -14,4 +13,6 @@ public interface IAnalyticsRepository
     public Task<List<MonthlyActivityDto>> GetSeasonalNumOfPlantings(int userId);
     public Task<Planted?> GetOldestPlant(int userId);
     public Task<(int, Planted?)> GetMostResilientPlant(int userId);
+    public Task<List<PercentageSegment>> GetSuccessForGroups(int userId);
+    public Task<List<PercentageSegment>> GetSuccessForFamily(int userId);
 }
