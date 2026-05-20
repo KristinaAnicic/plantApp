@@ -66,7 +66,8 @@
         "viewDetails": "View details",
         "description": "Description",
         "title": "Title",
-        "processing": "Processing"
+        "processing": "Processing",
+        "results": "Results"
     },
 
     "forms": {
@@ -262,6 +263,11 @@
         "logSummary": "Log summary",
         "totalLogs": "Total logs",
         "logsYear": "Logs this year",
+        "numOfLogs": "Number of Logs",
+        "numOfPlantedPlants": "Num of Planted Plants",
+        "plantHealthScore": "Predicted Health (%)",
+        "averagePlantHealthScore": "Average Plant Health Score",
+        "estimatedPlantHeight": "Estimated Plant Height (m)",
 
         "care&Health": "Care & Health Visualization",
         "reminderPerformance": "Reminder Performance",
@@ -278,7 +284,12 @@
         "missedTasks": "Missed tasks",
         "recoveries": "Recoveries",
         "endurance": "Endurance",
-        "daysAlive": "Days alive"
+        "daysAlive": "Days alive",
+        "suvivedReminders": "Survived <strong>{{count}}</strong> missed reminders",
+        "daysAliveNum": "<strong>{{count}}</strong> days alive",
+        "successScore": "Average plant success score (%)",
+        "groupSuccess": "Group Performance Comparison",
+        "familySuccess": "Plant Family Performance Comparison"
     },
 
     "timeAgo": {
@@ -394,6 +405,17 @@
         "title": "Check your plant",
         "result": "Analasys results",
         "checkPlant": "Check plant"
+    },
+
+    "identifyPlant": {
+        "title": "Identify your plant",
+        "result": "Identification result",
+        "plantProfile": "Plant profile",
+        "identificationMatch": "Identification match",
+        "maxImages": "You can upload up to 5 images, and all images should depict the same plant",
+        "scientificName": "Scientific name",
+        "identifyPlant": "Identify plant",
+        "confidence": "Confidence"
     },
 
     "humidity": {

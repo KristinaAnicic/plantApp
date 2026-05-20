@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.2.11415.280 d18.0
+VisualStudioVersion = 18.2.11415.280
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantBackend", "PlantBackend\PlantBackend.csproj", "{1279AE11-18B5-47DF-A7CC-0C31CD882F79}"
 EndProject
@@ -33,6 +33,10 @@ Global
 		{1945D6A1-2BBD-4ED0-BB15-5DA119BF55E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1945D6A1-2BBD-4ED0-BB15-5DA119BF55E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1945D6A1-2BBD-4ED0-BB15-5DA119BF55E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE1D3760-21B9-4EE1-AD50-E380DC7E5D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE1D3760-21B9-4EE1-AD50-E380DC7E5D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE1D3760-21B9-4EE1-AD50-E380DC7E5D16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE1D3760-21B9-4EE1-AD50-E380DC7E5D16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

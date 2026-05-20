@@ -66,7 +66,8 @@
         "viewDetails": "Detaljnije",
         "description": "Opis",
         "title": "Naslov",
-        "processing": "Obrađivanje"
+        "processing": "Obrađivanje",
+        "results": "Rezultati"
     },
 
 
@@ -264,13 +265,18 @@
         "logSummary": "Sažetak zapisa",
         "totalLogs": "Ukupno zapisa",
         "logsYear": "Zapisa ove godine",
+        "numOfLogs": "Broj zapisa",
+        "numOfPlantedPlants": "Broj posađenih biljaka",
+        "plantHealthScore": "Predviđeno zdravlje (%)",
+        "averagePlantHealthScore": "Prosječna ocjena zdravlja biljaka",
+        "estimatedPlantHeight": "Procijenjena visina biljke (m)",
 
         "care&Health": "Vizualizacija njege i zdravlja",
         "reminderPerformance": "Učinkovitost izvršavanja podsjetnika",
         "healthDistribution": "Distribucija zdravlja",
         "actionFrequency": "Učestalost radnji",
         "seasonalPlantings": "Broj posađenih biljaka po mjesecima",
-        "logActivity": "Aktivnost zapisa o rastu",
+        "logActivity": "Mjesečna aktivnost zapisa",
         "healthPrediction": "Predviđanje zdravlja biljke",
         "hallOfFame": "Kuća slavnih biljaka",
         "oldestPlant": "Najstarija biljka",
@@ -280,7 +286,12 @@
         "missedTasks": "Broj propuštenih zadataka",
         "recoveries": "Oporavaka",
         "endurance": "Izdržljivost",
-        "daysAlive": "Dana života"
+        "daysAlive": "Dana života",
+        "survivedReminders": "Izdržala <strong>{{count}}</strong> propuštenih podsjetnika",
+        "daysAliveNum": "Živa <strong>{{count}}</strong> dana",
+        "successScore": "Prosječna uspješnost biljaka (%)",
+        "groupSuccess": "Uspješnost po grupama",
+        "familySuccess": "Uspješnost po porodicama"
     },
 
     "timeAgo": {
@@ -394,6 +405,17 @@
         "title": "Provjeri svoju biljku",
         "result": "Rezultati analize",
         "checkPlant": "Provjeri biljku"
+    },
+
+    "identifyPlant": {
+        "title": "Identifikacija biljke",
+        "result": "Rezultat identifikacije",
+        "plantProfile": "Profil biljke",
+        "identificationMatch": "Podudaranje identifikacije",
+        "maxImages": "Možete učitati do 5 slika, a sve slike trebaju prikazivati istu biljku",
+        "scientificName": "Znanstveno ime",
+        "identifyPlant": "Identificiraj biljku",
+        "confidence": "Pouzdanost"
     },
 
     "humidity": {

@@ -1,5 +1,11 @@
 <div class="flex flex-col w-full px-10">
-    <h2 class="pt-3 font-bold text-2xl">{{"plantCatalog.find" | translate }}</h2>
+    <div class="flex items-center gap-5 pt-3 ">
+        <h2 class="font-bold text-2xl">{{"plantCatalog.find" | translate }}</h2>
+        <button (click)="toggleIdentifyPlantModal()" class="items-center border border-gray-400 py-2 px-3 rounded-xl hover:bg-green-800/12 cursor-pointer">
+            {{ 'identifyPlant.identifyPlant' | translate }}
+        </button>
+    </div>
+    
     <div class="w-full flex justify-between items-center">
         <div class="w-full max-w-md py-5">
             <app-search-component (searchTriggered)="search($event)" [currentText]="currentSearchTerm()"></app-search-component>
@@ -51,3 +57,12 @@
         <app-pagination [currentPage]="currentPage()" [totalPages]="totalPages()" (newPage)="nextPage($event)"></app-pagination>
     </div>
 </div>
+
+
+@if (isIdentifyPlantModalOpen()) {
+    <div class="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity w-full" (click)="toggleIdentifyPlantModal()">
+        <div class="fixed inset-0 z-50 flex justify-center items-center h-full max-h-full content-center overflow-y-auto w-full">
+            <app-identify-plant-modal (close)="toggleIdentifyPlantModal()"></app-identify-plant-modal>
+        </div>
+    </div>
+}

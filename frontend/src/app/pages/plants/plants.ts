@@ -8,10 +8,11 @@ import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { Pagination } from "../../components/pagination/pagination";
 import { AuthService } from '../../services/auth.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { IdentifyPlantModal } from "../../components/identify-plant-modal/identify-plant-modal";
 
 @Component({
   selector: 'app-plants',
-  imports: [SearchComponent, RouterLink, Pagination, TranslateModule],
+  imports: [SearchComponent, RouterLink, Pagination, TranslateModule, IdentifyPlantModal],
   encapsulation: ViewEncapsulation.None,
   templateUrl: './plants.html',
   styleUrl: './plants.css',
@@ -29,6 +30,8 @@ export class Plants implements OnInit {
 
   private searchSubject = new Subject<string>();
   currentSearchTerm = signal<string>('');
+
+  isIdentifyPlantModalOpen = signal(false);
 
   ngOnInit(): void {
     this.route.queryParams.pipe(
@@ -99,7 +102,18 @@ export class Plants implements OnInit {
     this.router.navigate(['/plant-form']/*, { skipLocationChange: true }*/);
   }
 
+  toggleIdentifyPlantModal(){
+    this.isIdentifyPlantModalOpen.update(val => !val);
+
+    if (this.isIdentifyPlantModalOpen()) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+  }
+
   ngOnDestroy(): void {
+    document.body.classList.remove('overflow-hidden');
     this.searchSubject.complete();
   }
 }

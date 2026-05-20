@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { PlantGetDto, PlantListResponse, UpsertPlantDto } from '../models/plant.interface';
 import { PlantFilterDto } from '../models/filter.interface';
 import { ManyPlantAttributesDto, OnePlantAttributesDto } from '../models/category.interface';
+import { PlantNetResponse, PlantNetResult } from '../models/plant-net.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -62,5 +63,15 @@ export class PlantService {
 
   getMultiReferenceCategroies(): Observable<ManyPlantAttributesDto> {
     return this.http.get<ManyPlantAttributesDto>(`${environment.apiUrl}/plant/multi-reference`);
+  }
+
+  identifyPlant(images: File[]): Observable<PlantNetResponse> {
+    const formData = new FormData();
+
+    images.forEach((image, i) => {
+      formData.append('images', image, image.name);
+    })
+
+    return this.http.post<PlantNetResponse>(`${environment.apiUrl}/plant/identify`, formData);
   }
 }

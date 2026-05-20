@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlantApp.Domain.Dtos.Plant;
+using PlantApp.Domain.Interfaces;
 using PlantApp.Domain.Interfaces.Data;
 using PlantApp.Domain.Models.Interfaces;
 
@@ -8,7 +9,10 @@ namespace PlantBackend.Controllers;
 
 [Route("api/plant")]
 [ApiController]
-public class PlantController(IPlantService plantService, IImageService imageService) : Controller
+public class PlantController(
+    IPlantService plantService, 
+    IImageService imageService,
+    IPlantNetService plantNetService,
 {
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int page = 1)
@@ -93,5 +97,12 @@ public class PlantController(IPlantService plantService, IImageService imageServ
     {
         await imageService.RemoveUnusedImagesAsync();
         return NoContent();
+    }
+
+    [HttpPost("identify")]
+    public async Task<IActionResult> IdentifyPlant([FromForm] List<IFormFile> images)
+    {
+        var result = await plantNetService.IdentifyPlantAsync(images);
+        return Ok(result);
     }
 }
