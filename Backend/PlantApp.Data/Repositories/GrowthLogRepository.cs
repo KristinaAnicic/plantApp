@@ -44,8 +44,8 @@ public class GrowthLogRepository(AppDbContext context) : Repository<GrowthLog>(c
         query = query
             .Where(q => q.DeletedAt == null &&
                      (
-                        q.Planted.Any(pl => pl.Id == plantedId) ||
-                        (plantGroupId.HasValue && q.PlantGroupId == plantGroupId.Value)
+                        q.Planted.Any(pl => pl.Id == plantedId) /*||
+                        (plantGroupId.HasValue && q.PlantGroupId == plantGroupId.Value)*/
                      ))
             .OrderByDescending(q => q.ObservationDate)
             .ThenByDescending(q => q.CreatedAt);
