@@ -6,6 +6,15 @@ using System.Security.Claims;
 
 public class CurrentUserContex(IHttpContextAccessor httpContextAccessor) : ICurrentUserContext
 {
+    public int? TryGetCurrentUserId()
+    {
+        var userIdStr = httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdStr))
+            return null;
+
+        return int.Parse(userIdStr);
+    }
+
     public int GetCurrentUserId()
     {
         var userIdStr = httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

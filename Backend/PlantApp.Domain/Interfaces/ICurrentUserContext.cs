@@ -3,5 +3,6 @@
 public interface ICurrentUserContext
 {
     public int GetCurrentUserId();
+    public int? TryGetCurrentUserId();
     public int GetCurrentUserRoleId();
 }

@@ -50,11 +50,12 @@ public class PlantExchangeService(
             throw new NotFoundException("Plant exchange", id, logger);
 
         var dto = exchange.MapPlantExchangeToPlantExchangeGetDto();
+        var userId = userContext.TryGetCurrentUserId();
 
         if (dto.UserRatings != null && dto.UserRatings.Any())
         {
             dto.UserRatings = dto.UserRatings
-                .OrderByDescending(r => r.Rater.Id == CurrentUserId)
+                .OrderByDescending(r => userId != null && r.Rater.Id == userId)
                 .ThenByDescending(r => r.CreatedAt)
                 .ToList();
         }
