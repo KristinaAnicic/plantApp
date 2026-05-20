@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PlantApp.Domain.Dtos.ML;
 using PlantApp.Domain.Models;
 using PlantApp.Domain.Models.Categories;
 
@@ -43,6 +44,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<PlaceHistory> PlaceHistory { get; set; }
     public DbSet<PlantAttributeType> PlantAttributeTypes { get; set; }
     public DbSet<PlantSeasonAttribute> PlantSeasonAttributes { get; set; }
+    public DbSet<PlantedGrowthLogOverviewDto> PlantedGrowthLogOverview => Set<PlantedGrowthLogOverviewDto>();
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -64,8 +67,54 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasForeignKey(p => p.SynonymParentPlantId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<Place>(entity =>
+        {
+            entity.ToTable(t =>
+            {
+                t.HasCheckConstraint("CK_Place_SunlightIntensity_Range", "sunlight_intensity BETWEEN 1 AND 5");
+                t.HasCheckConstraint("CK_Place_HumidityIntensity_Range", "humidity_intensity BETWEEN 1 AND 5");
+            });
+        });
+
+        modelBuilder.Entity<UserRating>(entity =>
+        {
+            entity.ToTable(t => t.HasCheckConstraint("CK_UserRating_Comment_Length", "char_length(\"comment\") BETWEEN 10 AND 500"));
+        });
+
+
+        modelBuilder.Entity<Plant>()
+            .Property<uint>("xmin")
+            .IsRowVersion()          
+            .ValueGeneratedOnAddOrUpdate()
+            .IsConcurrencyToken();
+
+        modelBuilder.Entity<PlantedGrowthLogOverviewDto>(entity =>
+        {
+            entity.HasNoKey();
+            entity.ToView("vw_planted_growth_overview");
+
+            entity.Property(v => v.PlantedId).HasColumnName("planted_id");
+            entity.Property(v => v.SunlightIntensity).HasColumnName("sunlight_intensity");
+            entity.Property(v => v.HumidityIntensity).HasColumnName("humidity_intensity");
+            entity.Property(v => v.IsOutside).HasColumnName("is_outside");
+            entity.Property(v => v.Family).HasColumnName("family");
+            entity.Property(v => v.Hardiness).HasColumnName("hardiness");
+            entity.Property(v => v.PlantStatusId).HasColumnName("plant_status_id");
+            entity.Property(v => v.SunlightList).HasColumnName("sunlight_list");
+            entity.Property(v => v.MoistureList).HasColumnName("moisture_list");
+            entity.Property(v => v.Seasons).HasColumnName("seasons");
+            entity.Property(v => v.LowMaintenance).HasColumnName("low_maintenance");
+            entity.Property(v => v.DroughtResistant).HasColumnName("drought_resistant");
+            entity.Property(v => v.Month).HasColumnName("month");
+            entity.Property(v => v.DaysSincePlanted).HasColumnName("days_since_planted");
+            entity.Property(v => v.ReminderDelay).HasColumnName("reminder_delay");
+        });
+
         foreach (var entity in modelBuilder.Model.GetEntityTypes())
         {
+            if (entity.ClrType == typeof(PlantedGrowthLogOverviewDto))
+                continue;
+
             entity.SetTableName(ToSnakeCase(entity.GetTableName()!));
 
             foreach (var property in entity.GetProperties())

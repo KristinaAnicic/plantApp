@@ -12,6 +12,6 @@ public class PlaceHistory : BaseEntity
     public Place Place { get; set; } = null!;
     public int PlaceId { get; set; }
 
-    public DateOnly StartDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
-    public DateOnly? EndDate { get; set; }
+    public DateTime StartDate { get; set; } = DateTime.UtcNow;
+    public DateTime? EndDate { get; set; }
 }
