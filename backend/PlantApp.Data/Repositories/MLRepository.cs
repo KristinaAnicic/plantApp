@@ -14,65 +14,11 @@ public class MLRepository : IMLRepository
         this.context = context;
     }
 
-    public async Task<List<HealthPredictionRecord>> GetHealthPredictionTrainingData()
+    public async Task<List<PlantedGrowthLogOverviewDto>> GetHealthPredictionTrainingData()
     {
-        var data = await context.GrowthLogs
-            .Where(l => l.DeletedAt == null)
+        return await context.PlantedGrowthLogOverview
+            .AsNoTracking()
             .ToListAsync();
-
-        var result = new List<HealthPredictionRecord>();
-
-        foreach (var log in data)
-        {
-            var plants = new List<Planted>();
-
-            if (log.PlantGroupId != null)
-            {
-                plants.AddRange(await context.Planteds
-                    .Where(p => p.PlantGroupId == log.PlantGroupId &&
-                                p.Plant != null &&
-                                p.Plant.Family != null &&
-                                p.Place != null &&
-                                p.DeletedAt == null)
-                    .ToListAsync());
-            }
-            else if (log.Planted != null && log.Planted.Any())
-            {
-                plants.AddRange(log.Planted
-                    .Where(p => p != null && p.Plant != null && p.Plant.Family != null && p.Place != null));
-            }
-
-            foreach (var planted in plants)
-            {
-                if (planted?.Place == null || planted.Plant == null || planted.Plant.Family == null)
-                    continue;
-
-                var avgDelay = await context.ReminderHistory
-                    .Where(r => r.PlantedId == planted.Id && DateOnly.FromDateTime(r.DueDate) <= log.ObservationDate)
-                    .Select(r => (float?)r.delay)
-                    .AverageAsync() ?? 0f;
-
-                result.Add(new HealthPredictionRecord
-                {
-                    SunlightIntensity = (float)planted.Place!.SunlightIntensity,
-                    HumidityIntensity = (float)planted.Place.HumidityIntensity,
-                    IsOutside = planted.IsOutside,
-                    Family = planted.Plant!.Family!.Name,
-                    Hardiness = (float?)planted.Plant!.HardinessLevelId ?? 1f,
-                    PlantStatusId = log.PlantStatusId,
-                    SunlightList = planted.Plant.Sunlights.ToList(),
-                    MoistureList = planted.Plant.Moistures.ToList(),
-                    SeasonList = planted.Plant.Seasons.ToList(),
-                    LowMaintenance = planted.Plant.IsLowMaintenance ?? false,
-                    DroughtResistant = planted.Plant.IsDroughtResistant ?? false,
-                    DaysSincePlanted = (float)(log.ObservationDate.DayNumber - planted.DatePlanted.DayNumber),
-                    Month = log.ObservationDate.Month,
-                    ReminderDelay = avgDelay
-                });
-            }
-        }
-
-        return result;
     }
 
     public async Task<List<HealthPredictionRecord>> GetUserHealthPredictionInputData(int userId, int? plantedId)
