@@ -13,7 +13,7 @@ import { PlantedReminders } from "../../components/planted-reminders/planted-rem
 import { PlantGroupAnalytics } from '../../models/analytics.interface';
 import { AnalyticsService } from '../../services/analytics.service';
 import { NgApexchartsModule, ApexPlotOptions, ApexChart, ChartComponent } from "ng-apexcharts";
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 export type ChartOptions = {
   series: any;
@@ -48,6 +48,7 @@ export class PlantGroup implements OnInit {
   private router = inject(Router);
   public notif = inject(NotificationService);
   private route = inject(ActivatedRoute);
+  translate = inject(TranslateService);
 
   group = signal<PlantGroupGetDto | null>(null);
   isEditGroupModalOpen = signal(false);
@@ -247,6 +248,14 @@ export class PlantGroup implements OnInit {
         min: 0,
         max: 100,
         tickAmount: 5,
+        title: {
+          text: this.translate.instant('analytics.plantHealthScore'),
+          style: {
+            fontSize: '13px',
+            fontWeight: 600,
+            color: '#374151'
+          }
+        },
         labels: {
           formatter: (val: any) => `${val.toFixed(0)}%`,
           style: { colors: '#64748b' }
@@ -289,6 +298,16 @@ export class PlantGroup implements OnInit {
       dataLabels: { enabled: false },
       xaxis: {
         categories
+      },
+      yaxis: {
+        title: {
+          text: this.translate.instant('analytics.estimatedPlantHeight'),
+          style: {
+            fontSize: '13px',
+            fontWeight: 600,
+            color: '#374151'
+          }
+        },
       },
       tooltip: {
         shared: true,

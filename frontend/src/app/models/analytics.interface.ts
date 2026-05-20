@@ -3,14 +3,16 @@ import { PlantedDto } from "./planted.interface";
 export interface AnalyticsDto
 {
     summary: PlantSummary;
-    reminderStats: ReminderStat[];
-    healthStats: HealthOverview[];
+    reminderStats: PercentageStat[];
+    healthStats: PercentageStat[];
     growthLogActivity: MonthlyActivityDto[];
     seasonalPlanting: MonthlyActivityDto[];
     actionStats: ActionFrequencyDto[];
     hallOfFame?: PlantHallOfFame;
     healthPrediction: HealthPrediction[];
     plantRecommendations: string[];
+    groupPlantSuccess: PercentageStat[];
+    familyPlantSuccess: PercentageStat[];
 }
 
 export interface PlantSummary
@@ -31,13 +33,7 @@ export interface HealthPrediction
     currentSuccessProbability: number;
 }
 
-export interface ReminderStat
-{
-    label: string;
-    percentage: number;
-}
-
-export interface HealthOverview
+export interface PercentageStat
 {
     label: string;
     percentage: number;

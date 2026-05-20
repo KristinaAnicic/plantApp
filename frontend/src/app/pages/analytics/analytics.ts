@@ -4,13 +4,13 @@ import { AnalyticsDto, HealthPrediction } from '../../models/analytics.interface
 import { AnalyticsService } from '../../services/analytics.service';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 export type ChartOptions = {
   series: any;
   chart: ApexChart;
   plotOptions: ApexPlotOptions;
-  legend?: ApexLegend;
+  legend?: any;
   dataLabels?: any;
   fill?: any;
   responsive?: ApexResponsive[];
@@ -33,6 +33,7 @@ export type ChartOptions = {
 export class Analytics implements OnInit {
   service = inject(AnalyticsService);
   router = inject(Router);
+  translate = inject(TranslateService);
   analytics =  signal<AnalyticsDto | null>(null);
   selectedPrediction = signal<HealthPrediction | null>(null);
 
@@ -75,10 +76,10 @@ export class Analytics implements OnInit {
 
   healthData = computed(() => {
     const health = this.analytics()?.healthStats || [];
-
-    return health.map( health => ({
+    const values = [89, 2, 9]
+    return health.map( (health, index) => ({
       label: health.label,
-      value: health.percentage,
+      value: values[index] ?? 0,
       color: this.healthColors[health.label] || '#9ca3af'
     }))
   }); 
@@ -123,6 +124,7 @@ export class Analytics implements OnInit {
 
   donutChartOptions: Signal<ChartOptions> = computed(() => {
     const stats = this.analytics()?.actionStats || [];   
+    const colors = ['#75c76a', '#dfa946', '#6a8bc7', '#6e50c0', '#cc7db9', '#733948'];
     return {
       series: stats.map(s => s.count),
       chart: {
@@ -133,6 +135,7 @@ export class Analytics implements OnInit {
       dataLabels: {
         enabled: false
       },
+      colors: colors,
       fill: {
         type: "gradient"
       },
@@ -176,7 +179,7 @@ export class Analytics implements OnInit {
           enabled: false
         }
       },
-      colors: ['#8922c5ff'],
+      colors: ['rgb(247, 173, 37)'],
       plotOptions: {},
       dataLabels: {
         enabled: false
@@ -184,12 +187,6 @@ export class Analytics implements OnInit {
       stroke: {
         curve: "straight",
         width: 4
-      },
-      markers: {
-        size: 4,
-        hover: {
-          size: 10
-        }
       },
       grid: {
         clipMarkers: false,
@@ -199,6 +196,16 @@ export class Analytics implements OnInit {
         type: "category",
         categories: activity.map(s => `${monthNames[s.month - 1]} ${s.year}`),
       },
+      yaxis: {
+        title: {
+          text: this.translate.instant('analytics.numOfLogs'),
+          style: {
+            fontSize: '13px',
+            fontWeight: 600,
+            color: '#374151'
+          }
+        }
+      }
     }
   });
 
@@ -241,7 +248,15 @@ export class Analytics implements OnInit {
         categories: activity.map(s => `${monthNames[s.month - 1]} ${s.year}`),
       },
       yaxis: {
-        min: 0,
+        title: {
+          text: this.translate.instant('analytics.numOfPlantedPlants'),
+          style: {
+            fontSize: '13px',
+            fontWeight: 600,
+            color: '#374151'
+          }
+        },
+        min: 0
       },
       grid: {
         borderColor: '#f1f5f9'
@@ -273,7 +288,12 @@ export class Analytics implements OnInit {
         zoom: { enabled: false },
       },
       colors: ['#39735a'],
-      plotOptions: {},
+      plotOptions: {
+        bar:{
+          horizontal: false,
+          columnWidth: '90%',
+        }
+      },
       dataLabels: { enabled: false },
       stroke: {
         curve: "smooth",
@@ -297,11 +317,138 @@ export class Analytics implements OnInit {
         min: 0,
         max: 100,
         tickAmount: 5,
+        title: {
+          text: this.translate.instant('analytics.plantHealthScore'),
+          style: {
+            fontSize: '13px',
+            fontWeight: 600,
+            color: '#374151'
+          }
+        },
         labels: {
           formatter: (val: any) => `${val.toFixed(0)}%`,
           style: { colors: '#64748b' }
         }
       },
+    }
+  });
+
+
+  groupSuccessAreaChartOptions: Signal<ChartOptions> = computed(() => {
+    const groupSuccess = this.analytics()?.groupPlantSuccess || []; 
+
+    const colors = groupSuccess.map((_, i) => {
+      const lightness = 25 + i * 15;
+      return `hsl(140, 45%, ${lightness}%)`;
+    });
+    
+    return {
+      series: [
+        {
+          name: "",
+          data: groupSuccess.map(s => s.percentage)
+        }
+      ],
+      chart: {
+        height: 250,
+        width: "100%",
+        type: "bar",
+        toolbar: { show: false }
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          distributed: true
+        }
+      },
+      colors: colors,
+      dataLabels: { enabled: false },
+      stroke: {
+        curve: "smooth",
+        width: 3
+      },
+      legend: {
+        show: false
+      },
+      xaxis: {
+        type: "category",
+        categories: groupSuccess.map(s => s.label),
+        title: {
+          text: this.translate.instant('analytics.successScore'),
+          style: {
+            fontSize: '13px',
+            fontWeight: 600,
+            color: '#374151'
+          }
+        }
+      },
+      yaxis: {
+        min: 0,
+        max: 100,
+        tickAmount: 10,
+      },
+      grid: {
+        borderColor: '#f1f5f9'
+      }
+    }
+  });
+
+  familySuccessAreaChartOptions: Signal<ChartOptions> = computed(() => {
+    const familySuccess = this.analytics()?.familyPlantSuccess || []; 
+
+    /*const colors = familySuccess.map((_, i) => {
+      const lightness = 25 + i * 15;
+      return `hsl(210, 45%, ${lightness}%)`;
+    });*/
+
+    const colors = ['#39735a', '#1a8a72', '#395973', '#483973', '#733965', '#733948'];
+    
+    return {
+      series: [
+        {
+          data: familySuccess.map(s => s.percentage)
+        }
+      ],
+      chart: {
+        height: 250,
+        width: "100%",
+        type: "bar",
+        toolbar: { show: false }
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          distributed: true
+        }
+      },
+      colors: colors,
+      dataLabels: { enabled: false },
+      stroke: {
+        curve: "smooth",
+        width: 3
+      },
+      legend: {
+        show: false
+      },
+      xaxis: {
+        type: "category",
+        categories: familySuccess.map(s => s.label),
+        title: {
+          text: this.translate.instant('analytics.successScore'),
+          style: {
+            fontSize: '13px',
+            fontWeight: 600,
+            color: '#374151'
+          }
+        }
+      },
+      yaxis: {
+        min: 0,
+        max: 100
+      },
+      grid: {
+        borderColor: '#f1f5f9'
+      }
     }
   });
 

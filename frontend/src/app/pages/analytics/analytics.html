@@ -67,6 +67,64 @@
         </div>
     </div>
 
+    <div class="mt-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div>
+            <h2 class="font-bold text-lg py-1">{{ 'analytics.groupSuccess' | translate }}</h2>
+            <div class="bg-white w-full border border-gray-200 px-6 py-6 rounded-xl shadow shadow-sm">
+                @if((analytics()?.groupPlantSuccess?.length ?? 0) > 0) {
+                    <div class="w-full h-full">
+                        <apx-chart
+                            [series]="groupSuccessAreaChartOptions().series"
+                            [chart]="groupSuccessAreaChartOptions().chart"
+                            [stroke]="groupSuccessAreaChartOptions().stroke"
+                            [fill]="groupSuccessAreaChartOptions().fill"
+                            [dataLabels]="groupSuccessAreaChartOptions().dataLabels"
+                            [xaxis]="groupSuccessAreaChartOptions().xaxis"
+                            [yaxis]="groupSuccessAreaChartOptions().yaxis"
+                            [colors]="groupSuccessAreaChartOptions().colors"
+                            [markers]="groupSuccessAreaChartOptions().markers"
+                            [plotOptions]="groupSuccessAreaChartOptions().plotOptions"
+                            [legend]="groupSuccessAreaChartOptions().legend">    
+                        </apx-chart>
+                    </div>
+                }
+                @else {
+                    <div class="flex items-center h-full justify-center">
+                        <p class="italic text-gray-400 self-center justify-self-center py-15">{{ 'analytics.noInfo' | translate }}</p>
+                    </div>
+                } 
+            </div>
+        </div>
+
+        <div>
+            <h2 class="font-bold text-lg py-1">{{ 'analytics.familySuccess' | translate }}</h2>
+            <div class="bg-white w-full border border-gray-200 px-6 py-6 rounded-xl shadow shadow-sm">
+                @if((analytics()?.groupPlantSuccess?.length ?? 0) > 0) {
+                    <div class="w-full h-full">
+                        <apx-chart
+                            [series]="familySuccessAreaChartOptions().series"
+                            [chart]="familySuccessAreaChartOptions().chart"
+                            [stroke]="familySuccessAreaChartOptions().stroke"
+                            [fill]="familySuccessAreaChartOptions().fill"
+                            [dataLabels]="familySuccessAreaChartOptions().dataLabels"
+                            [xaxis]="familySuccessAreaChartOptions().xaxis"
+                            [yaxis]="familySuccessAreaChartOptions().yaxis"
+                            [colors]="familySuccessAreaChartOptions().colors"
+                            [markers]="familySuccessAreaChartOptions().markers"
+                            [plotOptions]="familySuccessAreaChartOptions().plotOptions"
+                            [legend]="familySuccessAreaChartOptions().legend">    
+                        </apx-chart>
+                    </div>
+                }
+                @else {
+                    <div class="flex items-center h-full justify-center">
+                        <p class="italic text-gray-400 self-center justify-self-center py-15">{{ 'analytics.noInfo' | translate }}</p>
+                    </div>
+                } 
+            </div>
+        </div>
+
+    </div>
     <div class="mt-5">
         <h2 class="font-bold text-lg py-1">{{ 'analytics.care&Health' | translate }}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">   
@@ -128,6 +186,7 @@
                             [series]="donutChartOptions().series"
                             [labels]="donutChartOptions().labels"
                             [chart]="donutChartOptions().chart"
+                            [colors]="donutChartOptions().colors"
                             [plotOptions]="donutChartOptions().plotOptions"
                             [fill]="donutChartOptions().fill">    
                         </apx-chart>
@@ -147,7 +206,7 @@
         <div>
             <h2 class="font-bold text-lg py-1">{{ 'analytics.seasonalPlantings' | translate }}</h2>
             <div class="bg-white w-full border border-gray-200 px-6 py-6 rounded-xl shadow shadow-sm">
-                @if((analytics()?.growthLogActivity?.length ?? 0) > 0) {
+                @if((analytics()?.seasonalPlanting?.length ?? 0) > 0) {
                     <div class="w-full h-full">
                         <apx-chart
                             [series]="seasonalPlantingAreaChartOptions().series"
@@ -156,6 +215,7 @@
                             [fill]="seasonalPlantingAreaChartOptions().fill"
                             [dataLabels]="seasonalPlantingAreaChartOptions().dataLabels"
                             [xaxis]="seasonalPlantingAreaChartOptions().xaxis"
+                            [yaxis]="seasonalPlantingAreaChartOptions().yaxis"
                             [colors]="seasonalPlantingAreaChartOptions().colors"
                             [grid]="seasonalPlantingAreaChartOptions().grid">    
                         </apx-chart>
@@ -193,7 +253,9 @@
                 } 
             </div>
         </div>
-        <div>
+    </div>
+    <div class="flex gap-4 mt-4">
+        <div class="w-full">
             <h2 class="font-bold text-lg py-1">{{ 'analytics.healthPrediction' | translate }}</h2>
             <div class="bg-white w-full border border-gray-200 px-6 py-6 rounded-xl shadow shadow-sm">
                 @if((analytics()?.healthPrediction?.length ?? 0) > 0) {
@@ -215,7 +277,8 @@
                             [xaxis]="predictionPlantLineChartOptions().xaxis"
                             [yaxis]="predictionPlantLineChartOptions().yaxis"
                             [colors]="predictionPlantLineChartOptions().colors"
-                            [markers]="predictionPlantLineChartOptions().markers">    
+                            [markers]="predictionPlantLineChartOptions().markers"
+                            [plotOptions]="predictionPlantLineChartOptions().plotOptions">    
                         </apx-chart>
                     </div>
                 }
@@ -226,20 +289,20 @@
                 } 
             </div>
         </div>
-        <div>
+        <div class="w-100">
             <h2 class="font-bold text-lg py-1">{{ 'analytics.hallOfFame' | translate }}</h2>
             @if (!analytics()?.hallOfFame?.oldestPlant && !analytics()?.hallOfFame?.mostResilientPlant){
                 <div class="flex items-center h-full justify-center bg-white border border-gray-200 px-6 py-6 rounded-xl shadow shadow-sm">
                     <p class="italic text-gray-400 self-center justify-self-center py-15">{{ 'analytics.noInfo' | translate }}</p>
                 </div>
             }
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div class="flex flex-col gap-2">
                 <!--Oldest Plant Start-->
                 @if (analytics()?.hallOfFame?.oldestPlant){
-                    <div class="bg-green-900/10 w-full border border-gray-300 px-6 py-6 rounded-xl shadow shadow-sm">
+                    <div class="bg-green-900/10 w-full border border-gray-300 px-5 py-5 rounded-xl shadow shadow-sm">
                         <div class="pb-3 flex items-center gap-2">
                             <div 
-                                class="h-7 w-7 bg-green-800 shrink-0 self-center"
+                                class="h-5 w-5 bg-green-800 shrink-0 self-center"
                                 [style.mask]="'url(' + '/assets/images/icons/undo.svg' + ') no-repeat center / contain'"
                                 [style.webkit-mask]="'url(' + '/assets/images/icons/undo.svg' + ') no-repeat center / contain'">
                             </div>
@@ -248,39 +311,30 @@
                                 <p class="uppercase -mt-0.5 text-xs text-gray-600">{{ 'analytics.legacyMaster' | translate }}</p>
                             </div>
                         </div>
-                        
-                        <div class="relative w-full h-48 isolate flex flex-col justify-end overflow-hidden rounded-xl pb-2 pl-4 mx-auto border border-green-900/10">
-                            @if (analytics()?.hallOfFame?.oldestPlant?.image) {
-                                <img [src]="analytics()?.hallOfFame?.oldestPlant?.image || 'assets/icons/placeholder.svg'" 
-                                    class="absolute inset-0 w-full h-full rounded-lg object-cover">} 
-                            @else {
-                                <img src="/assets/images/icons/placeholder.svg" class="absolute inset-0 w-full h-full rounded-lg object-contain">
-                            }
-                            <div class="w-full h-10 capitalize absolute inset-x-0 bottom-0 bg-black/70"></div>
-                            <h2 class="z-10 text-base font-bold text-white capitalize">{{ analytics()?.hallOfFame?.oldestPlant?.plantName }}</h2>                 
-                        </div>
-
-                        <div class="pb-3 flex items-center gap-2 justify-between pt-5">
+                        <div class="flex gap-2 items-center">
+                            <div class="relative h-12 sm:h-12 aspect-square overflow-hidden flex-shrink-0 content-center border border-green-900/10 rounded-lg">
+                                @if (analytics()?.hallOfFame?.oldestPlant?.image) {
+                                    <img [src]="analytics()?.hallOfFame?.oldestPlant?.image || 'assets/icons/placeholder.svg'" 
+                                        class="absolute inset-0 w-full h-full rounded-lg object-cover">} 
+                                @else {
+                                    <img src="/assets/images/icons/placeholder.svg" class="absolute inset-0 w-full h-full rounded-lg object-contain">
+                                }              
+                            </div>
                             <div>
-                                <p class="capitalize text-gray-500">{{ 'place.planted' | translate }}</p>
-                                <p class="font-medium">{{ analytics()?.hallOfFame?.oldestPlant?.datePlanted | date: "MMM dd, yyyy" }}</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="font-medium text-lg text-green-900">{{ analytics()?.hallOfFame?.daysAlive }}</p>
-                                <p class="uppercase text-gray-500 text-xs -mt-1">{{ 'analytics.daysAlive' | translate }}</p>
+                                <h2 class="z-10 text-base font-bold capitalize">{{ analytics()?.hallOfFame?.oldestPlant?.plantName }}</h2>     
+                                <p [innerHTML]="'analytics.daysAliveNum' | translate:{ count: analytics()?.hallOfFame?.daysAlive }"></p>
                             </div>
                         </div>
-                        
                         
                     </div>
                 }
                 <!--Oldest Plant End-->
                 <!--Most Resilient Plant Start-->
                 @if (analytics()?.hallOfFame?.mostResilientPlant){   
-                    <div class="bg-red-900/10 w-full border border-gray-300 px-6 py-6 rounded-xl shadow shadow-sm">
+                    <div class="bg-red-900/10 w-full border border-gray-300 px-5 py-5 rounded-xl shadow shadow-sm">
                         <div class="pb-3 flex items-center gap-2">
                             <div 
-                                class="h-7 w-7 bg-red-800 shrink-0 self-center"
+                                class="h-5 w-5 bg-red-800 shrink-0 self-center"
                                 [style.mask]="'url(' + '/assets/images/icons/dumbbell.svg' + ') no-repeat center / contain'"
                                 [style.webkit-mask]="'url(' + '/assets/images/icons/dumbbell.svg' + ') no-repeat center / contain'">
                             </div>
@@ -290,29 +344,23 @@
                             </div>
                         </div>
                         
-                        <div class="relative w-full h-48 isolate flex flex-col justify-end overflow-hidden rounded-xl pb-2 pl-4 mx-auto border border-red-900/10">
-                            @if (analytics()?.hallOfFame?.mostResilientPlant?.image) {
-                                <img [src]="analytics()?.hallOfFame?.mostResilientPlant?.image" class="absolute inset-0 w-full h-full rounded-lg object-cover">
-                            } @else {
-                                <img src="/assets/images/icons/placeholder.svg" class="absolute inset-0 w-full h-full rounded-lg object-contain">
-                            }
-                            <div class="w-full h-10 capitalize absolute inset-x-0 bottom-0 bg-black/70"></div>
-                            <h2 class="z-10 text-base font-bold text-white capitalize">{{ analytics()?.hallOfFame?.mostResilientPlant?.plantName }}</h2>                 
-                        </div>
-
-                        <div class="pb-3 flex items-center gap-2 justify-between pt-5">
+                        <div class="flex gap-2 items-center">
+                            <div class="relative h-12 sm:h-12 aspect-square overflow-hidden flex-shrink-0 content-center border border-red-900/10 rounded-lg">
+                                @if (analytics()?.hallOfFame?.mostResilientPlant?.image) {
+                                    <img [src]="analytics()?.hallOfFame?.mostResilientPlant?.image" class="absolute inset-0 w-full h-full rounded-lg object-cover">
+                                } @else {
+                                    <img src="/assets/images/icons/placeholder.svg" class="absolute inset-0 w-full h-full aspect-square rounded-lg object-contain">
+                                }
+                            </div>
                             <div>
-                                <p class="capitalize text-gray-500">{{ 'analytics.missedTasks' | translate }}</p>
-                                <p class="font-medium">{{ analytics()?.hallOfFame?.numOfLateReminder }} {{ 'analytics.recoveries' | translate }}</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="font-medium text-lg text-amber-600">Top 1%</p>
-                                <p class="uppercase text-gray-500 text-xs -mt-1">{{ 'analytics.endurance' | translate }}</p>
-                            </div>
+                                <h2 class="z-10 text-base font-bold capitalize">{{ analytics()?.hallOfFame?.mostResilientPlant?.plantName }}</h2> 
+                                <p [innerHTML]="'analytics.survivedReminders' | translate:{ count: analytics()?.hallOfFame?.numOfLateReminder }"></p>
+                            </div>  
                         </div>
                     </div>
                 }
                 <!--Most Resilient Plant End-->
             </div>
         </div>
+    </div>
 </div>
