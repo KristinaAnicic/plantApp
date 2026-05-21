@@ -27,11 +27,11 @@
             @if (registerForm.get('passwordConfirm')?.errors?.['mismatch']) {
                 <p class="text-xs text-red-600 ml-2 -mt-1">{{ 'register.passwordMismatch' | translate }}</p>
             }
-            <input type="text" id="contact" formControlName="contact" class="block w-full p-2.5 ps-5 border border-green-900 text-heading text-sm rounded-full focus:ring-2 shadow-xs placeholder:text-body" [placeholder]="('register.contact' | translate) + '*'" autocomplete="off" />
+            <!--<input type="text" id="contact" formControlName="contact" class="block w-full p-2.5 ps-5 border border-green-900 text-heading text-sm rounded-full focus:ring-2 shadow-xs placeholder:text-body" [placeholder]="('register.contact' | translate) + '*'" autocomplete="off" />
             <input type="date" id="dateOfBirth" formControlName="dateOfBirth" [max]="maxDate" class="p-2.5 text-sm rounded-full border border-green-900" required>
             @if (registerForm.get('dateOfBirth')?.errors?.['tooYoung'] && registerForm.get('dateOfBirth')?.dirty) {
                 <p class="text-xs text-red-600 ml-2 -mt-1">{{ 'register.ageReq' | translate }}</p>
-            }
+        }-->
             <div class="block w-full p-2.5 ps-5 border border-green-900  rounded-full">
                 <select formControlName="gender" class=" w-full text-heading text-sm">
                     <option value="F">{{ 'register.female' | translate }}</option>

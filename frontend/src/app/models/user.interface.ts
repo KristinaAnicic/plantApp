@@ -36,7 +36,7 @@ export interface AddUserDto {
     displayName: string;
     contact: string | null;
     gender: string;
-    dateOfBirth: string;
+    dateOfBirth?: string;
     roleId?: string;
 }
 

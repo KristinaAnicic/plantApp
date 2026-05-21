@@ -6,6 +6,6 @@ public class UpdateUserDto
     public required string DisplayName { get; set; }
     public string? Contact { get; set; }
     public char Gender { get; set; }
-    public DateOnly DateOfBirth { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
     public int RoleId { get; set; } = 3;
 }

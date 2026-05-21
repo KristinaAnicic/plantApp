@@ -13,7 +13,7 @@ public class UserGetDto
     public string? Role { get; set; }
     public int RoleId { get; set; }
     public char Gender { get; set; }
-    public DateOnly DateOfBirth { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
     public double? Rating { get; set; }
     public int? NumOfRatings { get; set; }
     public List<PlaceGetDto>? Places { get; set; }

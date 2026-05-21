@@ -14,7 +14,7 @@ public class User : BaseEntity
     public Role? Role { get; set; }
     public int RoleId { get; set; }
     public char Gender { get; set; }
-    public DateOnly DateOfBirth { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
     //public decimal Rating { get; set; }
 
     public ICollection<Place> Places { get; set; } = new List<Place>();

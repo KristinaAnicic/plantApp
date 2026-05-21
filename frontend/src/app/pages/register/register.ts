@@ -37,9 +37,9 @@ export class Register {
     displayName: new FormControl('', { nonNullable: true }),
     contact: new FormControl('', { nonNullable: true }),
     gender: new FormControl('F', { nonNullable: true }),
-    dateOfBirth: new FormControl(new Date().toISOString().split('T')[0], { 
+    /*dateOfBirth: new FormControl(new Date().toISOString().split('T')[0], { 
       validators: [Validators.required, this.ageValidation() ], 
-      nonNullable: true }),
+      nonNullable: true }),*/
   })
 
   passwordMatchValidation(){
