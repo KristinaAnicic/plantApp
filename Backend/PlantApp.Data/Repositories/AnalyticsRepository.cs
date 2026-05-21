@@ -4,6 +4,7 @@ using PlantApp.Domain.Dtos.Analytics;
 using PlantApp.Domain.Dtos.ML;
 using PlantApp.Domain.Interfaces.Repository;
 using PlantApp.Domain.Utils;
+using Microsoft.Extensions.Logging;
 
 namespace PlantApp.Data.Repositories;
 
@@ -30,7 +31,7 @@ public class AnalyticsRepository : IAnalyticsRepository
         var firstPlantedDate = await baseQueryPlanted
             .OrderBy(p => p.DatePlanted)
             .ThenBy(p => p.CreatedAt)
-            .Select(p => p.DatePlanted)
+            .Select(p => (DateOnly?)p.DatePlanted)
             .FirstOrDefaultAsync();
 
         var numOfPlants = await baseQueryPlanted.CountAsync();

@@ -1,7 +1,7 @@
 <nav class="relative">
-    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl px-2 md:px-6 lg:px-8">
         <div class="relative flex h-16 items-center justify-between">
-        <div class="absolute inset-y-0 left-0 flex items-center md:hidden">
+        <div class="flex items-center md:hidden">
             <!-- Mobile menu button-->
             <button type="button" (click)="toggleMenu()" class="relative inline-flex items-center justify-center rounded-md p-2 text-green-900 focus:outline-2 focus:-outline-offset-1 focus:outline-green-900">
             <span class="absolute -inset-0.5"></span>
@@ -18,30 +18,30 @@
             }
             </button>
         </div>
-        <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+        <div class="flex flex-1 items-center justify-center text-center md:items-stretch justify-start">
             <div (click)="redirectToHome()" class="flex shrink-0 items-center justify-start cursor-pointer">           
                 <img src="assets/images/logo.png"  class="h-10 w-auto" >
             </div>
-            <div class="hidden sm:ml-6 sm:flex sm:flex-1 sm:justify-center">
-                <div class="flex space-x-4">
+            <div class="hidden md:ml-6 md:flex sm:flex-1 md:justify-center">
+                <div class="flex space-x-4 items-stretch">
                     <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
-                        <a href="#" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.plants" | translate }}</a>
+                        <a href="#" class="h-full p-2 flex items-center justify-center rounded-md px-3 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.plants" | translate }}</a>
                     </div>                 
                     <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
-                        <a href="/trade" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.trade" | translate }}</a>
+                        <a href="/trade" class="h-full p-2 flex items-center justify-center rounded-md px-3 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.trade" | translate }}</a>
                     </div>  
                     @if(authService.isAuthenticated()) {
                     <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
-                        <a href="/my-plants" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.myPlants" | translate }}</a>
+                        <a href="/my-plants" class="h-full p-2 flex items-center justify-center rounded-md px-3 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.myPlants" | translate }}</a>
                     </div>
                     <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
-                        <a href="/my-analytics" class="rounded-md px-3 py-2 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.analytics" | translate }}</a>
+                        <a href="/my-analytics" class="h-full p-2 flex items-center justify-center rounded-md px-3 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.analytics" | translate }}</a>
                     </div>  
                     }                         
                 </div>
             </div>
         </div>
-        <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">  
+        <div class="absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0">  
             <div class="relative inline-block text-left mr-2">
                 <button (click)="isLangOpen.set(!isLangOpen())" class="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 cursor-pointer">
                     {{ languageService.getCurrentLanguage() === 'en' ? ('ENGLISH' | translate) : ('CROATIAN' | translate) }}
