@@ -165,6 +165,10 @@
         "graveyard": "Groblje",
         "graveyardDesc": "U našim sjećanjima",
         "checkHealth": "Provjeri zdravlje biljke",
+        "noPlantGroups": "Vaše grupe će se prikazati ovdje",
+        "noPlantGroupsSubText": "Kreirajte grupu kako biste organizirali biljke po potrebama njege ili lokaciji",
+        "noPlants": "Još nema biljaka",
+        "noPlantsSubText": "Dodajte svoju prvu biljku i započnite kolekciju",
 
         "datePlanted": "Datum sadnje",
         "group": "Grupa"

@@ -163,7 +163,11 @@
         "addPlants": "Add plant",
         "graveyard": "Graveyard",
         "graveyardDesc": "In our memories",
-        "checkHealth": "Check plant health",
+        "checkHealth": "You don't have any plant groups yet",
+        "noPlantGroups": "Your groups will appear here",
+        "noPlantGroupsSubText": "Create a group to categorize plants by care needs or location",
+        "noPlants": "No plants found",
+        "noPlantsSubText": "Begin your collection by adding your first botanical specimen",
 
         "datePlanted": "Date Planted",
         "group": "Group"

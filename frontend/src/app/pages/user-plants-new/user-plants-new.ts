@@ -31,7 +31,7 @@ export class UserPlantsNew implements OnInit, OnDestroy {
   numOfDeadPlants = signal<number>(0);
   isAddPlaceOpen = signal(false);
   isAddGroupOpen = signal(false);
-  isCheckDiseaseOpen = signal(false);
+  //isCheckDiseaseOpen = signal(false);
   showAllPlaces = signal(false);
 
   changedGroups = signal(new Map<number, number | null>());
@@ -63,7 +63,7 @@ export class UserPlantsNew implements OnInit, OnDestroy {
     }
   }
 
-  toggleCheckDiseaseModal(){
+  /*toggleCheckDiseaseModal(){
     this.isCheckDiseaseOpen.update(val => !val);
 
     if (this.isCheckDiseaseOpen()) {
@@ -71,7 +71,7 @@ export class UserPlantsNew implements OnInit, OnDestroy {
     } else {
       document.body.classList.remove('overflow-hidden');
     }
-  }
+  }*/
 
   togglePlaces() {
     this.showAllPlaces.update(v => !v);

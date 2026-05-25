@@ -1,18 +1,18 @@
 <div class="flex flex-col w-full px-10">
-    <div class="flex items-center gap-5 pt-3 ">
+    <div class="flex-row sm:flex items-center justify-between gap-5 pt-3">
         <h2 class="font-bold text-2xl">{{"plantCatalog.find" | translate }}</h2>
-        <button (click)="toggleIdentifyPlantModal()" class="items-center border border-gray-400 py-2 px-3 rounded-xl hover:bg-green-800/12 cursor-pointer">
+        <button (click)="toggleIdentifyPlantModal()" class="items-center border border-gray-400 py-2 px-3 mt-2 rounded-lg hover:bg-green-800/12 cursor-pointer">
             {{ 'identifyPlant.identifyPlant' | translate }}
         </button>
     </div>
     
-    <div class="w-full flex justify-between items-center">
-        <div class="w-full max-w-md py-5">
+    <div class="w-full flex justify-between items-center gap-x-2">
+        <div class="w-full max-w-md py-2 pb-5">
             <app-search-component (searchTriggered)="search($event)" [currentText]="currentSearchTerm()"></app-search-component>
         </div>
         @if (authService.isAdmin()) {
         <div class="items-center">
-            <button (click)="addNewPlantClick()" type="button" class="bg-green-900 text-white cursor-pointer font-medium rounded text-xs px-5 py-3 focus:outline-none">{{"plantCatalog.add" | translate }}</button>
+            <button (click)="addNewPlantClick()" type="button" class="bg-green-900 text-white cursor-pointer font-medium rounded-lg text-xs px-5 py-2 sm:py-3 focus:outline-none">{{"plantCatalog.add" | translate }}</button>
         </div>
         }
     </div>
