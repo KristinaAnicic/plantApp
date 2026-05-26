@@ -76,6 +76,34 @@ public class GrowthLogRepository(AppDbContext context) : Repository<GrowthLog>(c
         await context.SaveChangesAsync();
     }
 
+    public async Task AddWithTransactionAsync(GrowthLog log, List<Image>? images = null)
+    {
+        using var transaction = await context.Database.BeginTransactionAsync();
+
+        try
+        {
+            if (images != null && images.Any())
+            {
+                log.Images.Clear();
+                foreach (var img in images)
+                {
+                    log.Images.Add(img);
+                }
+            }
+
+            dbSet.Add(log);
+            await context.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+
     private IQueryable<GrowthLog> AddIncludes(IQueryable<GrowthLog> query)
     {
         query = query
