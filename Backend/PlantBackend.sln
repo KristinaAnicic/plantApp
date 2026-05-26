@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantApp.Domain", "PlantApp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantApp.ML", "PlantApp.ML\PlantApp.ML.csproj", "{1945D6A1-2BBD-4ED0-BB15-5DA119BF55E5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantAppTests", "PlantAppTests\PlantAppTests.csproj", "{BE1D3760-21B9-4EE1-AD50-E380DC7E5D16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
