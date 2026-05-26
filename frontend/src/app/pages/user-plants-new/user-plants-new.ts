@@ -15,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-plants-new',
-  imports: [ImageDiseasePrediction, AddUpdatePlaceModal, RouterLink, AddEditGroupModal, CommonModule, TranslateModule],
+  imports: [/*ImageDiseasePrediction, */AddUpdatePlaceModal, RouterLink, AddEditGroupModal, CommonModule, TranslateModule],
   templateUrl: './user-plants-new.html',
   styleUrl: './user-plants-new.css',
 })
