@@ -9,8 +9,8 @@ export class LanguageService {
   private currentLanguage: string;
 
   constructor() {
-    this.currentLanguage = localStorage.getItem('selectedLanguage') || this.translate.getDefaultLang() || 'en';
-
+    this.currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
+    this.translate.use(this.currentLanguage);
     this.translate.onLangChange.subscribe(event => {
       this.currentLanguage = event.lang;
       localStorage.setItem('selectedLanguage', event.lang);

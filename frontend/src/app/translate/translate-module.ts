@@ -9,7 +9,7 @@ import { LanguageService } from '../services/language.service';
   imports: [
     CommonModule,
     TranslateModule.forRoot({
-      fallbackLang: 'hr'
+      fallbackLang: 'en'
     })
   ],
   exports: [TranslateModule],
