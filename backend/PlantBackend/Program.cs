@@ -29,7 +29,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(allowedOrigins, builder =>
     {
         builder
-            .WithOrigins("https://plantify-henna.vercel.app", "http://localhost", "http://localhost:4200")
+            .WithOrigins("https://plantory-green.vercel.app", "http://localhost", "http://localhost:4200")
             .AllowAnyHeader()
             .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH")
             .AllowCredentials();
