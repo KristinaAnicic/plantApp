@@ -28,7 +28,7 @@ The application provides advanced plant management features including reminders,
 
 ---
 
-# 🛠️ Tech Stack
+# Tech Stack
 
 ## Frontend
 - Angular
