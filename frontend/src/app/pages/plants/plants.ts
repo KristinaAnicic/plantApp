@@ -9,6 +9,7 @@ import { Pagination } from "../../components/pagination/pagination";
 import { AuthService } from '../../services/auth.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { IdentifyPlantModal } from "../../components/identify-plant-modal/identify-plant-modal";
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-plants',
@@ -22,10 +23,12 @@ export class Plants implements OnInit {
   public authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private notificationService = inject(NotificationService);
   
   plants = signal<PlantDto[]>([]);
   total = signal(0);
   currentPage = signal(1);
+  isLoading = signal(true);
   filter: PlantFilterDto = {};
 
   private searchSubject = new Subject<string>();
@@ -49,9 +52,11 @@ export class Plants implements OnInit {
       next: (response) => {
         this.plants.set(response.items);
         this.total.set(response.total);
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error("Error while fetching searched plants: ", err);
+        this.notificationService.showError(err.error.error);
       }
     })
 
