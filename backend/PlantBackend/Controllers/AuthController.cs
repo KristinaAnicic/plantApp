@@ -81,8 +81,8 @@ public class AuthController(
         Response.Cookies.Append(RefreshTokenCookieName, refreshToken, new CookieOptions()
         {
             HttpOnly = true,
-            Secure = false,
-            SameSite = SameSiteMode.Strict,
+            Secure = true,
+            SameSite = SameSiteMode.None,
             Expires = DateTimeOffset.UtcNow.AddDays(7),
             Path = "/api/auth"
         });
