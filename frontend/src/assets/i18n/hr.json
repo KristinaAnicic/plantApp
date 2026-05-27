@@ -393,7 +393,8 @@
         "repeat": "Ponovi svakih",
         "nextDueDate": "Sljedeći rok",
         "notePlaceholder": "npr. Koristiti samo destiliranu vodu, izbjegavati kvašenje lišća,...",
-        "addReminderTitle": "Postavi novi podsjetnik"
+        "addReminderTitle": "Postavi novi podsjetnik",
+        "editReminderTitle": "Uredi podsjetnik"
     },
 
     "logForm": {

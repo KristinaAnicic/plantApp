@@ -26,15 +26,17 @@
                 <!--End of log information details-->
                 <!--Start od images-->
                 @if((log.images?.length ?? 0) > 0){
-                    <div class="grid grid-cols-3 gap-3">
+                    <div class="grid grid-cols-3 gap-1 sm:gap-3">
                     @for(image of (log.images?.length ?? 0 > 3 ? log.images?.slice(0,2) : log.images?.slice(0,3)); track image.id){
                         <img [src]="image.url" class="w-full h-30 object-cover rounded-md border border-gray-200">
                     }
-                    @if((log.images?.length ?? 0) > 3 ){
+                    @if((log.images?.length ?? 0) >= 3 ){
                         <div class="relative flex flex-col w-full h-30 items-center justify-center">                          
-                            <img [src]="log.images![2].url" class="absolute inset-0 w-full h-full object-cover rounded-md">
-                            <div class="w-full h-full capitalize absolute inset-0 bg-black opacity-50 rounded-md"></div>
-                            <p class="z-50 text-white text-base">+{{ (log.images?.length ?? 3) - 3 }}</p>
+                            <img [src]="log.images![2].url" class="absolute inset-0 w-full h-full object-cover rounded-md">                          
+                            @if((log.images?.length ?? 0) > 3 ){
+                                <div class="w-full h-full capitalize absolute inset-0 bg-black opacity-50 rounded-md"></div>
+                                <p class="z-50 text-white text-base">+{{ (log.images?.length ?? 3) - 3 }}</p>
+                            }
                         </div>
                     }
                     </div>                               

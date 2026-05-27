@@ -1,13 +1,13 @@
-<div class="flex flex-col w-full px-10">
-    <div class="flex-row sm:flex items-center justify-between gap-5 pt-3">
-        <h2 class="font-bold text-2xl">{{"plantCatalog.find" | translate }}</h2>
-        <button (click)="toggleIdentifyPlantModal()" class="items-center border border-gray-400 py-2 px-3 mt-2 rounded-lg hover:bg-green-800/12 cursor-pointer">
+<div class="flex flex-col w-full px-5 sm:px-10">
+    <div class="flex flex-row-reverse items-center justify-between sm:gap-5 pt-3">      
+        <button (click)="toggleIdentifyPlantModal()" class="items-center border border-gray-400 py-2 px-1 sm:px-3 rounded-lg hover:bg-green-800/12 cursor-pointer">
             {{ 'identifyPlant.identifyPlant' | translate }}
         </button>
+        <h2 class="font-bold text-2xl">{{"plantCatalog.find" | translate }}</h2>
     </div>
     
-    <div class="w-full flex justify-between items-center gap-x-2">
-        <div class="w-full max-w-md py-2 pb-5">
+    <div class="w-full flex justify-between items-center gap-x-2 py-2">
+        <div class="w-full max-w-md py-2">
             <app-search-component (searchTriggered)="search($event)" [currentText]="currentSearchTerm()"></app-search-component>
         </div>
         @if (authService.isAdmin()) {

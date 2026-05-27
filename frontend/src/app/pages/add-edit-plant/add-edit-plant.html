@@ -1,4 +1,4 @@
-<div class="flex flex-col w-full px-10 pt-5 gap-5">
+<div class="flex flex-col w-full px-5 sm:px-10 pt-5 gap-5">
     <h1 class="text-xl font-bold capitalize">{{headerText()}}</h1>
     <form [formGroup]="plantForm" ngNativeValidate (ngSubmit)="addEditPlant()" class="flex flex-col gap-y-8">
         <!--Start of section 1-->
@@ -17,7 +17,7 @@
                 </div>
                 <div>
                     <label for="family">{{"plantDetails.family" | translate }}</label>
-                    <div class="border border-gray-300 rounded-md w-sm p-2 bg-gray-50">
+                    <div class="border border-gray-300 rounded-md sm:w-sm p-2 bg-gray-50">
                         <select id="family" formControlName="familyId" class="w-full">
                             <option [ngValue]="null">{{"forms.none" | translate }}</option>
                             @for(fam of singleReference()?.families; track fam.id){                           

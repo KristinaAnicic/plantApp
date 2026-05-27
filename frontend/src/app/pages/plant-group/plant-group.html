@@ -1,4 +1,4 @@
-<div class="flex flex-col px-10 py-5 gap-y-5">
+<div class="flex flex-col px-5 sm:px-10 py-5 gap-y-5">
     <div class="flex flex-wrap sm:flex-row-reverse rounded-md px-5 bg-white shadow-md shadow-gray-200">
         <div class="flex flex-col flex-1 min-w-0 sm:pl-5 pt-5 sm:py-5 gap-y-5 justify-between pb-5">
             <div class="flex flex-col gap-y-5">
@@ -23,12 +23,12 @@
             <div class="flex flex-col md:flex-row gap-2">
                 <button (click)="addLog()" type="button" class="flex-1 lg:flex-none bg-green-900 text-white cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">
                     {{ 'log.addLog' | translate }}</button>
-                <button (click)="addReminder()" type="button" class="flex flex-1 md:flex-none items-center gap-x-1 justify-center border border-green-900 cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">
+                <!--<button (click)="addReminder()" type="button" class="flex flex-1 md:flex-none items-center gap-x-1 justify-center border border-green-900 cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">
                     <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
                     </svg>
                     {{ 'reminder.setReminder' | translate }}
-                </button>
+                </button>-->
                 <button (click)="editGroup()" type="button" class="flex flex-1 lg:flex-none items-center justify-center gap-x-1 bg-gray-200 text-gray-500 cursor-pointer font-medium rounded text-xs px-5 py-2.5 focus:outline-none">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
@@ -215,10 +215,10 @@
     </div>
 }
 
-<!--@if (isReminderModalOpen()) {
+@if (isReminderModalOpen()) {
     <div class="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity" (click)="toggleReminderModal()">
         <div class="fixed inset-0 z-50 flex justify-center items-center h-full max-h-full content-center overflow-y-auto">
-            <app-add-edit-reminder-modal (close)="toggleReminderModal()" (reminderEdited)="loadPlanted()" [editReminder]="reminderToEdit()" [plantedId]="+id"></app-add-edit-reminder-modal>
+            <app-add-edit-reminder-modal (close)="toggleReminderModal()" (reminderEdited)="loadGroup()" [editReminder]="reminderToEdit()" [plantedId]="+id"></app-add-edit-reminder-modal>
         </div>
     </div>
-}-->
+}

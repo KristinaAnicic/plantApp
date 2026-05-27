@@ -392,7 +392,8 @@
         "repeat": "Repeat every",
         "nextDueDate": "Next due date",
         "notePlaceholder": "e.g. Use distilled water only, avoid wetting the leaves,...",
-        "addReminderTitle": "Set new reminder"
+        "addReminderTitle": "Set new reminder",
+        "editReminderTitle": "Edit reminder"
     },
 
     "logForm": {

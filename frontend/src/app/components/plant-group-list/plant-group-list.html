@@ -1,5 +1,5 @@
 <!-- Main modal -->
-<div class="relative px-4 py-2 w-4xl max-w-[90vw] max-h-[90vh] mb-10" (click)="$event.stopPropagation()">
+<div class="relative px-4 py-2 w-4xl max-w-[100vw] max-h-[90vh] mb-10" (click)="$event.stopPropagation()">
     <!-- Modal content -->
     <div class="relative bg-white border border-gray-200 rounded-xl shadow-sm p-4 md:p-6">
         <!-- Modal header -->
@@ -13,7 +13,7 @@
             </button>
         </div>
         <!-- Modal body -->
-        <div class="grid grid-cols-5 gap-3 pt-2">
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
         @for(plant of plantedList()?.planted; track plant.id){
             <div class="bg-white flex flex-col shadow-lg shadow-gray-400/50 rounded-2xl overflow-hidden cursor-pointer border-4"
                 (click)="togglePlantSelection(plant.id)"

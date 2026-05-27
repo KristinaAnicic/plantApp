@@ -28,7 +28,7 @@ export class AddEditReminderModal implements OnInit{
   minDate = DateUtils.formatDateForInput(new Date().toISOString());
 
   isEditing = computed(() => !!this.editReminder());
-  headerText = computed(() => this.isEditing() ? this.translate.instant('reminder.editReminder') : this.translate.instant('reminderForm.addReminderTitle'));
+  headerText = computed(() => this.isEditing() ? this.translate.instant('reminderForm.editReminderTitle') : this.translate.instant('reminderForm.addReminderTitle'));
   buttonText = computed(() => this.isEditing() ? this.translate.instant('forms.saveChanges') : this.translate.instant('reminder.setReminder'));
 
   reminderForm = new FormGroup({

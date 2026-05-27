@@ -41,7 +41,7 @@ export class ImageUploadService {
         });
       }
       catch (error) {
-        console.error("Error while uploading files to firebase", error);
+        console.error("Error while uploading files to appWrite", error);
       }
     }
     return results;

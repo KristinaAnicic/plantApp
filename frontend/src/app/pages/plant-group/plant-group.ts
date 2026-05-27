@@ -14,6 +14,7 @@ import { PlantGroupAnalytics } from '../../models/analytics.interface';
 import { AnalyticsService } from '../../services/analytics.service';
 import { NgApexchartsModule, ApexPlotOptions, ApexChart, ChartComponent } from "ng-apexcharts";
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AddEditReminderModal } from "../../components/add-edit-reminder-modal/add-edit-reminder-modal";
 
 export type ChartOptions = {
   series: any;
@@ -35,7 +36,7 @@ export type ChartOptions = {
 
 @Component({
   selector: 'app-plant-group',
-  imports: [AddEditLogModal, AddEditGroupModal, PlantedGrowthLog, PlantGroupList, PlantedReminders, ChartComponent, TranslateModule],
+  imports: [AddEditLogModal, AddEditGroupModal, PlantedGrowthLog, PlantGroupList, PlantedReminders, ChartComponent, TranslateModule, AddEditReminderModal],
   templateUrl: './plant-group.html',
   styleUrl: './plant-group.css',
 })

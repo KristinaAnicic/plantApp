@@ -77,7 +77,11 @@ export class AddEditLogModal /*implements OnInit*/{
     const refs = this.plantedService.references();
 
     if (log) {
-      this.logForm.patchValue(log, { emitEvent: false });
+      this.logForm.patchValue({
+        ...log,
+        plantedId: pid ?? log.plantedId ?? null,
+        plantGroupId: gid ?? log.plantGroupId ?? null
+      }, { emitEvent: false });
       const images: ImageForm[] = log.images.map(i => ({ url: i }));
       untracked(() => this.images.set(images));
     } else {
