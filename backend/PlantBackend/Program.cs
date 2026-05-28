@@ -160,19 +160,16 @@ builder.Services.AddScoped<ICurrentUserContext, CurrentUserContex>();
 builder.Services.AddScoped<SeedCsvDataService>();
 builder.Services.AddScoped<SeedTemporaryDataService>();
 
+builder.Services.AddOpenApi();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.MapScalarApiReference(options =>
-    {
-        options
-            .WithTitle("My API")
-            .WithOpenApiRoutePattern("/swagger/v1/swagger.json");
-    });
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+    app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "Swagger"));
 }
 
 //await PlantDataFetcher.FetchAllDataAsync();
