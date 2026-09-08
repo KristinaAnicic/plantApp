@@ -40,7 +40,9 @@
         "plants": "Biljke",
         "trade": "Razmjena biljaka",
         "myPlants": "Moje biljke",
-        "analytics": "Analitika"
+        "analytics": "Analitika",
+        "profile": "Tvoj profil",
+        "signOut": "Odjava"
     },
 
     "plantCatalog": {

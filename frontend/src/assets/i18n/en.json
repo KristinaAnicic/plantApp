@@ -40,7 +40,9 @@
         "plants": "Plants",
         "trade": "Trade",
         "myPlants": "My Plants",
-        "analytics": "Analytics"
+        "analytics": "Analytics",
+        "profile": "Your profile",
+        "signOut": "Sign out"
     },
 
     "plantCatalog": {
