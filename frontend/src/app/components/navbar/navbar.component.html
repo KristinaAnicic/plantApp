@@ -25,7 +25,7 @@
             <div class="hidden md:ml-6 md:flex sm:flex-1 md:justify-center">
                 <div class="flex space-x-4 items-stretch">
                     <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
-                        <a href="#" class="h-full p-2 flex items-center justify-center rounded-md px-3 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.plants" | translate }}</a>
+                        <a href="/plants" class="h-full p-2 flex items-center justify-center rounded-md px-3 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.plants" | translate }}</a>
                     </div>                 
                     <div class="py-2 border-b-3 border-transparent hover:border-b-2 hover:border-green-900">
                         <a href="/trade" class="h-full p-2 flex items-center justify-center rounded-md px-3 text-base font-medium text-green-900 hover:font-semibold">{{"navigationBar.trade" | translate }}</a>
@@ -43,7 +43,7 @@
         </div>
         <div class="absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0">  
             <div class="relative inline-block text-left mr-2">
-                <button (click)="isLangOpen.set(!isLangOpen())" class="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 cursor-pointer">
+                <button (click)="isLangOpen.set(!isLangOpen())" class="flex items-center gap-2 px-3 py-2 rounded-full border border-gray-300 bg-white hover:bg-gray-50 cursor-pointer">
                     {{ languageService.getCurrentLanguage() === 'en' ? ('ENGLISH' | translate) : ('CROATIAN' | translate) }}
                     <svg class="w-4 h-4 transition-transform duration-200"
                         [class.rotate-180]="isLangOpen()"

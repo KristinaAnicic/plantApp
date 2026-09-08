@@ -88,6 +88,39 @@
         "cancel": "Otkaži"
     },
 
+    "home": {
+        "heroTitle": "Vaš vrt, stvoren za uspjeh",
+        "heroText": "Sveobuhvatna botanička platforma za praćenje, dijagnosticiranje i uzgoj vaše kolekcije biljaka s preciznošću.",
+        "heroBtn": "Započni",
+        "heroBadge": "Precizna njega biljaka",
+
+        "introTitle": "Sve što vašim biljkama treba. Na jednom mjestu.",
+        "introText": "Plantory vam pomaže upravljati, razumjeti i njegovati vašu kolekciju biljaka s preciznošću. Od personaliziranih podsjetnika za njegu i povijesti biljaka do detaljnih zapisa i uvida, sve što vam je potrebno za uspješan rast vaših biljaka nalazi se na jednom mjestu.",
+
+        "collectionTitle": "Preuzmite kontrolu nad svojom kolekcijom biljaka",
+        "collectionCard1Title": "Kolekcija biljaka",
+        "collectionCard1Description": "Digitalizirajte cijeli svoj vrt. Vodite detaljne zapise o svakoj biljci u svom domu.",
+        "collectionCard2Title": "Pametna organizacija",
+        "collectionCard2Description": "Grupirajte biljke prema prostoriji, uvjetima osvjetljenja ili vlastitim kolekcijama za jednostavnije upravljanje.",
+        "collectionCard3Title": "Povijest biljaka",
+        "collectionCard3Description": "Pratite presađivanje, orezivanje i gnojidbu kroz vrijeme kako biste izgradili sveobuhvatan zapis o njezi.",
+
+        "remindersTitle": "Nikada ne propustite važan zadatak",
+        "remindersCard1Title": "Prilagođeni podsjetnici",
+        "remindersCard1Description": "Postavite personalizirane podsjetnike za zalijevanje, prskanje, gnojidbu i druge zadatke njege prema vlastitom rasporedu.",
+        "remindersCard2Title": "Zapisi o njezi",
+        "remindersCard2Description": "Zabilježite svaku aktivnost kako biste imali jasan pregled svih radnji vezanih uz njegu svojih biljaka.",
+        "remindersCard3Title": "Ostanite dosljedni",
+        "remindersCard3Description": "Održavajte svoju rutinu njege biljaka organiziranom i pobrinite se da nijedan važan zadatak ne bude zanemaren.",
+
+        "communityTitle": "Više biljaka. Više ljudi. Više mogućnosti.",
+        "communitySubtitle": "Podijelite. Otkrijte. Razmijenite.",
+        "communityText": "Povežite se s globalnom zajednicom ljubitelja biljaka. Razmjenjujte mladice, sjeme i savjete s drugim entuzijastima. Istražite provjereno tržište rijetkih biljaka i podijelite vlastita iskustva s razmnožavanjem.",
+
+        "ctaTitle": "Pružite svojim biljkama pažnju koju zaslužuju.",
+        "ctaButton": "Stvorite svoj vrt"
+    },
+
     "plantDetails": {
         "plants": "biljke",
         "plant": "biljka",

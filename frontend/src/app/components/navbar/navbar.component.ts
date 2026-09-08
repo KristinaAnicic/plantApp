@@ -30,7 +30,7 @@ export class NavbarComponent implements OnInit {
   isLangOpen = signal(false);
 
   ngOnInit(): void {
-    console.log('Trenutni jezik:', this.translate.currentLang);
+    console.log('Trenutni jezik:', this.languageService.getCurrentLanguage());
     this.loadPendingReminders();
   }
 

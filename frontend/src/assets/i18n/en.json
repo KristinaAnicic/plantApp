@@ -87,6 +87,39 @@
         "cancel": "Cancel"
     },
 
+    "home": {
+        "heroTitle": "Your Garden, Engineered for Success",
+        "heroText": "The all-in-one botanical platform for tracking, diagnosing, and growing your plant collection with precision.",
+        "heroBtn": "Get Started",
+        "heroBadge": "Precision Plant Care",
+
+        "introTitle": "Everything Your Plants Need. In One Place.",
+        "introText": "Plantory helps you manage, understand, and cultivate your botanical collection with precision. From personalized care reminders and plant history to detailed records and insights, everything you need to keep your plants thriving is in one place.",
+
+        "collectionTitle": "Take Control of Your Plant Collection",
+        "collectionCard1Title": "Plant Collection",
+        "collectionCard1Description": "Digitize your entire garden. Keep detailed records of every species in your home.",
+        "collectionCard2Title": "Smart Organization",
+        "collectionCard2Description": "Group your plants by room, lighting conditions, or custom collections for easier management.",
+        "collectionCard3Title": "Plant History",
+        "collectionCard3Description": "Track repotting, pruning, and fertilization events over time to build a comprehensive care timeline.",
+
+        "remindersTitle": "Never Miss an Important Task",
+        "remindersCard1Title": "Custom Reminders",
+        "remindersCard1Description": "Set personalized reminders for watering, misting, fertilizing, and other plant care tasks based on your own schedule.",
+        "remindersCard2Title": "Care Logs",
+        "remindersCard2Description": "Log every action you take to keep a clear record of your plant care activities.",
+        "remindersCard3Title": "Stay Consistent",
+        "remindersCard3Description": "Keep your plant care routine on track and make sure important tasks never get overlooked.",
+
+        "communityTitle": "More Plants. More People. More Possibilities.",
+        "communitySubtitle": "Share. Discover. Exchange.",
+        "communityText": "Connect with a global community of plant lovers. Trade pups, seeds, and advice with local enthusiasts. Access a vetted marketplace of rare specimens and share your own propagation success stories.",
+
+        "ctaTitle": "Give Your Plants the Attention They Deserve.",
+        "ctaButton": "Create Your Garden"
+    },
+
     "plantDetails": {
         "plants": "plants",
         "plant": "plant",

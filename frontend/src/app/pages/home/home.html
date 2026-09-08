@@ -1,0 +1,147 @@
+<div class="flex flex-col justify-center pb-5">
+    <div>
+        <div class="relative w-full h-[450px] md:h-[500px] lg:h-[650px] text-left flex items-center">
+            <div class="absolute inset-0 ">
+                <img src="assets/images/home-1.jpg" class="w-full h-full object-cover aspect-video"/>
+            </div>
+            
+            <div
+                class="absolute inset-0 bg-gradient-to-r from-white via-white/80 md:via-white/70 to-transparent">
+            </div>   
+            <div class="relative z-10 max-w-3/4 md:max-w-1/2 md:p-10 md:pl-15 flex flex-col gap-5 pl-5">
+                <div class="bg-green-800/15 w-fit py-1 px-5 rounded-full border border-green-900/60 flex gap-2">
+                    <div 
+                        class="h-5 w-5 bg-green-900 shrink-0"
+                        [style.mask]="'url(assets/images/icons/plant.svg) no-repeat center / contain'"
+                        [style.webkit-mask]="'url(assets/images/icons/plant.svg) no-repeat center / contain'">
+                    </div>
+                    <p class="text-green-800">{{ "home.heroBadge" | translate }}</p>
+                </div>
+                
+                <h2 class="font-bold text-3xl md:text-4xl lg:text-5xl">{{ "home.heroTitle" | translate }}</h2>
+                <p class="text-base md:text-lg lg:text-xl"> 
+                    {{ "home.heroText" | translate }}
+                </p>
+                <button (click)="redirect()" class="bg-green-900 transition hover:scale-102 cursor-pointer hover:shadow-md hover:shadow-green-900/40 text-white py-3 px-6 md:px-8 rounded-md w-fit text-base">{{ "home.heroBtn" | translate }}</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full h-full py-24 text-center flex flex-col items-center gap-3 bg-gray-100">
+        <h2 class="text-2xl md:text-3xl px-12 md:px-24">{{ "home.introTitle" | translate}}</h2>
+        <p class="max-w-2xl text-gray-500 text-base px-5 md:px-24">{{ "home.introText" | translate }}</p>
+    </div>
+
+    <div class="w-full h-full py-20 text-center flex flex-col items-center gap-8">
+        <h2 class="text-2xl md:text-3xl px-12 md:px-20">{{ "home.collectionTitle" | translate}}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 px-5 md:px-20">
+            <div class="bg-gray-100 transition hover:scale-102 rounded-lg border border-gray-200 py-8 px-5 md:p-10 lg:p-15 flex flex-col gap-3 items-center">
+                <div class="bg-green-900/20 p-2 rounded-lg">
+                    <div 
+                        class="h-8 w-8 bg-green-900 shrink-0"
+                        [style.mask]="'url(assets/images/icons/fern.svg) no-repeat center / contain'"
+                        [style.webkit-mask]="'url(assets/images/icons/fern.svg) no-repeat center / contain'">
+                    </div>
+                </div>
+                <h3 class="text-lg md:text-xl">{{ "home.collectionCard1Title" | translate}}</h3>
+                <p class="text-gray-600">{{ "home.collectionCard1Description" | translate}}</p>
+            </div>
+
+            <div class="bg-gray-100 transition hover:scale-102 rounded-lg border border-gray-200 py-8 px-5 md:p-10 lg:p-15 flex flex-col gap-3 items-center">
+                <div class="bg-green-900/20 p-2 rounded-lg">
+                    <div 
+                        class="h-8 w-8 bg-green-900 shrink-0"
+                        [style.mask]="'url(assets/images/icons/category.svg) no-repeat center / contain'"
+                        [style.webkit-mask]="'url(assets/images/icons/category.svg) no-repeat center / contain'">
+                    </div>
+                </div>
+                <h3 class="text-lg md:text-xl">{{ "home.collectionCard2Title" | translate}}</h3>
+                <p class="text-gray-600">{{ "home.collectionCard2Description" | translate}}</p>
+            </div>
+
+            <div class="bg-gray-100 transition hover:scale-102 rounded-lg border border-gray-200 py-8 px-5 md:p-10 lg:p-15 flex flex-col gap-3 items-center">
+                <div class="bg-green-900/20 p-2 rounded-lg">
+                    <div 
+                        class="h-8 w-8 bg-green-900 shrink-0"
+                        [style.mask]="'url(assets/images/icons/undo.svg) no-repeat center / contain'"
+                        [style.webkit-mask]="'url(assets/images/icons/undo.svg) no-repeat center / contain'">
+                    </div>
+                </div>
+                <h3 class="text-lg md:text-xl">{{ "home.collectionCard3Title" | translate}}</h3>
+                <p class="text-gray-600">{{ "home.collectionCard3Description" | translate}}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full h-full py-20 text-center flex flex-col items-center gap-8 bg-emerald-950">
+        <h2 class="text-3xl text-white px-12 md:px-20">{{ "home.remindersTitle" | translate}}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 px-5 md:px-20">
+            <div class="bg-emerald-900/50 transition hover:scale-102 rounded-lg py-8 px-5 md:p-10 lg:p-15 flex flex-col gap-3 items-center border border-emerald-900">
+                <div class="bg-green-800/60 p-2 rounded-lg">
+                    <div 
+                        class="h-8 w-8 bg-green-400 shrink-0"
+                        [style.mask]="'url(assets/images/icons/fern.svg) no-repeat center / contain'"
+                        [style.webkit-mask]="'url(assets/images/icons/fern.svg) no-repeat center / contain'">
+                    </div>
+                </div>
+                <h3 class="text-lg md:text-xl text-white">{{ "home.remindersCard1Title" | translate}}</h3>
+                <p class="text-gray-300">{{ "home.remindersCard1Description" | translate}}</p>
+            </div>
+
+            <div class="bg-emerald-900/50 transition hover:scale-102 rounded-lg py-8 px-5 md:p-10 lg:p-15 flex flex-col gap-3 items-center border border-emerald-900">
+                <div class="bg-green-800/60 p-2 rounded-lg">
+                    <div 
+                        class="h-8 w-8 bg-green-400 shrink-0"
+                        [style.mask]="'url(assets/images/icons/category.svg) no-repeat center / contain'"
+                        [style.webkit-mask]="'url(assets/images/icons/category.svg) no-repeat center / contain'">
+                    </div>
+                </div>
+                <h3 class="text-lg md:text-xl text-white">{{ "home.remindersCard2Title" | translate}}</h3>
+                <p class="text-gray-300">{{ "home.remindersCard2Description" | translate}}</p>
+            </div>
+
+            <div class="bg-emerald-900/50 transition hover:scale-102 rounded-lg py-8 px-5 md:p-10 lg:p-15 flex flex-col gap-3 items-center border border-emerald-900">
+                <div class="bg-green-800/60 p-2 rounded-lg">
+                    <div 
+                        class="h-8 w-8 bg-green-400 shrink-0"
+                        [style.mask]="'url(assets/images/icons/undo.svg) no-repeat center / contain'"
+                        [style.webkit-mask]="'url(assets/images/icons/undo.svg) no-repeat center / contain'">
+                    </div>
+                </div>
+                <h3 class="text-lg md:text-xl text-white">{{ "home.remindersCard3Title" | translate}}</h3>
+                <p class="text-gray-300">{{ "home.remindersCard3Description" | translate}}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full h-full py-20 px-5 md:px-20 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-15 bg-gray-100">
+            <img class="rounded-xl" src="assets/images/community.jpg">
+            <div class="flex flex-col gap-5">
+                <h2 class="text-2xl md:text-3xl font-semibold">{{ "home.communityTitle" | translate}}</h2>
+                <h3 class="text-xl md:text-2xl text-green-800">{{ "home.communitySubtitle" | translate}}</h3>
+                <p class="text-base">{{ "home.communityText" | translate}}</p>
+            </div>
+    </div>
+
+    <div class="w-full h-full text-center flex flex-col items-center gap-8 relative overflow-hidden">
+        <div class="absolute inset-0 ">
+            <div 
+                class="h-full w-full bg-gray-200/60"
+                [style.mask]="'url(assets/images/icons/plant-1.svg) no-repeat center / contain'"
+                [style.webkit-mask]="'url(assets/images/icons/plant-1.svg) no-repeat center / contain'">
+            </div>
+        </div>
+
+        <div class="relative z-10 py-32 md:p-32">    
+            <h2 class="text-2xl md:text-3xl font-bold w-full md:w-md pb-8 px-5">{{ "home.ctaTitle" | translate}}</h2>
+            <button 
+                (click)="redirect()"
+                class="bg-green-900 transition hover:scale-102 cursor-pointer 
+                hover:shadow-md hover:shadow-green-900/40 text-white py-4 px-8 
+                rounded-md w-fit text-base">
+                {{ "home.ctaButton" | translate}}
+            </button>
+        </div>
+    </div>
+
+</div>
