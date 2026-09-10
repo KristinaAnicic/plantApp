@@ -1,108 +1,338 @@
-# 🌱 PlantApp
+# 🌱 Plantory
 
-PlantApp is a full-stack web application designed for plant enthusiasts to manage and track their plants, organize collections, monitor plant activity, and connect with other users through a plant exchange platform.
+### Your Garden, Engineered for Success
 
-The application provides advanced plant management features including reminders, analytics, multilingual support, image uploads, and plant identification powered by the PlantNet API.
+Plantory is a full-stack web application designed to help plant owners organize and manage their plants, track their growth and care activities, receive reminders, and discover new plants.
 
----
-
-# Features
-
-- User authentication with JWT & Refresh Tokens
-- Secure refresh token storage using HTTP-only cookies
-- Add and manage plants
-- Create plant logs and activity records
-- Organize plants into groups
-- Create logs for plant groups
-- Plant care reminder system
-- Analytics dashboard
-- Image upload support (AppWrite)
-- Plant identification using PlantNet API
-- Multilingual support
-- Detailed plant information pages
-- Detailed planted plant pages
-- Plant exchange marketplace
-- Rate limiting protection
-- Global exception handling
-- Responsive design
+The application combines a **digital garden, plant catalog, analytics, machine learning, and plant exchange platform** in one place.
 
 ---
 
-# Tech Stack
+## Features
 
-## Frontend
-- Angular
-- TypeScript
-- Tailwind CSS
-- Reactive Forms
-- HTTP Interceptors
-- Route Guards
-- Multilingual support
-- Responsive UI design
-- Reusable shared components
+### Digital Garden
 
-## Backend
-- ASP.NET Core
-- JWT Authentication
-- Refresh Token Authentication
-- Dependency Injection
-- Global Exception Handling
-- Rate Limiting
-- Entity Framework Core Migrations
+* Add and manage personal plants
+* Track plant information and care
+* Organize plants into groups
+* View individual plant details
 
-## Database
-- PostgreSQL
-- Neon (hosted database)
-- Entity Framework Core
+### Plant Catalog
 
-## Storage
-- Appwrite (image storage)
+* Explore a catalog of approximately **60,000 plants**
+* Search and browse plant information
+* View growing requirements such as sunlight and humidity
 
-## External APIs
-- PlantNet API (plant identification)
+### Growth & History
 
-## Deployment
-- Frontend hosted on Vercel
-- Backend hosted on Azure
+* Record plant growth over time
+* Track care activities
+* View historical plant data and progress
+
+### Reminders
+
+* Create reminders for plant care
+* Mark reminders as completed or postponed
+
+### Machine Learning
+
+* Predict plant health using **ML.NET**
+* Personalized plant recommendations using **Matrix Factorization**
+* Leaf disease classification using a **PyTorch** model
+* Disease categories include:
+
+  * Healthy
+  * Pest
+  * Virus
+  * Fungus
+  * Bacteria
+
+### Plant Identification
+
+Identify plants using image recognition through the **PlantNet API**.
+
+### Plant Exchange
+
+Users can:
+
+* Sell plants
+* Exchange plants
+* Give plants away
+* Leave and read reviews
+
+### Image Storage
+
+Plant images are stored using **Appwrite**.
+
+### Authentication & Authorization
+
+* JWT-based authentication
+* Short-lived access tokens
+* Refresh tokens stored in **HttpOnly cookies**
+* Role-based authorization
+* User and Admin roles
+
+### Localization
+
+* 🇭🇷 Croatian
+* 🇬🇧 English
 
 ---
 
-# Project Architecture
+## Database Design
 
-The backend follows a clean, layered architecture:
+The application uses PostgreSQL as its relational database.
 
-## Data Layer
-- Entity Framework Core DbContext
-- Migrations
-- Repositories
-- Enums
+The database was designed using a Code First approach with Entity Framework Core.
 
-## Domain Layer
-- Models
-- DTOs
-- Interfaces
-- Services
-
-## ML Layer
-- Machine learning-related functionality
-
-## PlantBackend Layer
-- Controllers
-- API configuration
-- Middleware configuration
+![Database Diagram](docs/database-diagram.svg)
 
 ---
 
-# Technical Highlights
+## 🛠️ Tech Stack
 
-- Clean architecture approach
-- Separation of concerns
-- Dependency Injection
-- Repository pattern
-- Secure authentication (JWT + Refresh Tokens)
-- HTTP-only cookie token storage
-- Rate limiting for API protection
-- Global exception handling middleware
-- External API integration (PlantNet)
-- Entity Framework Core migrations
-- Scalable backend structure
+### Frontend
+
+* **Angular 21**
+* **TypeScript**
+* **HTML5**
+* **Tailwind CSS**
+* **ngx-translate**
+
+Angular features used throughout the application include:
+
+* Signals
+* Route Guards
+* HTTP Interceptors
+* Resolvers
+* Reactive forms
+
+### Backend
+
+* **.NET 10**
+* **ASP.NET Core Web API**
+* **C#**
+* **Entity Framework Core**
+* **PostgreSQL**
+
+The backend follows a layered structure separating:
+
+* Data
+* Domain
+* Machine Learning
+* API
+
+### Machine Learning
+
+* **ML.NET**
+* **Python**
+* **PyTorch**
+* **Matrix Factorization**
+* Plant disease classification
+
+### Database & Storage
+
+* **PostgreSQL**
+* **Neon**
+* **Docker** (local development)
+* **Appwrite** (image storage)
+
+### APIs & Documentation
+
+* **PlantNet API**
+* **Scalar**
+* **OpenAPI / Swagger**
+
+### Deployment
+
+* **Vercel** – Frontend
+* **Azure App Service** – Backend
+* **Neon** – PostgreSQL database
+
+### Development Tools
+
+* Git
+* GitHub
+* Visual Studio
+* Visual Studio Code
+* Docker
+
+---
+
+## Project Structure
+
+```text
+PlantApp/
+│
+├── Backend/
+│   ├── PlantApp.Data/
+│   │   └── Database configuration and EF Core
+│   │
+│   ├── PlantApp.Domain/
+│   │   └── Domain entities and business models
+│   │
+│   ├── PlantApp.ML/
+│   │   └── Machine learning functionality
+│   │
+│   └── PlantBackend/
+│       └── ASP.NET Core Web API
+│
+├── Frontend/
+│   └── Angular frontend
+│
+└── python_api/
+    └── Python API for plant disease classification
+```
+
+---
+
+## Authentication
+
+Plantory uses JWT-based authentication with:
+
+* Access tokens with a short lifetime
+* Refresh tokens stored in HttpOnly cookies
+* Secure token refresh flow
+* Role-based authorization
+
+The frontend uses an HTTP interceptor to automatically handle authentication-related requests.
+
+---
+
+## Machine Learning
+
+Plantory integrates several machine learning components.
+
+### Plant Health Prediction
+
+An **ML.NET** model is used to estimate plant health based on available plant and care data.
+
+### Plant Recommendations
+
+A **Matrix Factorization** model provides personalized plant recommendations based on user interactions.
+
+### Disease Classification
+
+A separate **PyTorch** model analyzes plant leaf images and classifies them into one of several health or disease categories.
+
+```text
+Leaf Image
+    ↓
+PyTorch Model
+    ↓
+Classification
+    ↓
+Healthy / Pest / Virus / Fungus / Bacteria
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+Make sure you have installed:
+
+* [.NET SDK](https://dotnet.microsoft.com/)
+* [Node.js](https://nodejs.org/)
+* Angular CLI
+* PostgreSQL or Docker
+* Git
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/KristinaAnicic/plantApp.git
+
+cd plantApp
+```
+
+### 2. Configure the backend
+
+Create the required configuration/environment variables for:
+
+* PostgreSQL connection
+* JWT authentication
+* Refresh token configuration
+* Appwrite
+* PlantNet API
+* Machine learning services
+
+### 3. Start the backend
+
+```bash
+dotnet restore
+dotnet run
+```
+
+### 4. Start the frontend
+
+```bash
+npm install
+ng serve
+```
+
+The Angular application will then be available locally through the development server.
+
+---
+
+## Screenshots
+
+### Home Page
+
+![Home Page](screenshots/home.png)
+
+### Plant Catalog
+
+![Plant Catalog](screenshots/catalog.png)
+
+### Plant Details
+
+![Plant Details](screenshots/plant-details.png)
+
+### My Collection
+
+![My Collection](screenshots/collection.png)
+
+### Analytics
+
+![Analytics](screenshots/analytics.png)
+
+---
+
+
+## Academic Project
+
+Plantory was developed as a **thesis project** as part of the graduate study program *Software Engineering of Computer and Embedded Systems* at the Zagreb University of Applied Sciences (TVZ).
+
+The project was developed as a full-stack application with an emphasis on:
+
+* Web application development
+* REST API design
+* Database design
+* Authentication and authorization
+* Machine learning integration
+* Cloud deployment
+
+---
+
+## Future Improvements
+
+Possible future improvements include:
+
+* Push notifications for plant reminders
+* More advanced plant-care analytics
+* Expanded machine learning capabilities
+* Additional plant disease categories
+* More social and community features
+* Improved recommendation models
+
+---
+
+## License
+
+This project was developed for academic purposes.
+
+---
+
+🌱 **Plantory — Your Garden, Engineered for Success**
